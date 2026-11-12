@@ -14,6 +14,7 @@ from . import runs
 from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, load_config
 from .data import build_items, condition_view, fetch_belebele, load_items, review, save_items
 from .db import db, init_db
+from .playground import run_playground
 
 
 @asynccontextmanager
@@ -191,6 +192,39 @@ def review_item(item_id: str, condition: str, req: ReviewRequest,
     except (KeyError, ValueError) as e:
         raise HTTPException(400, str(e))
     return {"ok": True}
+
+
+# ---------------------------------------------------------------- live demo
+
+
+class PlaygroundRequest(BaseModel):
+    judges: list[str]
+    item_id: str | None = None
+    custom: dict[str, dict[str, str]] | None = None
+    scores: bool = True
+    pairwise: bool = True
+    mcq: bool = True
+    rubric: bool = False
+
+
+@app.post("/api/playground")
+async def playground(req: PlaygroundRequest) -> dict:
+    try:
+        return await run_playground(req.model_dump())
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@app.get("/api/items/sample")
+def sample_item(pos: int | None = None) -> dict:
+    """One item for the demo picker: by position (1-based) or random."""
+    import random
+    with db() as c:
+        all_items = load_items(c)
+    if not all_items:
+        raise HTTPException(404, "no items loaded")
+    it = all_items[(pos - 1) % len(all_items)] if pos else random.choice(all_items)
+    return {"id": it["id"], "pos": it["pos"], "total": len(all_items), "question": it["eng_latn"]["question"]}
 
 
 # ---------------------------------------------------------------- runs

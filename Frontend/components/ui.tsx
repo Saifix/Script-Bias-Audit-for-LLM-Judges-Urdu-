@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 const LINKS = [
   ["/", "Overview"],
+  ["/demo", "Live demo"],
   ["/data", "Data"],
   ["/review", "Review"],
   ["/runs", "Runs"],
