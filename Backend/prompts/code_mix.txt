@@ -1,0 +1,8 @@
+Rewrite each of the following Urdu-script texts as Urdu-English code-mixed text written in Roman Urdu.
+Keep Urdu as the matrix language: keep Urdu grammar, word order, verbs, postpositions and function words. Switch selected nouns (and only nouns) to their common English equivalents, the way bilingual Urdu speakers naturally mix. Keep names unchanged and do not change the meaning.
+
+### Texts
+{texts}
+
+### Instruction
+Reply with exactly four numbered lines (1. to 4.), in the same order, and nothing else.

@@ -1,0 +1,9 @@
+.env
+Backend/data/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+.next/
+Frontend/next-env.d.ts
+*.tsbuildinfo

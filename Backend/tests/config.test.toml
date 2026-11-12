@@ -1,0 +1,18 @@
+[settings]
+seed = 7
+n_items = 10
+code_mixed_items = 4
+pilot_items = 6
+repeat_items = 4
+repeat_count = 2
+bootstrap_resamples = 200
+concurrency = 4
+
+[generator]
+model = "mock/generator"
+
+[[judges]]
+id = "mock/judge-a"
+
+[[judges]]
+id = "mock/judge-b"

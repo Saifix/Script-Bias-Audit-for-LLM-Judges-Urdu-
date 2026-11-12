@@ -1,0 +1,76 @@
+# One command builds and starts everything:  docker compose up --build -d
+name: script-bias-audit
+
+services:
+  backend:
+    build: ./Backend
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      HF_TOKEN: ${HF_TOKEN:-}
+      BACKEND_TOKEN: ${BACKEND_TOKEN:?set BACKEND_TOKEN in .env}   # only the frontend proxy knows it
+    volumes:
+      - data:/data                                  # SQLite DB, call cache, HF cache, exports
+      - ./Backend/config.toml:/app/config.toml:ro   # edit judges without rebuilding
+      - ./Backend/prompts:/app/prompts:ro
+    expose:
+      - "8000"                                      # internal only; the frontend proxies /api
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      target: runner
+    environment:
+      BACKEND_URL: http://backend:8000
+      BACKEND_TOKEN: ${BACKEND_TOKEN:?set BACKEND_TOKEN in .env}
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      APP_USERS: ${APP_USERS:?set APP_USERS in .env}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      # With HTTPS (COMPOSE_PROFILES=https) set FRONTEND_BIND=127.0.0.1 so only Caddy is public.
+      - "${FRONTEND_BIND:-0.0.0.0}:${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/login >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    restart: unless-stopped
+
+  # Optional automatic HTTPS (Let's Encrypt). Enable with COMPOSE_PROFILES=https and DOMAIN in .env.
+  caddy:
+    image: caddy:2.10
+    profiles: ["https"]
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      frontend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Test-only service (not started by `up`): docker compose --profile test run --rm frontend-test
+  frontend-test:
+    build:
+      context: ./Frontend
+      target: build
+    command: ["npm", "test"]
+    profiles: ["test"]
+
+volumes:
+  data:
+  caddy_data:

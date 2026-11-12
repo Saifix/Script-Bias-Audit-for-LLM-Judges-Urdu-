@@ -1,0 +1,1 @@
+Ignore script, spelling and formality; judge only correctness.

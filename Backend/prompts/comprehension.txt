@@ -1,0 +1,13 @@
+Read the passage and answer the multiple-choice question.
+
+### Passage
+{passage}
+
+### Question
+{question}
+
+### Options
+{options}
+
+### Instruction
+Reply with only the number of the correct option (1, 2, 3 or 4).

@@ -1,0 +1,46 @@
+# Script-Bias Audit configuration.
+# Add a judge by appending a [[judges]] block. Model IDs are OpenRouter IDs.
+# Any ID starting with "mock/" uses the offline deterministic mock (no API key needed).
+
+[settings]
+seed = 13                     # sampling + wrong-option + bootstrap seed
+n_items = 300                 # items sampled from Belebele
+code_mixed_items = 100        # code-mixed subset size (first N sampled items)
+pilot_items = 20              # screening gate subset
+screening_auc_threshold = 0.7 # judge passes if correct-vs-wrong AUC > this in every screened condition
+acceptance_threshold = 7      # "accepted" = score >= this
+repeat_items = 50             # repeats run: subset size
+repeat_count = 2              # repeats run: extra repeats per item
+bootstrap_resamples = 1000
+concurrency = 8               # parallel API calls
+max_retries = 6               # retries on 429 / 5xx / network errors
+judge_max_tokens = 8          # small: judges reply with a number / A / B / TIE
+
+# LLM used to create roman_translit + code_mixed text and for the "transliterate" mitigation.
+[generator]
+model = "openai/gpt-4o-mini"
+max_tokens = 600
+
+[[judges]]
+id = "qwen/qwen3.5-9b"   # qwen-2.5-7b-instruct was removed from OpenRouter
+reasoning_off = true
+
+[[judges]]
+id = "meta-llama/llama-3.1-8b-instruct"
+reasoning_off = true
+
+# Optional API judges - uncomment to enable.
+# [[judges]]
+# id = "anthropic/claude-haiku-4.5"
+# reasoning_off = true
+#
+# [[judges]]
+# id = "openai/gpt-4o-mini"
+#
+# [[judges]]
+# id = "google/gemini-2.5-flash"
+# reasoning_off = true
+
+# Offline mock judge: deterministic, no network. Useful for demos and tests.
+[[judges]]
+id = "mock/judge"

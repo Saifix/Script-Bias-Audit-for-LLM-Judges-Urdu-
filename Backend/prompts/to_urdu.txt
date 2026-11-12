@@ -1,0 +1,7 @@
+Convert the following text into standard Urdu script. It may be Roman Urdu or Urdu-English code-mixed text; write any English words the way they are normally written in Urdu script. Do not translate, summarize, or add anything.
+
+### Text
+{text}
+
+### Instruction
+Reply with only the converted text.

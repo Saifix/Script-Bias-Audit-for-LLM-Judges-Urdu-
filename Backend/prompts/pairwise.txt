@@ -1,0 +1,14 @@
+You are comparing two answers to the same reading-comprehension question. Each answer is shown together with the passage and question written in the same script as that answer.
+
+### Answer A
+Passage: {passage_a}
+Question: {question_a}
+Answer: {answer_a}
+
+### Answer B
+Passage: {passage_b}
+Question: {question_b}
+Answer: {answer_b}
+
+### Instruction
+Which answer is better, A or B? Reply A, B or TIE.

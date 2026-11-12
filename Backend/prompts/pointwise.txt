@@ -1,0 +1,13 @@
+You are evaluating an answer to a reading-comprehension question.
+
+### Passage
+{passage}
+
+### Question
+{question}
+
+### Answer
+{answer}
+
+### Instruction
+{rubric}Rate how correct and helpful this answer is from 1 to 10. Reply with only the number.

@@ -1,0 +1,8 @@
+Transliterate each of the following Urdu-script texts into Roman Urdu (Urdu written in Latin letters, the way Urdu speakers commonly type it).
+Transliterate only: keep every word in the same order. Do not translate, reword, or replace words with synonyms or English equivalents (for example, write "seb" for سیب, never "apple").
+
+### Texts
+{texts}
+
+### Instruction
+Reply with exactly four numbered lines (1. to 4.), in the same order, and nothing else.
