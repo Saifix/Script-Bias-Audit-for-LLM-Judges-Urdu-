@@ -121,7 +121,7 @@ export default function RunsPage() {
             {type === "repeats" && <label className="field">Extra repeats<input className="input" type="number" min={1} style={{ width: 130 }} placeholder={String(s?.repeat_count ?? 2)} value={repeats} onChange={(e) => setRepeats(e.target.value === "" ? "" : Number(e.target.value))} /></label>}
           </div>
 
-          <div className="tile tight" style={{ background: "var(--bg)" }}>
+          <div className="tile tight" style={{ background: "var(--surface)", boxShadow: "none" }}>
             {est ? (
               <div className="row between">
                 <div className="row" style={{ gap: 32 }}>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const LINKS = [
   ["/", "Overview"],
@@ -11,6 +11,28 @@ const LINKS = [
   ["/runs", "Runs"],
   ["/results", "Results"],
 ] as const;
+
+const isActive = (path: string, href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+
+/** Brand mark: a balance (a fair judge) on the kit's violet→pink→orange gradient. */
+export function Logo({ size = 28 }: { size?: number }) {
+  const id = useId();
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#7B61FF" /><stop offset=".55" stopColor="#E14BB4" /><stop offset="1" stopColor="#FF8A3D" />
+        </linearGradient>
+      </defs>
+      <rect width="32" height="32" rx="9" fill={`url(#${id})`} />
+      <g fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 8v15M11.5 23.5h9M8.5 11.5h15" />
+        <path d="M8.5 11.5 6 17.2a2.6 2.6 0 0 0 5 0z" />
+        <path d="M23.5 11.5 21 17.2a2.6 2.6 0 0 0 5 0z" />
+      </g>
+    </svg>
+  );
+}
 
 /** Light by default; the choice is remembered per browser. */
 export function ThemeToggle() {
@@ -33,48 +55,126 @@ export function ThemeToggle() {
   );
 }
 
-export function Nav() {
+/** Floating glass header: brand, segmented nav with a sliding active pill, theme + account. */
+export function SiteHeader() {
   const path = usePathname();
-  const [user, setUser] = useState<string | null>(null);
   const isLogin = path === "/login";
+  const [user, setUser] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+  const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
+
   useEffect(() => {
     if (isLogin) return;
     fetch("/api/auth/me", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((d) => setUser(d?.user ?? null)).catch(() => {});
   }, [isLogin]);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+  useEffect(() => setOpen(false), [path]);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = navRef.current?.querySelector<HTMLAnchorElement>("a.active");
+      setPill(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => window.removeEventListener("resize", measure);
+  }, [path, isLogin]);
+
   async function signOut() {
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/login";
   }
+
   return (
-    <nav className="nav">
-      <div className="nav-inner">
-        <Link href="/" className="brand">Script-Bias Audit</Link>
+    <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
+      <div className="header-bar glass">
+        <Link href="/" className="brand"><Logo /><span>Script-Bias Audit</span></Link>
         {!isLogin && (
-          <div className="nav-links">
+          <nav className="nav-pill" ref={navRef} aria-label="Main">
+            {pill && <span className="nav-indicator" style={{ transform: `translateX(${pill.x}px)`, width: pill.w }} />}
             {LINKS.map(([href, name]) => (
-              <Link key={href} href={href} className={(href === "/" ? path === "/" : path.startsWith(href)) ? "active" : ""}>
-                {name}
-              </Link>
+              <Link key={href} href={href} className={isActive(path, href) ? "active" : ""} aria-current={isActive(path, href) ? "page" : undefined}>{name}</Link>
             ))}
-          </div>
+          </nav>
         )}
-        <div className="nav-right">
+        <div className="header-right">
           <ThemeToggle />
           {user && (
-            <>
-              <span className="faint nav-user">{user}</span>
-              <button className="btn secondary small" onClick={signOut}>Sign out</button>
-            </>
+            <div className="user-chip">
+              <span className="avatar" aria-hidden="true">{user.slice(0, 1).toUpperCase()}</span>
+              <span className="user-name">{user}</span>
+              <button className="icon-btn small" onClick={signOut} aria-label="Sign out" title="Sign out">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><path d="M10 17l5-5-5-5" /><path d="M15 12H3" /></svg>
+              </button>
+            </div>
+          )}
+          {!isLogin && (
+            <button className="icon-btn menu-btn" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              </svg>
+            </button>
           )}
         </div>
       </div>
-    </nav>
+      {open && !isLogin && (
+        <nav className="mobile-menu glass" aria-label="Main">
+          {LINKS.map(([href, name]) => (
+            <Link key={href} href={href} className={isActive(path, href) ? "active" : ""}>{name}</Link>
+          ))}
+          {user && <button className="btn secondary small" onClick={signOut}>Sign out ({user})</button>}
+        </nav>
+      )}
+    </header>
+  );
+}
+
+export function SiteFooter() {
+  const path = usePathname();
+  if (path === "/login") return <footer className="site-footer minimal"><span className="faint">© 2026 Script-Bias Audit · Private research platform</span></footer>;
+  return (
+    <footer className="site-footer">
+      <div className="footer-inner glass">
+        <div className="footer-brand">
+          <Link href="/" className="brand"><Logo size={32} /><span>Script-Bias Audit</span></Link>
+          <p className="muted">Is the AI judge fair to Roman Urdu? A university research project measuring script bias in LLM judges.</p>
+          <p className="urdu footer-urdu" lang="ur" dir="rtl">منصفانہ جانچ، ہر رسم الخط میں</p>
+        </div>
+        <div>
+          <p className="footer-head">Platform</p>
+          {LINKS.map(([href, name]) => <Link key={href} href={href}>{name}</Link>)}
+        </div>
+        <div>
+          <p className="footer-head">Research</p>
+          <a href="https://huggingface.co/datasets/facebook/belebele" target="_blank" rel="noreferrer">Belebele dataset</a>
+          <span>Lost in the Mix (ACL 2026)</span>
+          <a href="https://openrouter.ai" target="_blank" rel="noreferrer">OpenRouter</a>
+        </div>
+        <div>
+          <p className="footer-head">Method</p>
+          <span>Pointwise · Pairwise</span>
+          <span>Comprehension · Repeats</span>
+          <span>Bootstrap 95% CIs</span>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© 2026 Script-Bias Audit</span>
+        <span>Urdu script · Roman Urdu · English · Code-mixed</span>
+      </div>
+    </footer>
   );
 }
 
 export function Header({ eyebrow, title, lede }: { eyebrow: string; title: ReactNode; lede?: ReactNode }) {
   return (
-    <header>
+    <header className="page-header">
       <p className="eyebrow">{eyebrow}</p>
       <h1 className="title">{title}</h1>
       {lede && <p className="lede">{lede}</p>}
@@ -112,7 +212,7 @@ export function Progress({ value, total }: { value: number; total: number }) {
 
 export function Stat({ label, value, sub }: { label: string; value: ReactNode; sub?: ReactNode }) {
   return (
-    <div className="tile">
+    <div className="tile stat">
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
       {sub && <div className="faint">{sub}</div>}

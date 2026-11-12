@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import { Logo } from "../../components/ui";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -31,11 +32,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "8vh auto 0" }}>
-      <p className="eyebrow">Script-Bias Audit</p>
-      <h1 className="title" style={{ fontSize: 36 }}>Sign in</h1>
-      <p className="muted" style={{ marginTop: 0 }}>This research platform is private.</p>
-      <form className="tile stack" onSubmit={submit}>
+    <div className="auth-wrap">
+      <form className="auth-card glass stack" onSubmit={submit}>
+        <div className="brand-big"><Logo size={56} /></div>
+        <div style={{ textAlign: "center" }}>
+          <h1 className="title" style={{ fontSize: 32, marginBottom: 6 }}>Welcome back</h1>
+          <p className="muted" style={{ margin: 0 }}>Sign in to <span className="gradient-text" style={{ fontWeight: 600 }}>Script-Bias Audit</span></p>
+        </div>
         <label className="field">Username
           <input className="input" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required autoFocus />
         </label>
@@ -43,7 +46,8 @@ export default function LoginPage() {
           <input className="input" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         {error && <p className="notice error" style={{ margin: 0 }}>{error}</p>}
-        <button className="btn" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+        <button className="btn large" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+        <p className="faint" style={{ textAlign: "center", margin: 0 }}>Private research platform · access by invitation</p>
       </form>
     </div>
   );

@@ -133,7 +133,14 @@ export default function DemoPage() {
       {demo && (
         <div className="stack" style={{ gap: 24, marginTop: 24 }}>
           <p className="faint" style={{ margin: 0 }}>{demo.calls} calls · {demo.cached} from cache · {fmt.usd(demo.cost_usd)}</p>
-          {errors.length > 0 && <p className="notice error">{errors.length} of {demo.calls} calls failed: {errors[0].error}</p>}
+          {errors.length > 0 && (
+            <p className="notice error">
+              {errors.length} of {demo.calls} calls failed ({[...new Set(errors.map((e) => e.judge))].join(", ")}):{" "}
+              {errors.some((e) => e.error?.includes("402"))
+                ? <>OpenRouter has no credits left. Add credits at <a href="https://openrouter.ai/settings/credits" target="_blank" rel="noreferrer">openrouter.ai/settings/credits</a>, or use <span className="mono">mock/judge</span>.</>
+                : errors[0].error?.slice(0, 180)}
+            </p>
+          )}
 
           <TextsPanel demo={demo} custom={isCustom} />
           {demo.results.some((r) => r.kind === "pointwise") && <ScoresPanel demo={demo} custom={isCustom} />}

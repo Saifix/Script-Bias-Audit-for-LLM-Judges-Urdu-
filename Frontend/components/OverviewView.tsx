@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Badge, Header, Stat } from "./ui";
+import { ScriptMorph } from "./ScriptMorph";
+import { Badge, Stat } from "./ui";
 import { fmt, label, type Overview } from "../lib/api";
 
 /** Presentational overview (no fetching), so it can be rendered in the smoke test with mock data. */
@@ -9,11 +10,18 @@ export function OverviewView({ data }: { data: Overview }) {
   const cm = ds.generated.code_mixed ?? { pending: 0, approved: 0, rejected: 0 };
   return (
     <>
-      <Header
-        eyebrow="Research platform"
-        title={<>Is the AI judge fair to <span className="gradient-text">Roman Urdu</span>?</>}
-        lede="Measuring script bias in LLM judges: the same answer, shown in Urdu script, Roman Urdu, English and code-mixed Urdu, scored by the same judge."
-      />
+      <section className="hero">
+        <div>
+          <p className="eyebrow">Research platform</p>
+          <h1 className="title">Is the AI judge fair to <span className="gradient-text">Roman Urdu</span>?</h1>
+          <p className="lede">The same answer, shown to LLM judges in Urdu script, Roman Urdu, English and code-mixed Urdu. If the score changes, the judge is grading the script, not the answer.</p>
+          <div className="hero-actions">
+            <Link href="/demo" className="btn large">Try the live demo</Link>
+            <Link href="/runs" className="btn secondary large">Run an experiment</Link>
+          </div>
+        </div>
+        <ScriptMorph />
+      </section>
 
       {!data.api_key_set && (
         <p className="notice">OpenRouter key not set — only <span className="mono">mock/</span> judges can run. Add <span className="mono">OPENROUTER_API_KEY</span> to <span className="mono">.env</span>.</p>
@@ -52,11 +60,11 @@ export function OverviewView({ data }: { data: Overview }) {
         {data.judges.length === 0 && <p className="muted">No judges configured. Add them to <span className="mono">Backend/config.toml</span>.</p>}
       </div>
 
-      <h2 className="section">Next steps</h2>
+      <h2 className="section">How it works</h2>
       <div className="grid cols-3">
-        <Link href="/data" className="tile tight"><h3>1 · Load data</h3><p className="muted" style={{ margin: 0 }}>Sample Belebele and generate transliterated + code-mixed text.</p></Link>
-        <Link href="/review" className="tile tight"><h3>2 · Review</h3><p className="muted" style={{ margin: 0 }}>Approve, edit or reject generated text. Only approved items are used.</p></Link>
-        <Link href="/runs" className="tile tight"><h3>3 · Run experiments</h3><p className="muted" style={{ margin: 0 }}>Screen judges, then run pointwise, pairwise and comprehension.</p></Link>
+        <Link href="/data" className="tile"><p className="eyebrow">Step 1</p><h3>Load &amp; generate</h3><p className="muted" style={{ margin: 0 }}>Sample 300 parallel Belebele items and generate transliterated and code-mixed versions.</p></Link>
+        <Link href="/review" className="tile"><p className="eyebrow">Step 2</p><h3>Human review</h3><p className="muted" style={{ margin: 0 }}>Approve, edit or reject generated text. Only approved items are used in experiments.</p></Link>
+        <Link href="/runs" className="tile"><p className="eyebrow">Step 3</p><h3>Measure the bias</h3><p className="muted" style={{ margin: 0 }}>Screen judges, then run pointwise, pairwise and comprehension — every call cached.</p></Link>
       </div>
     </>
   );
