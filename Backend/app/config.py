@@ -48,6 +48,7 @@ def load_config() -> dict:
     cfg.setdefault("judges", [])
     cfg.setdefault("generator", {"model": "mock/generator", "max_tokens": 600})
     cfg.setdefault("voice", {"model": "mock/whisper"})
+    cfg.setdefault("summary", {"model": "mock/summary", "name": "Mock summary"})
     return cfg
 
 
@@ -67,6 +68,12 @@ def backend_token() -> str:
     """Shared secret the frontend proxy must send. Under 32 chars counts as unset (all API calls refused)."""
     t = os.environ.get("BACKEND_TOKEN", "").strip()
     return t if len(t) >= 32 else ""
+
+
+def judge_name(cfg: dict, model: str) -> str:
+    """Short display name for a judge (config `name`, else the model slug)."""
+    j = next((j for j in cfg["judges"] if j["id"] == model), {})
+    return j.get("name") or model.split("/")[-1]
 
 
 def api_key() -> str:

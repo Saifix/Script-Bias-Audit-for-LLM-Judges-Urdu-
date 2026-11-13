@@ -12,10 +12,10 @@ from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel
 
 from . import runs
-from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, load_config, run_password
+from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, judge_name, load_config, run_password
 from .data import build_items, condition_view, fetch_belebele, load_items, review, save_items
 from .db import db, init_db
-from .playground import run_playground, voice_to_fields
+from .playground import VERSION_NAME, explain, run_playground, voice_to_fields
 
 
 @asynccontextmanager
@@ -93,7 +93,8 @@ def get_config() -> dict:
     cfg = load_config()
     return {
         "conditions": CONDITIONS, "reference": REFERENCE, "generated": GENERATED, "run_types": RUN_TYPES,
-        "judges": [j["id"] for j in cfg["judges"]], "generator": cfg["generator"]["model"],
+        "judges": [j["id"] for j in cfg["judges"]], "judge_names": {j["id"]: judge_name(cfg, j["id"]) for j in cfg["judges"]},
+        "summary_model": cfg["summary"].get("name", cfg["summary"]["model"]), "generator": cfg["generator"]["model"],
         "settings": cfg["settings"], "api_key_set": bool(api_key()),
     }
 
@@ -322,6 +323,46 @@ def summary(run_id: int) -> dict:
         return runs.run_summary(run_id)
     except KeyError:
         raise HTTPException(404, "run not found")
+
+
+def _run_facts(s: dict, cfg: dict) -> str:
+    """Compact, readable lines from a run summary for the summary model."""
+    v = lambda c: VERSION_NAME.get(c, c)
+    lines = [f"Results over all items of one experiment run; Urdu script is the reference."]
+    for j, js in s["judges"].items():
+        name = "Panel (average of all judges)" if j == "panel" else judge_name(cfg, j)
+        lines.append(f"Judge {name}:")
+        for p in js["pointwise"]:
+            if p["gap_correct"] and p["gap_correct"]["gap"] is not None:
+                g = p["gap_correct"]
+                lines.append(f"  {v(p['condition'])}: correct answers score {g['gap']:+.2f} points vs Urdu script "
+                             f"(95% CI {g['lo']:+.2f} to {g['hi']:+.2f}); wrong answers accepted (score >= 7) "
+                             f"{(p['accept_wrong'] or 0) * 100:.0f}% of the time; error detection AUC {p['auc'] if p['auc'] is not None else 'n/a'}")
+            elif p["condition"] == REFERENCE:
+                lines.append(f"  Urdu script: wrong answers accepted {(p['accept_wrong'] or 0) * 100:.0f}% of the time; AUC {p['auc']}")
+        for p in js["pairwise"]:
+            if p["win_rate"] is not None:
+                lines.append(f"  {v(p['condition'])} vs Urdu script, same answer: {v(p['condition'])} preferred {p['win_rate'] * 100:.0f}% "
+                             f"of the time (50% = no preference; 95% CI {p['lo'] * 100:.0f}-{p['hi'] * 100:.0f}%)")
+        for p in js["comprehension"]:
+            if p["accuracy"] is not None:
+                lines.append(f"  Answers the question itself correctly in {v(p['condition'])}: {p['accuracy'] * 100:.0f}%")
+        for p in js["consistency"]:
+            lines.append(f"  {v(p['condition'])}: same score on repeat {(p['share_identical'] or 0) * 100:.0f}% of the time")
+    return "\n".join(lines)
+
+
+@app.get("/api/runs/{run_id}/explain")
+async def explain_run(run_id: int) -> dict:
+    """Plain-English summary of a run's statistics (written by the summary model from the numbers only)."""
+    try:
+        s = runs.run_summary(run_id)
+    except KeyError:
+        raise HTTPException(404, "run not found")
+    if not s["judges"]:
+        return {"summary": None}
+    return {"summary": await explain(_run_facts(s, load_config()), "two or three short sentences",
+                                     "Mention a difference only if its confidence interval does not include zero (or 50% for preferences).")}
 
 
 @app.get("/api/runs/{run_id}/export.csv")

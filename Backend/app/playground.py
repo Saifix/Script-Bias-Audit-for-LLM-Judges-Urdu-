@@ -6,7 +6,7 @@ import asyncio
 import json
 import re
 
-from .config import CONDITIONS, REFERENCE, judge_options, load_config
+from .config import CONDITIONS, REFERENCE, judge_name, judge_options, load_config
 from .data import condition_view, load_items
 from .db import db
 from .judges import LLMClient, numbered, parse_choice, parse_pairwise, parse_score, render, rubric_text
@@ -116,7 +116,13 @@ async def run_playground(req: dict) -> dict:
         results = await asyncio.gather(*(one(*job) for job in jobs))
     finally:
         await client.aclose()
+    names = {j: judge_name(app_cfg, j) for j in judges}
+    facts = judge_facts(results, [c for c in CONDITIONS if c in texts], names)
+    summary = await explain(facts_text(facts), "one or two short sentences",
+                            "This is a single question, so call it an example, not proof.")
     return {
+        "facts": facts,
+        "summary": summary,
         "item": None if item is None else {"id": item["id"], "pos": item["pos"], "correct_idx": item["correct_idx"], "wrong_idx": item["wrong_idx"]},
         "conditions": [c for c in CONDITIONS if c in texts],
         "texts": texts,
@@ -173,3 +179,82 @@ async def voice_to_fields(audio_b64: str, fmt: str) -> dict:
         "fields": fields,
         "cost_usd": (0 if heard.cached else heard.cost) + (0 if reply.cached else reply.cost),
     }
+
+
+# ---------------------------------------------------------------- plain-language interpretation
+
+VERSION_NAME = {"urdu_script": "Urdu script", "roman_translit": "Roman Urdu", "english": "English",
+                "code_mixed": "Code-mixed", "roman_belebele": "Roman Urdu (Belebele)"}
+
+
+def judge_facts(results: list[dict], conditions: list[str], names: dict[str, str]) -> dict:
+    """Per judge: scores by version, right/wrong option picks, pairwise verdicts, and a code-made verdict.
+    A judge is 'affected' if any score moves by >= 2 points vs. Urdu script, its option pick changes between
+    versions, or it consistently prefers one script when shown the same answer twice."""
+    out = {}
+    for j, name in names.items():
+        rs = [r for r in results if r["judge"] == j and not r.get("error")]
+        scores: dict[str, dict[str, float]] = {}
+        for r in rs:
+            if r["kind"] == "pointwise" and r.get("score") is not None:
+                scores.setdefault(r["answer"], {})[r["condition"]] = r["score"]
+        mcq = {r["condition"]: bool(r["correct"]) for r in rs if r["kind"] == "comprehension" and r.get("choice") is not None}
+        pair: dict[str, list[str]] = {}
+        for c in conditions:
+            if c == REFERENCE:
+                continue
+            for a in sorted({r.get("answer") for r in rs if r["kind"] == "pairwise" and r["condition"] == c}):
+                w = [r.get("winner") for r in rs if r["kind"] == "pairwise" and r["condition"] == c and r.get("answer") == a]
+                if len(w) < 2 or None in w:
+                    v = "unclear"
+                elif w[0] == w[1]:
+                    v = "tie" if w[0] == "tie" else f"prefers {w[0]}"
+                else:
+                    v = "depends on order"
+                pair.setdefault(c, []).append(v)
+        shifts = []
+        for a, by in scores.items():
+            ref = by.get(REFERENCE)
+            for c, sc in by.items():
+                if ref is not None and c != REFERENCE and abs(sc - ref) >= 2:
+                    shifts.append({"answer": a, "version": c, "change": sc - ref})
+        prefers = sorted({v[len("prefers "):] for vs in pair.values() for v in vs if v.startswith("prefers")})
+        mcq_changes = len(set(mcq.values())) > 1
+        out[j] = {
+            "name": name, "scores": scores, "picked_right_option": mcq, "pairwise": pair,
+            "score_changes": shifts, "option_pick_changes": mcq_changes, "prefers": prefers,
+            "verdict": "changes with script" if (shifts or mcq_changes or prefers) else "same across scripts",
+        }
+    return out
+
+
+def facts_text(facts: dict) -> str:
+    """Readable lines for the summary model (version names, not codes)."""
+    lines = []
+    for f in facts.values():
+        lines.append(f"Judge {f['name']}: verdict by code = {f['verdict']}.")
+        for a, by in f["scores"].items():
+            lab = "Score (1-10)" if a == "answer" else f"Score (1-10) for the {a} answer"
+            lines.append(f"  {lab}: " + ", ".join(f"{VERSION_NAME.get(c, c)} {v:g}" for c, v in by.items()))
+        if f["picked_right_option"]:
+            lines.append("  Answered the question itself correctly: " + ", ".join(
+                f"{VERSION_NAME.get(c, c)} {'yes' if ok else 'no'}" for c, ok in f["picked_right_option"].items()))
+        for c, vs in f["pairwise"].items():
+            pretty = [v.replace(c, VERSION_NAME.get(c, c)).replace(REFERENCE, "Urdu script") for v in vs]
+            lines.append(f"  Same answer shown in {VERSION_NAME.get(c, c)} and Urdu script (both orders): " + "; ".join(pretty))
+    return "\n".join(lines)
+
+
+async def explain(facts: str, length: str, extra: str = "") -> dict | None:
+    """Plain-English summary by the configured summary model. Reads computed numbers only. None on failure."""
+    cfg = load_config()["summary"]
+    client = LLMClient(1, max_retries=2)
+    try:
+        call = await client.complete(cfg["model"], render("explain", facts=facts, length=length, extra=extra),
+                                     max_tokens=220, task="explain")
+    except Exception:
+        return None
+    finally:
+        await client.aclose()
+    text = call.text.strip()
+    return {"text": text, "model": cfg["model"], "name": cfg.get("name", cfg["model"])} if text else None

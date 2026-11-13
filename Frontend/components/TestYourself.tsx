@@ -9,7 +9,13 @@ type Result = {
   raw?: string; error?: string; score?: number | null; label?: string | null; winner?: string | null;
   choice?: number | null; correct?: boolean | null; cached?: boolean;
 };
+type Fact = {
+  name: string; scores: Record<string, Record<string, number>>; picked_right_option: Record<string, boolean>;
+  pairwise: Record<string, string[]>; score_changes: { answer: string; version: string; change: number }[];
+  option_pick_changes: boolean; prefers: string[]; verdict: string;
+};
 type Demo = {
+  facts: Record<string, Fact>; summary: { text: string; name: string } | null;
   item: { id: string; pos: number; correct_idx: number; wrong_idx: number } | null;
   conditions: string[]; texts: Texts; judges: string[]; results: Result[]; cost_usd: number; calls: number; cached: number;
 };
@@ -177,12 +183,19 @@ export function TestYourself() {
       {demo && (
         <div className="stack" ref={resultsRef} style={{ gap: 20, scrollMarginTop: 90 }}>
           <Errors demo={demo} />
-          <HowToRead />
-          <TextsPanel demo={demo} />
-          {demo.results.some((r) => r.kind === "pointwise") && <ScoresPanel demo={demo} />}
-          {demo.results.some((r) => r.kind === "pairwise") && <PairwisePanel demo={demo} />}
-          {demo.results.some((r) => r.kind === "comprehension") && <McqPanel demo={demo} />}
-          <RawPanel demo={demo} />
+          <PlainWords summary={demo.summary} />
+          <JudgeCards demo={demo} />
+          <details className="more">
+            <summary>Show full details — what the judges saw, every table and every raw reply</summary>
+            <div className="stack" style={{ gap: 20, marginTop: 16 }}>
+              <HowToRead />
+              <TextsPanel demo={demo} />
+              {demo.results.some((r) => r.kind === "pointwise") && <ScoresPanel demo={demo} />}
+              {demo.results.some((r) => r.kind === "pairwise") && <PairwisePanel demo={demo} />}
+              {demo.results.some((r) => r.kind === "comprehension") && <McqPanel demo={demo} />}
+              <RawPanel demo={demo} />
+            </div>
+          </details>
           <p className="faint" style={{ margin: 0 }}>{demo.calls} replies · {demo.cached} reused from earlier runs</p>
         </div>
       )}
@@ -248,6 +261,73 @@ function VoiceNote({ onFields }: { onFields: (f: Fields, transcript: string) => 
       {state === "rec" && <><span className="timer">0:{String(secs).padStart(2, "0")}</span><span className="faint">Recording — tap to stop (max {LIMIT}s)</span></>}
       {state === "sending" && <span className="muted">Listening and filling the fields…</span>}
       <ErrorNote error={err} />
+    </div>
+  );
+}
+
+const SHORT: Record<string, string> = { urdu_script: "Urdu", roman_translit: "Roman", english: "English", code_mixed: "Mixed", roman_belebele: "Roman (B)" };
+
+export function PlainWords({ summary }: { summary: { text: string; name: string } | null }) {
+  if (!summary) return null;
+  return (
+    <div className="tile plain">
+      <p className="eyebrow">In plain words</p>
+      <p className="plain-text">{summary.text}</p>
+      <p className="faint" style={{ margin: 0 }}>Written by {summary.name} from the numbers below. It only reads the numbers — the judges&apos; replies are scored by plain code.</p>
+    </div>
+  );
+}
+
+/** One simple card per judge: a verdict, its scores per version, its option picks and its pairwise behaviour. */
+function JudgeCards({ demo }: { demo: Demo }) {
+  const custom = demo.item === null;
+  const versions = demo.conditions;
+  return (
+    <div className="grid cols-3">
+      {demo.judges.map((j) => {
+        const f = demo.facts?.[j];
+        if (!f) return null;
+        const same = f.verdict === "same across scripts";
+        const answers = Object.keys(f.scores).sort((a, b) => (a === "correct" ? -1 : b === "correct" ? 1 : 0));
+        const pair = Object.entries(f.pairwise).map(([c, vs]) => {
+          const p = vs.every((v) => v === "tie") ? "fair" : vs.some((v) => v.startsWith("prefers")) ? vs.find((v) => v.startsWith("prefers"))! : "depends on order";
+          const pretty = p.startsWith("prefers ") ? `prefers ${nameOf(p.slice(8), custom)}` : p;
+          return `${nameOf(c, custom)}: ${pretty}`;
+        });
+        return (
+          <div key={j} className="tile judge-card">
+            <div className="row between" style={{ marginBottom: 12 }}>
+              <h3 style={{ margin: 0 }}>{f.name}</h3>
+              <Badge kind={same ? "pass" : "warn"}>{same ? "Same across scripts" : "Changes with script"}</Badge>
+            </div>
+            <table className="mini">
+              <thead><tr><th></th>{versions.map((c) => <th key={c} className="num">{custom ? NAME[c] ?? SHORT[c] : SHORT[c]}</th>)}</tr></thead>
+              <tbody>
+                {answers.map((a) => {
+                  const ref = f.scores[a]?.urdu_script;
+                  return (
+                    <tr key={a}>
+                      <td>{a === "answer" ? "Score" : a === "correct" ? "Right answer" : "Wrong answer"}</td>
+                      {versions.map((c) => {
+                        const v = f.scores[a]?.[c];
+                        const d = v != null && ref != null && c !== "urdu_script" ? v - ref : 0;
+                        return <td key={c} className={`num ${Math.abs(d) >= 2 ? "changed" : ""}`}>{v ?? "–"}{Math.abs(d) >= 2 && <small> {d > 0 ? "↑" : "↓"}{Math.abs(d)}</small>}</td>;
+                      })}
+                    </tr>
+                  );
+                })}
+                {Object.keys(f.picked_right_option).length > 0 && (
+                  <tr>
+                    <td>Picked right option</td>
+                    {versions.map((c) => <td key={c} className="num">{f.picked_right_option[c] == null ? "–" : f.picked_right_option[c] ? "✓" : <span className="changed">✕</span>}</td>)}
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            {pair.length > 0 && <p className="faint" style={{ margin: "12px 0 0" }}><b>Same answer in two scripts</b> — {pair.join(" · ")}</p>}
+          </div>
+        );
+      })}
     </div>
   );
 }

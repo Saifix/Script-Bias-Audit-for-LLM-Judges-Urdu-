@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AccuracyChart, AcceptanceChart, AucChart, GapChart, WinRateChart } from "../../components/Charts";
+import { PlainWords } from "../../components/TestYourself";
 import { Badge, ErrorNote, Header, Segmented } from "../../components/ui";
 import { fmt, label, useApi, type Gap, type Run, type Summary } from "../../lib/api";
 
@@ -13,6 +14,7 @@ export default function ResultsPage() {
   const done = (runs.data?.runs ?? []).filter((r) => r.type !== "generate" && r.done > 0);
   const run = done.find((r) => r.id === runId);
   const summary = useApi<Summary>(runId ? `/runs/${runId}/summary` : null, run?.status === "running" ? 4000 : undefined);
+  const words = useApi<{ summary: { text: string; name: string } | null }>(runId && run?.status === "done" ? `/runs/${runId}/explain` : null);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("run");
@@ -47,6 +49,7 @@ export default function ResultsPage() {
       </div>
 
       <ErrorNote error={runs.error ?? summary.error} />
+      {words.data?.summary && <div style={{ marginBottom: 24 }}><PlainWords summary={words.data.summary} /></div>}
       {done.length === 0 && runs.data && <div className="tile"><p className="muted" style={{ margin: 0 }}>No results yet. Start a run on the Runs page.</p></div>}
 
       {judges.length > 0 && (

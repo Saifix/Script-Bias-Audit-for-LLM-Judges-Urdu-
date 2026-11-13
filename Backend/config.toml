@@ -21,20 +21,29 @@ judge_max_tokens = 8          # small: judges reply with a number / A / B / TIE
 model = "openai/gpt-4o-mini"
 max_tokens = 600
 
+# Writes a one-to-three sentence plain-English summary of results. It only reads the computed numbers,
+# never the answers, and is from a different company than every judge.
+[summary]
+model = "anthropic/claude-haiku-4.5"
+name = "Claude Haiku 4.5"
+
 # Speech-to-text for voice notes in "Test yourself" (OpenRouter /audio/transcriptions). Handles Urdu.
 [voice]
 model = "openai/whisper-large-v3"
 
 [[judges]]
 id = "qwen/qwen3.5-9b"   # qwen-2.5-7b-instruct was removed from OpenRouter
+name = "Qwen 3.5 9B"
 reasoning_off = true
 
 [[judges]]
 id = "meta-llama/llama-3.1-8b-instruct"
+name = "Llama 3.1 8B"
 reasoning_off = true
 
 [[judges]]
 id = "google/gemma-3-12b-it"   # third vendor (Google), same small open-weights class; multilingual incl. Urdu
+name = "Gemma 3 12B"
 reasoning_off = true
 
 # Optional API judges - uncomment to enable.

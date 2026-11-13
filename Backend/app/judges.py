@@ -127,6 +127,8 @@ def mock_reply(model: str, prompt: str, task: str, repeat: int = 0) -> str:
         return _section(prompt, "Texts")  # echoes the source lines
     if task == "to_urdu":
         return _section(prompt, "Text")
+    if task == "explain":
+        return "Mock summary: the numbers above were computed by code."
     if task == "voice_format":  # echo the transcript into every field
         t = _section(prompt, "Transcript")
         f = {"passage": t, "question": "What is this about?", "answer": t[:40]}

@@ -18,6 +18,10 @@ def test_playground_sample_item(env):
         assert all(1 <= x["score"] <= 10 for x in d["results"] if x["kind"] == "pointwise")
         assert all(x["winner"] in ("english", "urdu_script", "tie") for x in d["results"] if x["kind"] == "pairwise")
         assert all(isinstance(x["correct"], bool) for x in d["results"] if x["kind"] == "comprehension")
+        f = d["facts"]["mock/judge-a"]
+        assert f["verdict"] in ("same across scripts", "changes with script")
+        assert set(f["scores"]) == {"correct", "wrong"} and set(f["picked_right_option"]) == {"urdu_script", "english"}
+        assert d["summary"]["text"].startswith("Mock summary") and d["summary"]["name"] == "Mock summary"
         again = c.post("/api/playground", json={"judges": ["mock/judge-a", "mock/judge-b"], "item_id": item["id"]}).json()
         assert again["cached"] == again["calls"]  # repeat demos are free
 

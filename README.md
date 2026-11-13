@@ -50,6 +50,10 @@ and an "auto-approved" reviewer label. A human spot-check of a random sample is 
 **Qwen 3.5 9B** (Alibaba), **Llama 3.1 8B Instruct** (Meta) and **Gemma 3 12B** (Google),
 at temperature 0 with fixed prompts. The exact model ID, provider and timestamp of every call are recorded.
 
+**Reading the replies.** Judge replies are turned into numbers by plain code (e.g. "Score: 8/10" → 8), never by
+another AI. Only afterwards, **Claude Haiku 4.5** (a fourth company's model) writes a one-to-three sentence
+plain-English summary from the computed numbers; it never sees or grades the answers themselves.
+
 **Experiments.**
 
 1. **Screening gate** — can the judge tell correct from wrong answers at all (AUC > 0.7 in Urdu script and English)?

@@ -72,3 +72,6 @@ def test_insights(env):
         assert isinstance(d["pointwise"]["by_condition"]["english"]["gap"], float)
         assert 0 <= d["pairwise"]["by_condition"]["english"] <= 1
         assert 0 <= d["comprehension"]["by_condition"]["urdu_script"] <= 1
+        point_id = c.get("/api/runs").json()["runs"][2]["id"]  # newest first: comprehension, pairwise, pointwise
+        e = c.get(f"/api/runs/{point_id}/explain").json()
+        assert e["summary"]["text"].startswith("Mock summary")
