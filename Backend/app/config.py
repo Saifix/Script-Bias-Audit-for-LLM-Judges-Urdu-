@@ -29,6 +29,7 @@ DEFAULTS = {
     "concurrency": 8,
     "max_retries": 6,
     "judge_max_tokens": 8,
+    "budget_usd": 30.0,
 }
 
 

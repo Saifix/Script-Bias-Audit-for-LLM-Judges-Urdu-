@@ -161,6 +161,30 @@ class LLMError(RuntimeError):
     pass
 
 
+class BudgetExceeded(LLMError):
+    pass
+
+
+_SPENT = {"value": 0.0, "at": 0.0}
+
+
+def spent_usd(refresh_every: float = 20.0) -> float:
+    """Total spend so far (sum of every recorded call), refreshed from the DB at most every few seconds."""
+    if time.time() - _SPENT["at"] > refresh_every:
+        with db() as c:
+            _SPENT["value"] = float(c.execute("SELECT COALESCE(SUM(cost), 0) FROM cache").fetchone()[0])
+        _SPENT["at"] = time.time()
+    return _SPENT["value"]
+
+
+def budget_guard() -> None:
+    """Refuse any paid call once total spend reaches settings.budget_usd (hard cap, default $30)."""
+    from .config import load_config
+    budget = float(load_config()["settings"].get("budget_usd", 30))
+    if spent_usd() >= budget:
+        raise BudgetExceeded(f"budget reached: ${spent_usd():.2f} of ${budget:.2f} spent; paid calls are disabled")
+
+
 def cache_key(model: str, prompt: str, max_tokens: int, repeat: int = 0, extra: dict | None = None) -> str:
     """Hash of (model, prompt incl. input, params). `repeat` > 0 forces a fresh call for repeat runs."""
     payload = json.dumps(
@@ -222,6 +246,7 @@ class LLMClient:
             else:
                 body = {"model": model, "messages": [{"role": "user", "content": prompt}],
                         "temperature": 0, "max_tokens": max_tokens, "usage": {"include": True}, **(extra or {})}
+                budget_guard()
                 data = await self._post(body)
                 self.network_calls += 1
                 choice = (data.get("choices") or [{}])[0]
@@ -230,6 +255,7 @@ class LLMClient:
                 served, provider = data.get("model", model), data.get("provider", "")
                 pt, ct = int(usage.get("prompt_tokens", 0)), int(usage.get("completion_tokens", 0))
                 cost = float(usage.get("cost") or 0.0)
+                _SPENT["value"] += cost
         call = Call(text, model, served, provider, pt, ct, cost, False, key, now())
         with db() as c:
             c.execute(
@@ -249,6 +275,7 @@ class LLMClient:
             if model.startswith("mock/"):
                 text, cost, secs = MOCK_TRANSCRIPT, 0.0, 0
             else:
+                budget_guard()
                 data = await self._post({"model": model, "input_audio": {"data": audio_b64, "format": fmt}},
                                         path="/audio/transcriptions")
                 self.network_calls += 1

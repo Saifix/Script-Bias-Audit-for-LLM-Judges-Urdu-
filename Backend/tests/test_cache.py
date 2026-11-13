@@ -90,3 +90,37 @@ def test_resume_after_crash(env):
         # resumed tasks were served from cache: no new calls, zero cost
         assert c.execute("SELECT COUNT(*) FROM cache").fetchone()[0] == cache_before
         assert c.execute("SELECT SUM(cost) FROM results WHERE run_id=?", (run_id,)).fetchone()[0] == 0
+
+
+def test_budget_cap_blocks_paid_calls(env, monkeypatch):
+    import app.judges as J
+    from app.db import db as _db
+    with _db() as c:  # pretend $30.50 has already been spent
+        c.execute("INSERT INTO cache VALUES ('spent','x','x','x','p','r',0,0,30.5,'t')")
+    J._SPENT["at"] = 0.0
+    calls = {"n": 0}
+
+    def handler(request):
+        calls["n"] += 1
+        return httpx.Response(200, json={"choices": [{"message": {"content": "8"}}], "usage": {}})
+
+    async def go():
+        client = LLMClient(backoff=0.001, transport=httpx.MockTransport(handler), key="k")
+        try:
+            await client.complete("qwen/qwen3.5-9b", "p")
+        finally:
+            await client.aclose()
+    try:
+        asyncio.run(go())
+        raise AssertionError("expected the budget cap to refuse the call")
+    except J.BudgetExceeded as e:
+        assert "budget reached" in str(e)
+    assert calls["n"] == 0  # nothing was sent
+    # mock (free) judges keep working past the cap
+    async def mock():
+        client = LLMClient()
+        try:
+            return await client.complete("mock/judge-a", "### Passage\nx\n### Answer\nx", task="pointwise")
+        finally:
+            await client.aclose()
+    assert asyncio.run(mock()).text

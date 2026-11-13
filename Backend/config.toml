@@ -15,6 +15,7 @@ bootstrap_resamples = 1000
 concurrency = 8               # parallel API calls
 max_retries = 6               # retries on 429 / 5xx / network errors
 judge_max_tokens = 8          # small: judges reply with a number / A / B / TIE
+budget_usd = 30               # hard cap on total OpenRouter spend (all time); paid calls are refused beyond it
 
 # LLM used to create roman_translit + code_mixed text and for the "transliterate" mitigation.
 [generator]
