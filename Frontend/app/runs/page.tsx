@@ -11,7 +11,6 @@ const TYPES = [
   { value: "pointwise", label: "Pointwise", help: "Score each answer 1–10. Optional mitigations below." },
   { value: "pairwise", label: "Pairwise", help: "Same answer in two scripts (each condition vs. Urdu script), both orders." },
   { value: "repeats", label: "Repeats", help: "Re-run pointwise on a subset to measure consistency." },
-  { value: "generate", label: "Generate", help: "Create transliterated or code-mixed text for the review queue." },
 ];
 
 export default function RunsPage() {

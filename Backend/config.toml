@@ -5,7 +5,7 @@
 [settings]
 seed = 13                     # sampling + wrong-option + bootstrap seed
 n_items = 300                 # items sampled from Belebele
-code_mixed_items = 100        # code-mixed subset size (first N sampled items)
+code_mixed_items = 300        # items that get a code-mixed version (all of them)
 pilot_items = 20              # screening gate subset
 screening_auc_threshold = 0.7 # judge passes if correct-vs-wrong AUC > this in every screened condition
 acceptance_threshold = 7      # "accepted" = score >= this

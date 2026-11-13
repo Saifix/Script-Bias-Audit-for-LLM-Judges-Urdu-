@@ -12,10 +12,10 @@ def test_import_generated(env):
             "roman_translit": [{"id": i["id"], "options": ["a", "b", "c", "d"]} for i in items]
                               + [{"id": "missing", "options": ["a", "b", "c", "d"]}, {"id": items[0]["id"], "options": ["a", ""]}],
             "code_mixed": [{"id": i["id"], "options": ["w", "x", "y", "z"]} for i in cm]
-                          + [{"id": plain[0]["id"], "options": ["w", "x", "y", "z"]}],  # not in code-mixed subset
+                          + [{"id": plain[0]["id"], "options": ["w", "x", "y", "z"]}],  # extends the code-mixed set
         }
         counts = import_generated(c, data, "anthropic/claude-opus-5.5 (high effort)", approve_as="auto-approved: Opus 5.5")
-    assert counts == {"imported": len(items) + len(cm), "skipped_existing": 0, "rejected": 3}
+    assert counts == {"imported": len(items) + len(cm) + 1, "skipped_existing": 0, "rejected": 2}
     with db() as c:
         items = load_items(c)
         row = c.execute("SELECT * FROM generated WHERE condition='roman_translit' LIMIT 1").fetchone()
@@ -23,3 +23,5 @@ def test_import_generated(env):
     assert row["status"] == "approved" and row["model"].startswith("anthropic/claude-opus-5.5") and row["reviewer"] == "auto-approved: Opus 5.5"
     assert again == {"imported": 0, "skipped_existing": 1, "rejected": 0}
     assert condition_view(items[0], "roman_translit")["options"] == ["a", "b", "c", "d"]  # usable in runs (approved)
+    extended = next(i for i in items if i["id"] == plain[0]["id"])
+    assert extended["code_mixed"] and condition_view(extended, "code_mixed")["options"] == ["w", "x", "y", "z"]

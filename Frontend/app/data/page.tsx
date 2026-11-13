@@ -1,143 +1,125 @@
 "use client";
 import { useState } from "react";
-import { RunLock } from "../../components/RunLock";
-import { Badge, ErrorNote, Header, Segmented } from "../../components/ui";
-import { api, CONDITION_LABELS, runPassword, label, RTL, useApi, type AppConfig, type Overview } from "../../lib/api";
+import { ErrorNote, Header } from "../../components/ui";
+import { label, RTL, useApi } from "../../lib/api";
 
 type View = { passage: string; question: string; options: string[]; status: string } | null;
-type Item = { id: string; pos: number; correct_idx: number; wrong_idx: number; code_mixed: boolean; link: string; views: Record<string, View> };
+type Item = { id: string; pos: number; correct_idx: number; wrong_idx: number; link: string; views: Record<string, View> };
 
+const VERSIONS = ["urdu_script", "roman_translit", "english", "code_mixed"] as const;
+const SOURCE: Record<string, string> = {
+  urdu_script: "Belebele",
+  roman_translit: "Question: Belebele · answers: Claude Opus 5.5",
+  english: "Belebele",
+  code_mixed: "Question: Belebele · answers: Claude Opus 5.5",
+};
 const PAGE = 10;
 
-export default function DataPage() {
-  const cfg = useApi<AppConfig>("/config");
-  const ov = useApi<Overview>("/overview", 3000);
-  const [condition, setCondition] = useState("all");
-  const [status, setStatus] = useState("all");
-  const [offset, setOffset] = useState(0);
-  const [msg, setMsg] = useState<string | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-  const [n, setN] = useState<number | "">("");
-  const [seed, setSeed] = useState<number | "">("");
-
-  const q = new URLSearchParams({ offset: String(offset), limit: String(PAGE) });
-  if (condition !== "all") q.set("condition", condition);
-  if (status !== "all") q.set("status", status);
-  const items = useApi<{ total: number; items: Item[] }>(`/items?${q}`);
-
-  const ds = ov.data?.dataset;
-  const loading = ds?.job.state === "running";
-
-  async function load() {
-    setErr(null);
-    const force = !!ds?.items;
-    if (force && !confirm("Replace the loaded items? This also clears all generated text and reviews.")) return;
-    try {
-      await api("/data/load", { n: n || undefined, seed: seed === "" ? undefined : seed, force }, { runPassword: runPassword.get() });
-      setMsg("Loading started…");
-      ov.reload();
-    } catch (e) { setErr((e as Error).message); }
-  }
-
-  async function generate(cond: string) {
-    setErr(null);
-    try {
-      const r = await api<{ id: number; new_calls: number; est_cost_usd: number }>("/runs", { type: "generate", conditions: [cond] }, { runPassword: runPassword.get() });
-      setMsg(`Generation run #${r.id} started (${r.new_calls} new calls, est. $${r.est_cost_usd.toFixed(3)}). Track it on the Runs page.`);
-    } catch (e) { setErr((e as Error).message); }
-  }
-
-  const conds = cfg.data?.conditions ?? Object.keys(CONDITION_LABELS);
-  const shown = condition === "all" ? conds : [condition];
-
+function Question({ it }: { it: Item }) {
   return (
-    <>
-      <Header eyebrow="Data" title="Questions" lede="300 parallel Belebele questions in every script. Reloading (which clears reviews) and generating (which calls paid models) need the experiment password." />
-      <div style={{ marginBottom: 20 }}><RunLock /></div>
-
-      <div className="grid cols-2">
-        <div className="tile">
-          <h3>Dataset</h3>
-          <p className="muted" style={{ marginTop: 0 }}>
-            {ds ? `${ds.items} items loaded · ${ds.code_mixed_items} in the code-mixed subset` : "…"}
-          </p>
-          <div className="row">
-            <label className="field">Items<input className="input" type="number" min={1} style={{ width: 110 }} placeholder={String(cfg.data?.settings.n_items ?? 300)} value={n} onChange={(e) => setN(e.target.value ? Number(e.target.value) : "")} /></label>
-            <label className="field">Seed<input className="input" type="number" style={{ width: 110 }} placeholder={String(cfg.data?.settings.seed ?? 13)} value={seed} onChange={(e) => setSeed(e.target.value === "" ? "" : Number(e.target.value))} /></label>
-            <button className="btn" style={{ alignSelf: "flex-end" }} onClick={load} disabled={loading}>{ds?.items ? "Reload" : "Load Belebele"}</button>
-          </div>
-          {ds?.job.message && <p className="faint">{ds.job.state === "failed" ? <Badge kind="failed">failed</Badge> : null} {ds.job.message}</p>}
-        </div>
-        <div className="tile">
-          <h3>Generated conditions</h3>
-          <p className="muted" style={{ marginTop: 0 }}>Roman transliteration (all items) and code-mixed text (100-item subset). Only approved text is used in experiments.</p>
-          {(["roman_translit", "code_mixed"] as const).map((c) => {
-            const g = ds?.generated[c];
+    <div className="tile">
+      <div className="row between" style={{ marginBottom: 14 }}>
+        <h3 style={{ margin: 0 }}>Question {it.pos + 1}</h3>
+        <a className="faint" href={it.link} target="_blank" rel="noreferrer">Original article</a>
+      </div>
+      <div className="table-wrap">
+        <table className="qtable">
+          <thead>
+            <tr><th>Version</th><th>Question</th>{[1, 2, 3, 4].map((n) => <th key={n}>Answer {n}</th>)}</tr>
+          </thead>
+          <tbody>
+            {VERSIONS.map((c) => {
+              const v = it.views[c];
+              const rtl = RTL.has(c);
+              const cls = rtl ? "urdu" : "";
+              return (
+                <tr key={c}>
+                  <td><b>{label(c)}</b><div className="faint">{SOURCE[c]}</div></td>
+                  {v ? (
+                    <>
+                      <td className={cls} dir={rtl ? "rtl" : "ltr"}>{v.question}</td>
+                      {v.options.map((o, i) => (
+                        <td key={i} className={`${cls} ${i === it.correct_idx ? "is-answer" : ""}`} dir={rtl ? "rtl" : "ltr"}>
+                          {o}{i === it.correct_idx && <span className="tick" title="Correct answer"> ✓</span>}
+                        </td>
+                      ))}
+                    </>
+                  ) : <td colSpan={5} className="faint">Not available</td>}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <details>
+        <summary>Show the passage in all four versions</summary>
+        <div className="cond-grid" style={{ marginTop: 12 }}>
+          {VERSIONS.map((c) => {
+            const v = it.views[c];
+            const rtl = RTL.has(c);
             return (
-              <div key={c} className="row between" style={{ marginBottom: 12 }}>
-                <div>
-                  <div>{label(c)}</div>
-                  <div className="faint">{g ? `${g.approved} approved · ${g.pending} pending · ${g.rejected} rejected` : "–"}</div>
-                  {ds?.generated_by?.[c]?.length ? <div className="faint">Generated by {ds.generated_by[c].join(", ")}</div> : null}
-                </div>
-                <button className="btn secondary small" disabled={!ds?.items} onClick={() => generate(c)}>Generate</button>
+              <div key={c} className="cond-cell">
+                <span className="eyebrow" style={{ margin: 0 }}>{label(c)}</span>
+                <p className={rtl ? "urdu" : ""} dir={rtl ? "rtl" : "ltr"} style={{ margin: "6px 0 0" }}>{v?.passage ?? "–"}</p>
               </div>
             );
           })}
         </div>
-      </div>
+      </details>
+    </div>
+  );
+}
 
-      {msg && <p className="notice" style={{ marginTop: 24 }}>{msg}</p>}
-      <ErrorNote error={err ?? items.error} />
+export default function DataPage() {
+  const [offset, setOffset] = useState(0);
+  const [jump, setJump] = useState("");
+  const items = useApi<{ total: number; items: Item[] }>(`/items?offset=${offset}&limit=${PAGE}`);
+  const total = items.data?.total ?? 0;
 
-      <h2 className="section">Browse</h2>
-      <div className="row" style={{ marginBottom: 24 }}>
-        <Segmented value={condition} onChange={(v) => { setCondition(v); setOffset(0); }}
-          options={[{ value: "all", label: "All conditions" }, ...conds.map((c) => ({ value: c, label: label(c) }))]} />
-        <Segmented value={status} onChange={(v) => { setStatus(v); setOffset(0); }}
-          options={["all", "pending", "approved", "rejected"].map((s) => ({ value: s, label: s === "all" ? "Any review status" : s[0].toUpperCase() + s.slice(1) }))} />
-      </div>
+  return (
+    <>
+      <Header eyebrow="Data" title="The questions"
+        lede="300 reading-comprehension questions. Each one exists in four versions — Urdu script, Roman Urdu, English and code-mixed — with the same four answer options. The correct answer is marked ✓." />
 
-      <div className="stack">
-        {items.data?.items.map((it) => (
-          <div key={it.id} className="tile tight">
-            <div className="row between" style={{ marginBottom: 12 }}>
-              <div className="row"><strong>#{it.pos + 1}</strong><span className="faint mono">{it.id}</span>{it.code_mixed && <Badge kind="running">code-mixed subset</Badge>}</div>
-              <a className="faint" href={it.link} target="_blank" rel="noreferrer">source</a>
-            </div>
-            <div className="cond-grid">
-              {shown.map((c) => {
-                const v = it.views[c];
-                const rtl = RTL.has(c);
-                return (
-                  <div key={c} className="cond-cell">
-                    <div className="row between"><span className="eyebrow" style={{ margin: 0 }}>{label(c)}</span>{v && v.status !== "source" && <Badge kind={v.status} />}</div>
-                    {!v ? <p className="faint">Not available</p> : (
-                      <>
-                        <p className={rtl ? "urdu" : ""} style={{ margin: "8px 0 0" }} dir={rtl ? "rtl" : "ltr"}>{v.question}</p>
-                        <div className="answer">
-                          <div className="row" style={{ gap: 8, alignItems: "flex-start" }}><Badge kind="correct">correct</Badge><span className={rtl ? "urdu" : ""} dir={rtl ? "rtl" : "ltr"}>{v.options[it.correct_idx]}</span></div>
-                          <div className="row" style={{ gap: 8, alignItems: "flex-start" }}><Badge kind="wrong">wrong</Badge><span className={rtl ? "urdu" : ""} dir={rtl ? "rtl" : "ltr"}>{v.options[it.wrong_idx]}</span></div>
-                        </div>
-                        <details><summary>Passage</summary><p className={rtl ? "urdu" : ""} dir={rtl ? "rtl" : "ltr"}>{v.passage}</p></details>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+      <div className="tile flat" style={{ marginBottom: 20 }}>
+        <div className="row" style={{ gap: 28, alignItems: "flex-start" }}>
+          <div style={{ flex: "1 1 300px" }}>
+            <b>Where each version comes from</b>
+            <p className="muted" style={{ margin: "4px 0 0" }}>
+              Urdu script and English: the Belebele benchmark. Roman Urdu and code-mixed: the passage and question are
+              Belebele&apos;s Roman Urdu text; the four answers were written by Claude Opus 5.5 (high effort) — a faithful
+              word-by-word transliteration, and a version with some nouns switched to English.
+            </p>
           </div>
-        ))}
-        {items.data && items.data.items.length === 0 && <p className="muted">No items match.</p>}
+          <div style={{ flex: "1 1 260px" }}>
+            <b>How the experiment uses it</b>
+            <p className="muted" style={{ margin: "4px 0 0" }}>
+              A judge sees the passage, the question and one answer — all in the same version — and scores it.
+              Comparing the scores across versions shows whether the script changes the judge&apos;s verdict.
+            </p>
+          </div>
+        </div>
       </div>
 
-      {items.data && items.data.total > PAGE && (
-        <div className="row" style={{ marginTop: 24 }}>
-          <button className="btn secondary small" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE))}>Previous</button>
-          <span className="faint">{offset + 1}–{Math.min(offset + PAGE, items.data.total)} of {items.data.total}</span>
-          <button className="btn secondary small" disabled={offset + PAGE >= items.data.total} onClick={() => setOffset(offset + PAGE)}>Next</button>
+      <ErrorNote error={items.error} />
+      {items.data && total === 0 && <div className="tile"><p className="muted" style={{ margin: 0 }}>No questions loaded yet.</p></div>}
+
+      {total > 0 && (
+        <div className="row between" style={{ marginBottom: 16 }}>
+          <span className="faint">Questions {offset + 1}–{Math.min(offset + PAGE, total)} of {total}</span>
+          <div className="row">
+            <input className="input" style={{ width: 120 }} placeholder="Go to #" value={jump}
+              onChange={(e) => setJump(e.target.value.replace(/\D/g, ""))}
+              onKeyDown={(e) => { if (e.key === "Enter" && jump) setOffset(Math.min(Math.max(0, Number(jump) - 1), total - 1)); }} />
+            <button className="btn secondary small" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE))}>Previous</button>
+            <button className="btn secondary small" disabled={offset + PAGE >= total} onClick={() => setOffset(offset + PAGE)}>Next</button>
+          </div>
         </div>
       )}
+
+      <div className="stack" style={{ gap: 20 }}>
+        {items.data?.items.map((it) => <Question key={it.id} it={it} />)}
+      </div>
     </>
   );
 }

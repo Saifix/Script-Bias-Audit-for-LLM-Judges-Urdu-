@@ -23,15 +23,15 @@ describe("Home insights", () => {
       dataset,
       pointwise: { run_id: 3, judges: 2, by_condition: {
         urdu_script: { gap: null, auc: 0.8, accept_wrong: 0.1 },
-        roman_belebele: { gap: -1.75, auc: 0.7, accept_wrong: 0.2 },
+        roman_translit: { gap: -1.75, auc: 0.7, accept_wrong: 0.2 },
         english: { gap: 0.4, auc: 0.9, accept_wrong: 0.1 },
       } },
-      pairwise: { run_id: 4, by_condition: { roman_belebele: 0.38, english: 0.55 } },
-      comprehension: { run_id: 5, by_condition: { urdu_script: 0.72, roman_belebele: 0.61 } },
+      pairwise: { run_id: 4, by_condition: { roman_translit: 0.38, english: 0.55 } },
+      comprehension: { run_id: 5, by_condition: { urdu_script: 0.72, roman_translit: 0.61 } },
     };
     const html = renderToStaticMarkup(<InsightsView data={data} />);
     expect(html).toContain("−1.75");
-    expect(html).toContain("Roman (Belebele)");
+    expect(html).toContain("Roman Urdu");
     expect(html).toContain("38%");
     expect(html).toContain("72%");
     expect(html).toContain("1/2");

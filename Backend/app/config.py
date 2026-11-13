@@ -9,15 +9,17 @@ ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = ROOT / "prompts"
 
 REFERENCE = "urdu_script"
-CONDITIONS = ["urdu_script", "roman_belebele", "roman_translit", "english", "code_mixed"]
+# Four versions of every question. ("roman_belebele", Belebele's own reworded Roman Urdu, is no longer an experiment
+# condition; its passage and question text are still the Roman Urdu passage/question for roman_translit and code_mixed.)
+CONDITIONS = ["urdu_script", "roman_translit", "english", "code_mixed"]
 GENERATED = ["roman_translit", "code_mixed"]  # LLM-generated, need human review
-LATIN_URDU = ["roman_belebele", "roman_translit", "code_mixed"]  # converted by the transliterate mitigation
+LATIN_URDU = ["roman_translit", "code_mixed"]  # converted by the transliterate mitigation
 RUN_TYPES = ["generate", "screening", "comprehension", "pointwise", "pairwise", "repeats"]
 
 DEFAULTS = {
     "seed": 13,
     "n_items": 300,
-    "code_mixed_items": 100,
+    "code_mixed_items": 300,
     "pilot_items": 20,
     "screening_auc_threshold": 0.7,
     "acceptance_threshold": 7,

@@ -4,10 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export const CONDITION_LABELS: Record<string, string> = {
   urdu_script: "Urdu script",
-  roman_belebele: "Roman (Belebele)",
-  roman_translit: "Roman (transliterated)",
+  roman_translit: "Roman Urdu",
   english: "English",
   code_mixed: "Code-mixed",
+  roman_belebele: "Roman (Belebele, legacy)",
 };
 export const label = (c: string) => CONDITION_LABELS[c] ?? c;
 export const RTL = new Set(["urdu_script"]);

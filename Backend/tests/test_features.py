@@ -67,8 +67,8 @@ def test_insights(env):
             wait_done(c, c.post("/api/runs", json=body).json()["id"])
         d = c.get("/api/insights").json()
         assert d["screening"]["screened"] == 2 and d["screening"]["judges"] == 2
-        assert set(d["pointwise"]["by_condition"]) == {"urdu_script", "roman_belebele", "english"}
+        assert set(d["pointwise"]["by_condition"]) == {"urdu_script", "english"}
         assert d["pointwise"]["by_condition"]["urdu_script"]["gap"] is None
-        assert isinstance(d["pointwise"]["by_condition"]["roman_belebele"]["gap"], float)
+        assert isinstance(d["pointwise"]["by_condition"]["english"]["gap"], float)
         assert 0 <= d["pairwise"]["by_condition"]["english"] <= 1
         assert 0 <= d["comprehension"]["by_condition"]["urdu_script"] <= 1

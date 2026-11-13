@@ -159,8 +159,7 @@ def import_generated(conn: sqlite3.Connection, data: dict[str, list[dict]], mode
         for row in rows:
             it, opts = items.get(row.get("id")), row.get("options")
             ok = (it is not None and isinstance(opts, list) and len(opts) == 4
-                  and all(isinstance(o, str) and o.strip() for o in opts)
-                  and (cond != "code_mixed" or it["code_mixed"]))
+                  and all(isinstance(o, str) and o.strip() for o in opts))
             if not ok:
                 counts["rejected"] += 1
                 continue
@@ -173,5 +172,7 @@ def import_generated(conn: sqlite3.Connection, data: dict[str, list[dict]], mode
                 (it["id"], cond, json.dumps([o.strip() for o in opts], ensure_ascii=False), "", model,
                  "approved" if approve_as else "pending", approve_as, now() if approve_as else None, now()),
             )
+            if cond == "code_mixed":  # importing a code-mixed version puts the item in the code-mixed set
+                conn.execute("UPDATE items SET code_mixed=1 WHERE id=?", (it["id"],))
             counts["imported"] += 1
     return counts

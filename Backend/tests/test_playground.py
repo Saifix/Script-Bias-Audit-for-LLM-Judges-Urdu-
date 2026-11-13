@@ -11,12 +11,12 @@ def test_playground_sample_item(env):
         r = c.post("/api/playground", json={"judges": ["mock/judge-a", "mock/judge-b"], "item_id": item["id"]})
         assert r.status_code == 200, r.text
         d = r.json()
-        assert d["conditions"] == ["urdu_script", "roman_belebele", "english"]  # nothing generated yet
+        assert d["conditions"] == ["urdu_script", "english"]  # Roman / code-mixed not generated yet
         kinds = [x["kind"] for x in d["results"]]
-        # per judge: 3 conditions x 2 answers scores + 3 MCQ picks + 2 non-reference x 2 answers x 2 orders pairwise
-        assert kinds.count("pointwise") == 2 * 6 and kinds.count("comprehension") == 2 * 3 and kinds.count("pairwise") == 2 * 8
+        # per judge: 2 conditions x 2 answers scores + 2 MCQ picks + 1 non-reference x 2 answers x 2 orders pairwise
+        assert kinds.count("pointwise") == 2 * 4 and kinds.count("comprehension") == 2 * 2 and kinds.count("pairwise") == 2 * 4
         assert all(1 <= x["score"] <= 10 for x in d["results"] if x["kind"] == "pointwise")
-        assert all(x["winner"] in ("roman_belebele", "english", "urdu_script", "tie") for x in d["results"] if x["kind"] == "pairwise")
+        assert all(x["winner"] in ("english", "urdu_script", "tie") for x in d["results"] if x["kind"] == "pairwise")
         assert all(isinstance(x["correct"], bool) for x in d["results"] if x["kind"] == "comprehension")
         again = c.post("/api/playground", json={"judges": ["mock/judge-a", "mock/judge-b"], "item_id": item["id"]}).json()
         assert again["cached"] == again["calls"]  # repeat demos are free

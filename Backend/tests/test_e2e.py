@@ -52,8 +52,8 @@ def test_full_pipeline(env):
 
         # estimate before a run
         est = client.post("/api/runs/estimate", json={"type": "pointwise", "n_items": 10}).json()
-        # 2 judges x (10+10+9+10+4 items with a view) x 2 answers
-        assert est["calls"] == 2 * (10 + 10 + 9 + 10 + 4) * 2 and est["est_cost_usd"] == 0
+        # 2 judges x (urdu 10 + roman 9 approved + english 10 + code-mixed 4) x 2 answers
+        assert est["calls"] == 2 * (10 + 9 + 10 + 4) * 2 and est["est_cost_usd"] == 0
 
         # experiments
         start(client, type="screening")
@@ -64,18 +64,18 @@ def test_full_pipeline(env):
         point = start(client, type="pointwise", n_items=10, flags={"rubric": True, "transliterate": True, "panel": True})
         pair = start(client, type="pairwise", n_items=10)
         rep = start(client, type="repeats", n_items=4, repeats=2)
-        assert rep["done"] == 2 * 4 * 5 * 2 * 3  # judges x items x conditions x answers x (1 + 2 repeats)
+        assert rep["done"] == 2 * 4 * 4 * 2 * 3  # judges x items x conditions x answers x (1 + 2 repeats)
 
         s = client.get(f"/api/runs/{point['id']}/summary").json()
         assert set(s["judges"]) == {"mock/judge-a", "mock/judge-b", "panel"}
         conds = [p["condition"] for p in s["judges"]["mock/judge-a"]["pointwise"]]
-        assert conds == ["urdu_script", "roman_belebele", "roman_translit", "english", "code_mixed"]
-        assert s["judges"]["panel"]["pointwise"][1]["gap_correct"]["n"] == 10
+        assert conds == ["urdu_script", "roman_translit", "english", "code_mixed"]
+        assert s["judges"]["panel"]["pointwise"][1]["gap_correct"]["n"] == 9  # one Roman item rejected
 
         s = client.get(f"/api/runs/{pair['id']}/summary").json()
         pw = s["judges"]["mock/judge-a"]["pairwise"]
-        assert [p["condition"] for p in pw] == ["roman_belebele", "roman_translit", "english", "code_mixed"]
-        assert pw[0]["n"] + pw[0]["unparseable"] == 10 * 2 * 2  # items x answers x both orders
+        assert [p["condition"] for p in pw] == ["roman_translit", "english", "code_mixed"]
+        assert pw[0]["n"] + pw[0]["unparseable"] == 9 * 2 * 2  # approved items x answers x both orders
 
         s = client.get(f"/api/runs/{comp['id']}/summary").json()
         assert all(0 <= c["accuracy"] <= 1 for c in s["judges"]["mock/judge-b"]["comprehension"])

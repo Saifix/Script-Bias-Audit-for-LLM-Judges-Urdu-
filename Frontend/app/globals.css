@@ -315,3 +315,10 @@ details[open] > :not(summary) { animation: rise 300ms var(--ease) both; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass, .tile { background: var(--glass-strong); }
 }
+
+/* ---------- question table (Data page) */
+.qtable td { min-width: 150px; font-size: 14px; }
+.qtable td:first-child { min-width: 170px; white-space: nowrap; }
+.qtable td.urdu { font-size: 16px; line-height: 2; }
+.qtable td.is-answer { background: var(--fill-2); font-weight: 600; }
+.qtable .tick { font-weight: 700; }
