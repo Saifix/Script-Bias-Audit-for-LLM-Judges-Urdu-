@@ -79,7 +79,7 @@ Ties and unparseable outputs are reported separately, never silently counted as 
 
 ## Results
 
-> Rounds: **1** small models · **2** replication of round 1 with fresh calls · **3** medium (Qwen3 32B, Gemma 3 27B, Llama 3.3 70B) · **4** large (Qwen 3.7 Max, Llama 4 Maverick, Gemini 2.5 Flash). Gemini 3.x models were not usable as judges: on OpenRouter they always "think" before answering, which cannot be switched off and would multiply the cost of ~36,000 short judgements.
+> Rounds: **1** small models · **2** replication of round 1 with fresh calls · **3** medium (Qwen3 32B, Gemma 3 27B, Llama 3.3 70B) · **4** large (Qwen3 235B, Llama 4 Maverick, Gemini 2.5 Flash). Gemini 3.x models were not usable as judges: on OpenRouter they always "think" before answering, which cannot be switched off and would multiply the cost of ~36,000 short judgements. Qwen 3.7 Max was replaced by Qwen3 235B because its only provider rate-limited the run to a crawl.
 
 Full run on 13 Nov 2026: 300 questions × 4 versions × 3 judges, about 33,000 judge calls in total (cost $0.82).
 Numbers in brackets are bootstrap 95% confidence intervals; **bold** = the interval excludes "no difference".

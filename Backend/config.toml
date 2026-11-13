@@ -78,12 +78,11 @@ tier = 2
 reasoning_off = true
 
 [[judges]]
-id = "qwen/qwen3.7-max"
-name = "Qwen 3.7 Max"
+id = "qwen/qwen3-235b-a22b-2507"   # Qwen 3.7 Max was replaced: its only provider rate-limited us to a crawl
+name = "Qwen3 235B"
 family = "Qwen (Alibaba)"
 tier = 3
 reasoning_off = true
-max_concurrency = 2   # its provider rate-limits (HTTP 429) at higher parallelism
 
 [[judges]]
 id = "meta-llama/llama-4-maverick"
