@@ -79,55 +79,71 @@ Ties and unparseable outputs are reported separately, never silently counted as 
 
 ## Results
 
-> Rounds: **1** small models · **2** replication of round 1 with fresh calls · **3** medium (Qwen3 32B, Gemma 3 27B, Llama 3.3 70B) · **4** large (Qwen3 235B, Llama 4 Maverick, Gemini 2.5 Flash). Gemini 3.x models were not usable as judges: on OpenRouter they always "think" before answering, which cannot be switched off and would multiply the cost of ~36,000 short judgements. Qwen 3.7 Max was replaced by Qwen3 235B because its only provider rate-limited the run to a crawl.
+**Four rounds, run 13 Nov 2026:** 300 questions × 4 versions per judge, 9 judges from 3 companies at 3 sizes, about
+120,000 judge calls in total for **$7.59**. Round 2 repeats round 1 with fresh calls to check the results replicate.
+Numbers are differences vs. Urdu script; **bold** = the 95% bootstrap confidence interval excludes "no difference".
 
-Full run on 13 Nov 2026: 300 questions × 4 versions × 3 judges, about 33,000 judge calls in total (cost $0.82).
-Numbers in brackets are bootstrap 95% confidence intervals; **bold** = the interval excludes "no difference".
-Llama 3.1 8B failed the screening gate (it barely separates right from wrong answers even in Urdu script, AUC 0.65 on
-the pilot), so its results are flagged and should not carry the conclusions.
+| Round | Judge | Score gap: Roman / code-mixed / English | Picks Roman head-to-head (fair = 50%) | Understands: Urdu / Roman / English | Catches wrong answers (AUC): Urdu / Roman |
+|---|---|---|---|---|---|
+| 1 small | Qwen 3.5 9B | **−0.81** / **−0.91** / +0.34 | **14%** | 76 / 57 / 92% | 0.68 / 0.60 |
+| 1 small | Gemma 3 12B | **−0.59** / **−0.86** / **+0.57** | **40%** | 82 / 67 / 91% | 0.74 / 0.64 |
+| 1 small | Llama 3.1 8B ⚑ | −0.12 / **−0.31** / +0.21 | **40%** | 48 / 33 / 69% | 0.57 / 0.54 |
+| 2 replication | Qwen 3.5 9B | **−1.13** / **−1.19** / **+0.41** | **8%** | 79 / 59 / 93% | 0.67 / 0.60 |
+| 2 replication | Gemma 3 12B | **−0.82** / **−0.91** / **+0.48** | **39%** | 83 / 69 / 91% | 0.73 / 0.64 |
+| 2 replication | Llama 3.1 8B ⚑ | −0.29 / **−0.46** / +0.13 | **34%** | 49 / 36 / 73% | 0.56 / 0.51 |
+| 3 medium | Qwen3 32B | **−0.82** / **−0.97** / **+1.38** | **25%** | 83 / 66 / 94% | 0.76 / 0.67 |
+| 3 medium | Gemma 3 27B | **−0.92** / **−0.99** / +0.08 | **37%** | 86 / 71 / 93% | 0.74 / 0.67 |
+| 3 medium | Llama 3.3 70B | **−0.55** / **−0.59** / **+0.43** | **17%** | 88 / 73 / 94% | 0.81 / 0.66 |
+| 4 large | Qwen3 235B | **−1.26** / **−1.30** / **+1.29** | **24%** | 90 / 76 / 95% | 0.81 / 0.68 |
+| 4 large | Gemini 2.5 Flash | **−0.78** / **−0.96** / **+0.48** | 48% | 91 / 86 / 96% | 0.87 / 0.81 |
+| 4 large | Llama 4 Maverick | **−0.71** / **−0.85** / **+0.87** | 54% | 85 / 66 / 93% | 0.81 / 0.66 |
 
-**Screening (can the judge tell right from wrong? AUC, 20-question pilot):** Qwen 0.76 / 0.91, Gemma 0.77 / 0.93,
-Llama 0.65 / 0.75 (Urdu script / English). All three are weaker in Urdu script than in English.
+⚑ Llama 3.1 8B failed the screening gate (it barely tells right from wrong answers even in Urdu script), so its numbers
+are flagged.
 
-| Finding | Metric | Qwen 3.5 9B | Gemma 3 12B | Llama 3.1 8B ⚑ |
-|---|---|---|---|---|
-| Correct answers scored lower in Roman Urdu? | score gap vs Urdu script (1–10 scale) | **−0.81** [−1.16, −0.47] | **−0.59** [−0.95, −0.24] | −0.12 [−0.39, +0.15] |
-| … and in code-mixed? | score gap vs Urdu script | **−0.91** [−1.27, −0.56] | **−0.86** [−1.22, −0.50] | **−0.31** [−0.57, −0.01] |
-| … and in English? | score gap vs Urdu script | +0.34 [−0.06, +0.72] | **+0.57** [+0.19, +0.91] | +0.21 [−0.12, +0.53] |
-| Prefers Urdu script head-to-head? | Roman Urdu win rate vs Urdu script (50% = fair) | **13.7%** [12, 15] | **39.5%** [38, 41] | **39.9%** [37, 42] |
-| | code-mixed win rate vs Urdu script | **12.3%** [11, 14] | **37.0%** [36, 38] | **40.3%** [38, 43] |
-| Understands Roman Urdu as well? | comprehension accuracy: Urdu / Roman / Mixed / English | 76 / 57 / 58 / 92% | 82 / 67 / 69 / 91% | 48 / 33 / 36 / 69% |
-| Still catches wrong answers? | AUC: Urdu / Roman / Mixed / English | 0.68 / 0.60 / 0.59 / 0.76 | 0.74 / 0.64 / 0.63 / 0.83 | 0.57 / 0.54 / 0.53 / 0.67 |
-| Wrong answers waved through? | share of wrong answers scored ≥ 7: Urdu / Roman | 38% / 41% | 39% / **51%** | 78% / 71% |
-| Same score when asked again? | identical score on repeat: Urdu / Roman / Mixed / English | 46 / 50 / 45 / 69% | 77 / 76 / 67 / 79% | 45 / 36 / 32 / 56% |
+**Panel of each round's judges (average score), Roman Urdu gap:** −0.51 (small) · −0.75 (replication) · −0.76 (medium) ·
+**−0.92 (large)**. All are real differences.
 
-**Mitigations** (score gap on correct answers vs Urdu script, Roman Urdu / code-mixed):
+### What we found
 
-| | Qwen 3.5 9B | Gemma 3 12B |
-|---|---|---|
-| No mitigation | **−0.81** / **−0.91** | **−0.59** / **−0.86** |
-| Rubric ("ignore script, spelling and formality") | −0.39 / −0.34 | −0.32 / **−0.52** |
-| Transliterate to Urdu script first | **+0.07** / −0.32 | −0.27 / **−0.55** |
-| Panel of all three judges (averaged) | **−0.51** / **−0.69** (panel) | |
+1. **Every capable judge scores the same correct answer lower in Roman Urdu and code-mixed text** — in all four rounds,
+   at every model size, for all three companies (−0.55 to −1.30 points out of 10). English is scored *higher* than Urdu
+   script (up to +1.38). The order is consistent: English > Urdu script > Roman Urdu ≈ code-mixed.
+2. **Bigger models are better judges, but not fairer scorers.** From small to large, accuracy, error detection (AUC in
+   Urdu script 0.57–0.74 → 0.81–0.87) and consistency (identical score on repeat up to 96–98% for Gemini) all improve,
+   yet the Roman Urdu score penalty does **not** shrink — the large-round panel penalty (−0.92) is the largest.
+3. **Head-to-head preference does improve with size for some families.** Gemini 2.5 Flash (48%) and Llama 4 Maverick
+   (54%) pick the Roman and Urdu-script versions about equally; the Qwen family stays strongly biased (8–25%).
+4. **Judges understand Roman Urdu less well** (about 15 points lower than Urdu script for most judges). Gemini 2.5 Flash
+   closes most of this gap (86% vs 91%), Llama 4 Maverick does not (66% vs 85%).
+5. **Mistakes slip through more in Roman Urdu**: wrong answers are scored ≥ 7 more often in Roman Urdu than in Urdu
+   script (e.g. Llama 4 Maverick 40% vs 25%, Llama 3.3 70B 57% vs 34%).
+6. **The finding replicates.** Round 2 (fresh calls, same judges) points the same way as round 1, with somewhat larger
+   gaps (Qwen −0.81 → −1.13; Gemma −0.59 → −0.82).
 
-- **Transliterating first works best.** It removes most of the gap *and* restores error detection: Roman Urdu AUC goes
-  from 0.60 → 0.68 (Qwen) and 0.64 → 0.72 (Gemma), back to Urdu-script level, and Gemma's wrong-answer acceptance drops
-  from 51% to 39%.
-- **The rubric shrinks the gap by making judges more lenient**, not fairer: wrong answers scored ≥ 7 rise from 41% to
-  59% (Qwen) and 51% to 61% (Gemma) in Roman Urdu. Not a good fix.
-- **A panel does not cancel the bias** — all three judges lean the same way, so the average still penalises Roman Urdu
-  (−0.51) and code-mixed (−0.69).
+### Mitigations (Roman Urdu score gap)
 
-**Summary.** Both capable judges (Qwen, Gemma) systematically disadvantage the scripts most Urdu speakers actually use
-online: the same correct answer scores lower in Roman Urdu and code-mixed text, loses head-to-head against its Urdu-script
-twin, and wrong answers are caught less reliably. Judges also *understand* Roman Urdu less well, and converting it to
-Urdu script before judging largely removes the gap — which suggests much of the bias comes from weaker handling of
-Roman script rather than a pure stylistic preference.
+| | Small (round 1) | Medium | Large |
+|---|---|---|---|
+| No fix | Qwen −0.81, Gemma −0.59 | −0.55 to −0.92 | −0.71 to −1.26 |
+| Rubric ("ignore script…") | −0.39, −0.32 — but wrong answers accepted far more often | −0.52 to −0.62, still significant | −0.57 to −1.03, still significant |
+| Transliterate to Urdu script first | +0.07, −0.27 | −0.02 to −0.33 | −0.43 to −0.58, still significant |
 
-**Limitations.** Three small open models; a single dataset (Belebele); Roman Urdu and code-mixed answer options were
-written by Claude Opus 5.5 and not human-reviewed, while their passages/questions come from Belebele's Roman Urdu;
-judges are not fully deterministic at temperature 0 (see the repeat row), so single questions are noisy and only the
-300-question averages should be read.
+- **Transliterating first is the most effective fix** and restores error detection, but it no longer removes the whole
+  gap for the large models.
+- **The rubric line is not a real fix**: it mainly makes judges more lenient (more wrong answers accepted).
+- **A panel does not cancel the bias**, because the judges lean the same way.
+
+**Bottom line.** Script bias against Roman Urdu is real, it replicates, and it persists in larger, more capable LLM
+judges. Scaling up improves understanding and consistency and, for some model families, head-to-head fairness — but
+the score penalty for writing Urdu in Latin script does not go away. Converting Roman Urdu to Urdu script before judging
+is the most effective mitigation we tested.
+
+**Limitations.** One dataset (Belebele); Roman Urdu and code-mixed answer options written by Claude Opus 5.5 without
+human review; the 20-question screening gate is noisy near its cut-off (Qwen 3.5 9B passed in round 1, narrowly failed
+in round 2); judges are not fully deterministic at temperature 0, so single questions are noisy and only the
+300-question averages should be read. Model substitutions: Gemini 3.x and Qwen 3.7 Max could not be used (forced
+"thinking", heavy rate limits), so Gemini 2.5 Flash and Qwen3 235B represent the large tier.
 
 ## Why it matters
 
