@@ -47,7 +47,8 @@ def normalize_config(raw: dict, app_cfg: dict) -> dict:
     if t not in RUN_TYPES:
         raise ValueError(f"type must be one of {RUN_TYPES}")
     known = [j["id"] for j in app_cfg["judges"]]
-    judges = raw.get("judges") or known
+    # default = the small (tier 1) judges only, so an empty selection never runs every configured model
+    judges = raw.get("judges") or [j["id"] for j in app_cfg["judges"] if int(j.get("tier", 1)) == 1]
     if bad := [j for j in judges if j not in known]:
         raise ValueError(f"unknown judges {bad}; add them to config.toml")
     conds = raw.get("conditions") or list(CONDITIONS)
@@ -62,6 +63,9 @@ def normalize_config(raw: dict, app_cfg: dict) -> dict:
         "n_items": int(raw.get("n_items") or default_n),
         "repeats": int(raw.get("repeats") if raw.get("repeats") is not None else s["repeat_count"]),
         "flags": {k: bool(flags.get(k)) for k in ("rubric", "transliterate", "panel")},
+        # round label groups runs on the dashboard; replicate > 0 makes every judge call fresh (new cache key)
+        "label": str(raw.get("label") or "Round 1").strip()[:60],
+        "replicate": max(0, min(99, int(raw.get("replicate") or 0))),
     }
     if t == "generate":
         gen = [c for c in cfg["conditions"] if c in GENERATED]
@@ -138,6 +142,11 @@ def _needs_conversion(task: Task, cfg: dict) -> bool:
     return task.kind == "pointwise" and cfg["flags"]["transliterate"] and task.condition in LATIN_URDU
 
 
+def _cache_repeat(task: Task, cfg: dict) -> int:
+    """Repeat index used in the cache key: a replicate run gets its own range, so its judge calls are fresh."""
+    return task.repeat + 1000 * int(cfg.get("replicate", 0))
+
+
 def _call_params(task: Task, app_cfg: dict) -> dict:
     if task.kind == "generate":
         return {"max_tokens": int(app_cfg["generator"].get("max_tokens", 600)), "extra": {}}
@@ -165,7 +174,7 @@ def estimate(cfg: dict, app_cfg: dict) -> dict:
             planned.append(("", t.judge, len(_judge_prompt(t, it, cfg)), p["max_tokens"]))
             continue
         prompt = _judge_prompt(t, it, cfg)
-        planned.append((cache_key(t.judge, prompt, p["max_tokens"], t.repeat, p["extra"]), t.judge, len(prompt), p["max_tokens"]))
+        planned.append((cache_key(t.judge, prompt, p["max_tokens"], _cache_repeat(t, cfg), p["extra"]), t.judge, len(prompt), p["max_tokens"]))
     for text in conversions:
         prompt = render("to_urdu", text=text)
         mt = int(app_cfg["generator"].get("max_tokens", 600))
@@ -214,7 +223,7 @@ async def run_task(task: Task, item: dict, cfg: dict, client: LLMClient, app_cfg
     kind = task.kind
     if kind == "generate":
         kind = "transliterate" if task.condition == "roman_translit" else "code_mix"
-    call = await client.complete(model, prompt, max_tokens=p["max_tokens"], repeat=task.repeat, task=kind, extra=p["extra"])
+    call = await client.complete(model, prompt, max_tokens=p["max_tokens"], repeat=_cache_repeat(task, cfg), task=kind, extra=p["extra"])
     calls.append(call)
 
     value, label, status = None, None, "ok"
@@ -441,3 +450,56 @@ def insights() -> dict:
         out["comprehension"] = {"run_id": latest["comprehension"], "by_condition": {
             c: _avg([p["accuracy"] for js in judges_of(sm) for p in js["comprehension"] if p["condition"] == c]) for c in conds}}
     return out
+
+
+# ---------------------------------------------------------------- trend across model tiers
+
+
+def _latest_by_judge(kind: str, label: str | None) -> dict[str, int]:
+    """Latest finished baseline run (no mitigation flags) of `kind` per judge, optionally within one round label."""
+    out: dict[str, int] = {}
+    with db() as c:
+        rows = [dict(r) for r in c.execute("SELECT id, config FROM runs WHERE type=? AND status='done' ORDER BY id DESC", (kind,))]
+    for r in rows:
+        cfg = json.loads(r["config"])
+        if any(cfg.get("flags", {}).values()) or (label and cfg.get("label", "Round 1") != label):
+            continue
+        for j in cfg["judges"]:
+            out.setdefault(j, r["id"])
+    return out
+
+
+def trend(label: str | None = None) -> dict:
+    """Headline metrics per judge (latest baseline runs), with tier and family, for the Trends page."""
+    from .config import judge_meta  # local import keeps module import order simple
+    app_cfg = load_config()
+    rows: dict[str, dict] = {}
+    cache: dict[int, dict] = {}
+
+    def summ(run_id: int) -> dict:
+        if run_id not in cache:
+            cache[run_id] = summarize(run_rows(run_id), n_resamples=app_cfg["settings"]["bootstrap_resamples"], seed=app_cfg["settings"]["seed"])
+        return cache[run_id]
+
+    for kind in ("pointwise", "pairwise", "comprehension"):
+        for j, rid in _latest_by_judge(kind, label).items():
+            js = summ(rid)["judges"].get(j)
+            if not js:
+                continue
+            row = rows.setdefault(j, {**judge_meta(app_cfg, j), "runs": {}})
+            row["runs"][kind] = rid
+            if kind == "pointwise":
+                for p in js["pointwise"]:
+                    row.setdefault("auc", {})[p["condition"]] = p["auc"]
+                    row.setdefault("accept_wrong", {})[p["condition"]] = p["accept_wrong"]
+                    if p["gap_correct"]:
+                        row.setdefault("gap", {})[p["condition"]] = p["gap_correct"]
+            elif kind == "pairwise":
+                for p in js["pairwise"]:
+                    row.setdefault("win", {})[p["condition"]] = {"rate": p["win_rate"], "lo": p["lo"], "hi": p["hi"]}
+            else:
+                for p in js["comprehension"]:
+                    row.setdefault("accuracy", {})[p["condition"]] = p["accuracy"]
+    with db() as c:
+        labels = sorted({json.loads(r["config"]).get("label", "Round 1") for r in c.execute("SELECT config FROM runs WHERE status='done'")})
+    return {"judges": sorted(rows.values(), key=lambda r: (r["tier"], r["family"])), "labels": labels}

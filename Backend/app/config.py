@@ -70,6 +70,17 @@ def backend_token() -> str:
     return t if len(t) >= 32 else ""
 
 
+TIER_NAMES = {1: "Small (8–12B)", 2: "Medium (27–70B)", 3: "Large"}
+
+
+def judge_meta(cfg: dict, model: str) -> dict:
+    """Display metadata for a judge: name, family (company), tier (1 small, 2 medium, 3 large)."""
+    j = next((j for j in cfg["judges"] if j["id"] == model), {})
+    tier = int(j.get("tier", 1))
+    return {"id": model, "name": j.get("name") or model.split("/")[-1], "family": j.get("family") or model.split("/")[0],
+            "tier": tier, "tier_name": TIER_NAMES.get(tier, f"Tier {tier}")}
+
+
 def judge_name(cfg: dict, model: str) -> str:
     """Short display name for a judge (config `name`, else the model slug)."""
     j = next((j for j in cfg["judges"] if j["id"] == model), {})

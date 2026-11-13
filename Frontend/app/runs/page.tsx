@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { JudgePicker, judgeName, smallJudges } from "../../components/JudgePicker";
 import { RunLock } from "../../components/RunLock";
 import { Badge, ErrorNote, Header, Progress, Segmented } from "../../components/ui";
 import { api, fmt, label, runPassword, useApi, type AppConfig, type Estimate, type Overview, type Run } from "../../lib/api";
@@ -23,12 +24,14 @@ export default function RunsPage() {
   const [flags, setFlags] = useState({ rubric: false, transliterate: false, panel: false });
   const [nItems, setNItems] = useState<number | "">("");
   const [repeats, setRepeats] = useState<number | "">("");
+  const [roundLabel, setRoundLabel] = useState("Round 1");
+  const [replicate, setReplicate] = useState<number | "">("");
   const [est, setEst] = useState<Estimate | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (cfg.data && judges.length === 0) setJudges(cfg.data.judges);
+    if (cfg.data && judges.length === 0) setJudges(smallJudges(cfg.data));
     if (cfg.data && conditions.length === 0) setConditions(cfg.data.conditions);
   }, [cfg.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -37,6 +40,8 @@ export default function RunsPage() {
     conditions: type === "generate" ? conditions.filter((c) => c === "roman_translit" || c === "code_mixed").slice(0, 1) : conditions,
     n_items: nItems || undefined,
     repeats: repeats === "" ? undefined : repeats,
+    label: roundLabel || undefined,
+    replicate: replicate || undefined,
   };
   const bodyKey = JSON.stringify(body);
 
@@ -78,14 +83,8 @@ export default function RunsPage() {
           {type !== "generate" ? (
             <div>
               <p className="eyebrow">Judges</p>
-              <div className="row">
-                {cfg.data?.judges.map((j) => (
-                  <button key={j} className={`chip ${judges.includes(j) ? "on" : ""}`} onClick={() => setJudges(toggle(judges, j))}>
-                    <span className="mono">{j}</span>
-                    {screening[j] && screening[j] !== "pass" && <span title="screening status">· {screening[j] === "fail" ? "failed screening" : "not screened"}</span>}
-                  </button>
-                ))}
-              </div>
+              {cfg.data && <JudgePicker cfg={cfg.data} value={judges} onChange={setJudges}
+                badge={(j) => screening[j] === "fail" ? "failed screening" : screening[j] === "pass" ? null : "not screened"} />}
             </div>
           ) : <p className="faint" style={{ margin: 0 }}>Generator model: <span className="mono">{cfg.data?.generator}</span></p>}
 
@@ -117,6 +116,8 @@ export default function RunsPage() {
           )}
 
           <div className="row">
+            <label className="field">Round<input className="input" style={{ width: 200 }} value={roundLabel} onChange={(e) => setRoundLabel(e.target.value)} placeholder="e.g. Round 3 · medium" /></label>
+            <label className="field" title="Above 0, every judge call is made fresh instead of reusing earlier answers">Replicate #<input className="input" type="number" min={0} max={99} style={{ width: 110 }} placeholder="0" value={replicate} onChange={(e) => setReplicate(e.target.value ? Number(e.target.value) : "")} /></label>
             <label className="field">Items (first N)<input className="input" type="number" min={1} style={{ width: 130 }} placeholder={String(defaultN ?? "")} value={nItems} onChange={(e) => setNItems(e.target.value ? Number(e.target.value) : "")} /></label>
             {type === "repeats" && <label className="field">Extra repeats<input className="input" type="number" min={1} style={{ width: 130 }} placeholder={String(s?.repeat_count ?? 2)} value={repeats} onChange={(e) => setRepeats(e.target.value === "" ? "" : Number(e.target.value))} /></label>}
           </div>
@@ -152,6 +153,7 @@ export default function RunsPage() {
               <div className="row between">
                 <div className="row">
                   <strong>#{r.id} · {TYPES.find((t) => t.value === r.type)?.label ?? r.type}</strong>
+                  <span className="faint">{r.config.label ?? "Round 1"}{r.config.replicate ? ` · replicate ${r.config.replicate}` : ""}</span>
                   <Badge kind={r.status} />
                   {flagged.length > 0 && <Badge kind="warn">{flagged.length} flagged judge{flagged.length > 1 ? "s" : ""}</Badge>}
                   {Object.entries(r.config.flags ?? {}).filter(([, v]) => v).map(([k]) => <Badge key={k} kind="running">{k}</Badge>)}
@@ -168,7 +170,7 @@ export default function RunsPage() {
                 <span>{fmt.int(r.cache_hits)} from cache</span>
                 <span>{fmt.int(r.prompt_tokens + r.completion_tokens)} tokens</span>
                 {r.unparseable > 0 && <span>{r.unparseable} unparseable</span>}
-                <span className="mono">{r.config.judges.join(", ")}</span>
+                <span>{r.config.judges.map((j) => judgeName(cfg.data, j)).join(", ")}</span>
                 <span>{r.config.conditions.map(label).join(", ")}</span>
               </div>
               {r.error && <p className="notice error" style={{ marginBottom: 0 }}>{r.error}</p>}

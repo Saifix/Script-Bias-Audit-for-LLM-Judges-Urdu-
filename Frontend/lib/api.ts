@@ -24,13 +24,20 @@ export type Overview = {
   api_key_set: boolean;
   threshold: number;
 };
+export type JudgeMeta = { id: string; name: string; family: string; tier: number; tier_name: string };
 export type AppConfig = {
   conditions: string[]; reference: string; generated: string[]; run_types: string[];
   judges: string[]; generator: string; settings: Record<string, number>; api_key_set: boolean;
+  judge_names?: Record<string, string>; judge_meta?: Record<string, JudgeMeta>; summary_model?: string;
+};
+export type Finding = {
+  judge: string; name: string; flagged: boolean; kind: "score_gap" | "accept_wrong" | "preference" | "comprehension";
+  version: string; value: number; lo?: number; hi?: number; ref?: number; real: boolean;
 };
 export type RunConfig = {
   type: string; judges: string[]; conditions: string[]; n_items: number; repeats: number;
   flags: { rubric: boolean; transliterate: boolean; panel: boolean }; flagged_judges?: Record<string, string>;
+  label?: string; replicate?: number;
 };
 export type Run = {
   id: number; type: string; status: string; total: number; done: number; error: string | null; config: RunConfig;

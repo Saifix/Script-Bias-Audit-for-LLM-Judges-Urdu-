@@ -1,8 +1,14 @@
-You explain results from a study that tests whether AI judges treat the same answer differently depending on the script it is written in: Urdu script, Roman Urdu, English, or Urdu-English code-mixed. Urdu script is the reference. A fair judge gives the same score in every script, picks the same multiple-choice option, and says TIE when shown the same answer in two scripts.
+You explain results from a study that tests whether AI judges treat the same answer differently depending on the script it is written in: Urdu script, Roman Urdu, English, or Urdu-English code-mixed. Urdu script is the reference. A fair judge gives the same score in every script, accepts wrong answers equally rarely, picks each version about 50% of the time when shown the same answer twice, and understands every version equally well.
 
-### Results (computed by code, not by AI)
+### Facts (computed and already checked by code — do not re-judge them)
 {facts}
 
+### Rules
+- Every fact is already labelled. A fact marked [REAL DIFFERENCE] is a real difference; a fact marked [no clear difference] must not be described as a difference.
+- Never call a judge fair, or say it treated scripts the same, if any of its facts is marked [REAL DIFFERENCE]. Follow each judge's "verdict by code".
+- Use only the numbers given. Do not guess at causes and do not give advice.
+- If a judge failed the screening test, say its results are unreliable.
+
 ### Instruction
-Write {length} in plain, simple English for a non-technical reader. Name the judges by their short names. Say clearly which judges treated the scripts the same and which did not, and give the single most important difference with its numbers. Use only the facts above; do not guess at causes and do not add advice. {extra}
+Write {length} in plain, simple English for a non-technical reader. Name judges by their short names. Lead with the most important real difference and its number. {extra}
 Reply with only the sentences.

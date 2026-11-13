@@ -24,26 +24,77 @@ max_tokens = 600
 # Writes a one-to-three sentence plain-English summary of results. It only reads the computed numbers,
 # never the answers, and is from a different company than every judge.
 [summary]
-model = "anthropic/claude-haiku-4.5"
-name = "Claude Haiku 4.5"
+model = "anthropic/claude-sonnet-5.5"
+name = "Claude Sonnet 5.5"
 
 # Speech-to-text for voice notes in "Test yourself" (OpenRouter /audio/transcriptions). Handles Urdu.
 [voice]
 model = "openai/whisper-large-v3"
 
+# tier: 1 = small (8-12B), 2 = medium (27-70B), 3 = large/frontier. family groups one company's models,
+# so the Trends page can show how bias changes as models get more capable.
+
 [[judges]]
 id = "qwen/qwen3.5-9b"   # qwen-2.5-7b-instruct was removed from OpenRouter
 name = "Qwen 3.5 9B"
+family = "Qwen (Alibaba)"
+tier = 1
 reasoning_off = true
 
 [[judges]]
 id = "meta-llama/llama-3.1-8b-instruct"
 name = "Llama 3.1 8B"
+family = "Llama (Meta)"
+tier = 1
 reasoning_off = true
 
 [[judges]]
 id = "google/gemma-3-12b-it"   # third vendor (Google), same small open-weights class; multilingual incl. Urdu
 name = "Gemma 3 12B"
+family = "Google"
+tier = 1
+reasoning_off = true
+
+[[judges]]
+id = "qwen/qwen3-32b"
+name = "Qwen3 32B"
+family = "Qwen (Alibaba)"
+tier = 2
+reasoning_off = true
+
+[[judges]]
+id = "meta-llama/llama-3.3-70b-instruct"
+name = "Llama 3.3 70B"
+family = "Llama (Meta)"
+tier = 2
+reasoning_off = true
+
+[[judges]]
+id = "google/gemma-3-27b-it"
+name = "Gemma 3 27B"
+family = "Google"
+tier = 2
+reasoning_off = true
+
+[[judges]]
+id = "qwen/qwen3.7-max"
+name = "Qwen 3.7 Max"
+family = "Qwen (Alibaba)"
+tier = 3
+reasoning_off = true
+
+[[judges]]
+id = "meta-llama/llama-4-maverick"
+name = "Llama 4 Maverick"
+family = "Llama (Meta)"
+tier = 3
+reasoning_off = true
+
+[[judges]]
+id = "google/gemini-3.8-flash"
+name = "Gemini 3.8 Flash"
+family = "Google"
+tier = 3
 reasoning_off = true
 
 # Optional API judges - uncomment to enable.

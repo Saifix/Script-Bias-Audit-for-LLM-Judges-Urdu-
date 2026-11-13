@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel
 
 from . import runs
-from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, judge_name, load_config, run_password
+from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, judge_meta, judge_name, load_config, run_password
 from .data import build_items, condition_view, fetch_belebele, load_items, review, save_items
 from .db import db, init_db
 from .playground import VERSION_NAME, explain, run_playground, voice_to_fields
@@ -94,6 +94,7 @@ def get_config() -> dict:
     return {
         "conditions": CONDITIONS, "reference": REFERENCE, "generated": GENERATED, "run_types": RUN_TYPES,
         "judges": [j["id"] for j in cfg["judges"]], "judge_names": {j["id"]: judge_name(cfg, j["id"]) for j in cfg["judges"]},
+        "judge_meta": {j["id"]: judge_meta(cfg, j["id"]) for j in cfg["judges"]},
         "summary_model": cfg["summary"].get("name", cfg["summary"]["model"]), "generator": cfg["generator"]["model"],
         "settings": cfg["settings"], "api_key_set": bool(api_key()),
     }
@@ -325,30 +326,66 @@ def summary(run_id: int) -> dict:
         raise HTTPException(404, "run not found")
 
 
-def _run_facts(s: dict, cfg: dict) -> str:
-    """Compact, readable lines from a run summary for the summary model."""
-    v = lambda c: VERSION_NAME.get(c, c)
-    lines = [f"Results over all items of one experiment run; Urdu script is the reference."]
+def run_findings(s: dict, cfg: dict, flagged: dict | None = None) -> list[dict]:
+    """Facts from a run summary, each already judged by code: is the difference real (95% CI excludes no-difference)?
+    Used for the plain-language summary and the dashboard scorecard."""
+    flagged = flagged or {}
+    out = []
     for j, js in s["judges"].items():
-        name = "Panel (average of all judges)" if j == "panel" else judge_name(cfg, j)
-        lines.append(f"Judge {name}:")
+        name = "Panel (average of the judges)" if j == "panel" else judge_name(cfg, j)
+        base = {"judge": j, "name": name, "flagged": j in flagged}
         for p in js["pointwise"]:
-            if p["gap_correct"] and p["gap_correct"]["gap"] is not None:
-                g = p["gap_correct"]
-                lines.append(f"  {v(p['condition'])}: correct answers score {g['gap']:+.2f} points vs Urdu script "
-                             f"(95% CI {g['lo']:+.2f} to {g['hi']:+.2f}); wrong answers accepted (score >= 7) "
-                             f"{(p['accept_wrong'] or 0) * 100:.0f}% of the time; error detection AUC {p['auc'] if p['auc'] is not None else 'n/a'}")
-            elif p["condition"] == REFERENCE:
-                lines.append(f"  Urdu script: wrong answers accepted {(p['accept_wrong'] or 0) * 100:.0f}% of the time; AUC {p['auc']}")
+            g = p["gap_correct"]
+            if g and g["gap"] is not None and g["lo"] is not None:
+                real = g["lo"] > 0 or g["hi"] < 0
+                out.append({**base, "kind": "score_gap", "version": p["condition"], "value": g["gap"], "lo": g["lo"], "hi": g["hi"], "real": real})
+        ref = next((p for p in js["pointwise"] if p["condition"] == REFERENCE), None)
+        for p in js["pointwise"]:
+            if ref and p["condition"] != REFERENCE and p["accept_wrong"] is not None and ref["accept_wrong"] is not None:
+                diff = p["accept_wrong"] - ref["accept_wrong"]
+                out.append({**base, "kind": "accept_wrong", "version": p["condition"], "value": p["accept_wrong"],
+                            "ref": ref["accept_wrong"], "real": abs(diff) >= 0.08})
         for p in js["pairwise"]:
-            if p["win_rate"] is not None:
-                lines.append(f"  {v(p['condition'])} vs Urdu script, same answer: {v(p['condition'])} preferred {p['win_rate'] * 100:.0f}% "
-                             f"of the time (50% = no preference; 95% CI {p['lo'] * 100:.0f}-{p['hi'] * 100:.0f}%)")
-        for p in js["comprehension"]:
-            if p["accuracy"] is not None:
-                lines.append(f"  Answers the question itself correctly in {v(p['condition'])}: {p['accuracy'] * 100:.0f}%")
-        for p in js["consistency"]:
-            lines.append(f"  {v(p['condition'])}: same score on repeat {(p['share_identical'] or 0) * 100:.0f}% of the time")
+            if p["win_rate"] is not None and p["lo"] is not None:
+                real = p["hi"] < 0.5 or p["lo"] > 0.5
+                out.append({**base, "kind": "preference", "version": p["condition"], "value": p["win_rate"], "lo": p["lo"], "hi": p["hi"], "real": real})
+        comp = {p["condition"]: p["accuracy"] for p in js["comprehension"] if p["accuracy"] is not None}
+        for c, acc in comp.items():
+            if c != REFERENCE and REFERENCE in comp:
+                out.append({**base, "kind": "comprehension", "version": c, "value": acc, "ref": comp[REFERENCE],
+                            "real": abs(acc - comp[REFERENCE]) >= 0.05})
+    return out
+
+
+def _sentence(f: dict) -> str:
+    v = VERSION_NAME.get(f["version"], f["version"])
+    tag = "REAL DIFFERENCE" if f["real"] else "no clear difference"
+    if f["kind"] == "score_gap":
+        dir_ = "higher" if f["value"] > 0 else "lower"
+        return (f"[{tag}] {f['name']}: correct answers in {v} scored {abs(f['value']):.2f} points {dir_} than in Urdu script "
+                f"(95% CI {f['lo']:+.2f} to {f['hi']:+.2f}).")
+    if f["kind"] == "accept_wrong":
+        return (f"[{tag}] {f['name']}: wrong answers were accepted (scored 7 or more) {f['value'] * 100:.0f}% of the time in {v} "
+                f"vs {f['ref'] * 100:.0f}% in Urdu script.")
+    if f["kind"] == "preference":
+        who = (f"prefers {v}" if f["value"] > 0.5 else "prefers Urdu script") if f["real"] else "shows no preference"
+        return (f"[{tag}] {f['name']}: when shown the same answer in {v} and in Urdu script, it chose {v} {f['value'] * 100:.0f}% "
+                f"of the time (50% would be fair; 95% CI {f['lo'] * 100:.0f}-{f['hi'] * 100:.0f}%), so it {who}.")
+    return (f"[{tag}] {f['name']}: answered the question itself correctly {f['value'] * 100:.0f}% of the time in {v} "
+            f"vs {f['ref'] * 100:.0f}% in Urdu script.")
+
+
+def _run_facts(findings: list[dict]) -> str:
+    """Readable, pre-judged facts for the summary model, grouped by judge with a code-made verdict."""
+    lines: list[str] = []
+    for j in dict.fromkeys(f["judge"] for f in findings):
+        fs = [f for f in findings if f["judge"] == j]
+        real = [f for f in fs if f["real"]]
+        note = " (this judge FAILED the screening test, so its results are unreliable)" if fs[0]["flagged"] else ""
+        lines.append(f"Judge {fs[0]['name']}{note}: verdict by code = "
+                     f"{'treats the scripts differently' if real else 'no clear difference between scripts'} "
+                     f"({len(real)} of {len(fs)} comparisons show a real difference).")
+        lines += ["  " + _sentence(f) for f in fs]
     return "\n".join(lines)
 
 
@@ -361,8 +398,16 @@ async def explain_run(run_id: int) -> dict:
         raise HTTPException(404, "run not found")
     if not s["judges"]:
         return {"summary": None}
-    return {"summary": await explain(_run_facts(s, load_config()), "two or three short sentences",
-                                     "Mention a difference only if its confidence interval does not include zero (or 50% for preferences).")}
+    cfg = load_config()
+    run = next((r for r in runs.list_runs() if r["id"] == run_id), None)
+    findings = run_findings(s, cfg, (run or {}).get("config", {}).get("flagged_judges"))
+    return {"summary": await explain(_run_facts(findings), "two or three short sentences", ""), "findings": findings}
+
+
+@app.get("/api/trend")
+def trend(label: str | None = None) -> dict:
+    """Headline metrics per judge (latest baseline runs) with tier and family, for the Trends page."""
+    return runs.trend(label)
 
 
 @app.get("/api/runs/{run_id}/export.csv")

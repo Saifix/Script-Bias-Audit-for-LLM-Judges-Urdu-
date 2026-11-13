@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { AccuracyChart, AcceptanceChart, AucChart, GapChart, WinRateChart } from "../../components/Charts";
 import { PlainWords } from "../../components/TestYourself";
+import { Scorecard } from "../../components/Scorecard";
 import { Badge, ErrorNote, Header, Segmented } from "../../components/ui";
-import { fmt, label, useApi, type Gap, type Run, type Summary } from "../../lib/api";
+import { fmt, label, useApi, type Finding, type Gap, type Run, type Summary } from "../../lib/api";
 
 const ci = (g: Gap | null) => (g && g.gap !== null ? `${g.gap.toFixed(2)} [${fmt.num(g.lo)}, ${fmt.num(g.hi)}]` : "–");
 
@@ -14,7 +15,7 @@ export default function ResultsPage() {
   const done = (runs.data?.runs ?? []).filter((r) => r.type !== "generate" && r.done > 0);
   const run = done.find((r) => r.id === runId);
   const summary = useApi<Summary>(runId ? `/runs/${runId}/summary` : null, run?.status === "running" ? 4000 : undefined);
-  const words = useApi<{ summary: { text: string; name: string } | null }>(runId && run?.status === "done" ? `/runs/${runId}/explain` : null);
+  const words = useApi<{ summary: { text: string; name: string } | null; findings?: Finding[] }>(runId && run?.status === "done" ? `/runs/${runId}/explain` : null);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("run");
@@ -35,7 +36,7 @@ export default function ResultsPage() {
       <div className="row between" style={{ marginBottom: 24 }}>
         <div className="row">
           <select className="input" value={runId ?? ""} onChange={(e) => setRunId(Number(e.target.value))} aria-label="Run">
-            {done.map((r) => <option key={r.id} value={r.id}>#{r.id} · {r.type} · {r.status}</option>)}
+            {done.map((r) => { const f = Object.entries(r.config.flags ?? {}).filter(([, v]) => v).map(([k]) => k); return <option key={r.id} value={r.id}>#{r.id} · {r.type}{f.length ? ` + ${f.join(", ")}` : ""} · {r.config.label ?? "Round 1"}{r.config.replicate ? ` (replicate ${r.config.replicate})` : ""}</option>; })}
           </select>
           {run && <Badge kind={run.status} />}
           {run && Object.keys(run.config.flagged_judges ?? {}).includes(judge) && <Badge kind="warn">judge did not pass screening</Badge>}
@@ -49,7 +50,8 @@ export default function ResultsPage() {
       </div>
 
       <ErrorNote error={runs.error ?? summary.error} />
-      {words.data?.summary && <div style={{ marginBottom: 24 }}><PlainWords summary={words.data.summary} /></div>}
+      {words.data?.summary && <div style={{ marginBottom: 20 }}><PlainWords summary={words.data.summary} /></div>}
+      {words.data?.findings && words.data.findings.length > 0 && <div style={{ marginBottom: 24 }}><Scorecard findings={words.data.findings} /></div>}
       {done.length === 0 && runs.data && <div className="tile"><p className="muted" style={{ margin: 0 }}>No results yet. Start a run on the Runs page.</p></div>}
 
       {judges.length > 0 && (

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { JudgePicker, smallJudges } from "./JudgePicker";
 import { Badge, ErrorNote } from "./ui";
 import { api, fmt, label, RTL, useApi, type AppConfig } from "../lib/api";
 
@@ -56,7 +57,7 @@ export function TestYourself() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const linkedQ = useRef(0);
 
-  useEffect(() => { if (cfg.data && judges.length === 0) setJudges(cfg.data.judges); }, [cfg.data]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (cfg.data && judges.length === 0) setJudges(smallJudges(cfg.data)); }, [cfg.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function pick(p?: number) {
     try {
@@ -159,13 +160,7 @@ export function TestYourself() {
             <>
               <div>
                 <p className="eyebrow">Judges</p>
-                <div className="row">
-                  {cfg.data?.judges.map((j) => (
-                    <button key={j} className={`chip ${judges.includes(j) ? "on" : ""}`} onClick={() => setJudges(judges.includes(j) ? judges.filter((x) => x !== j) : [...judges, j])}>
-                      <span className="mono">{j}</span>
-                    </button>
-                  ))}
-                </div>
+                {cfg.data && <JudgePicker cfg={cfg.data} value={judges} onChange={setJudges} />}
               </div>
               <div className="row">
                 {([["scores", "Scores 1–10"], ["pairwise", "Pairwise picks"], ["mcq", "Multiple-choice picks"], ["rubric", "Rubric: ignore script"]] as const).map(([k, l]) => (

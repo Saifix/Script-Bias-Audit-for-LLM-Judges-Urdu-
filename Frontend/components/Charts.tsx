@@ -7,7 +7,7 @@ import { label, type CompRow, type PairRow, type PointRow } from "../lib/api";
 const LIGHT = { s1: "#3A3A3C", s2: "#8E8E93", ink: "#1D1D1F", ink2: "#6E6E73", grid: "#E5E5EA", tip: "#FFFFFF" };
 const DARK = { s1: "#E5E5EA", s2: "#8E8E93", ink: "#F5F5F7", ink2: "#A1A1A6", grid: "#38383A", tip: "#2C2C2E" };
 
-function useTheme() {
+export function useTheme() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
     const root = document.documentElement;
