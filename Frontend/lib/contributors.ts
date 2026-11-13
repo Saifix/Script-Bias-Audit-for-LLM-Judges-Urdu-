@@ -5,6 +5,6 @@ export type Contributor = { name: string; studentId?: string; role?: string; ima
 export const CONTRIBUTORS: Contributor[] = [
   { name: "Syed Sheraz Anjum", studentId: "25240017", image: "/contributors/syed-sheraz-anjum.jpg" },
   { name: "Saif ur Rehman", studentId: "24280071", image: "/contributors/saif-ur-rehman.jpg" },
-  { name: "Hussnain Ali Murtaza", studentId: "25280069" },
+  { name: "Hussnain Ali Murtaza", studentId: "25280069", image: "/contributors/hussnain-ali-murtaza.jpg" },
   { name: "Junaid Tariq", studentId: "25280044" },
 ];
