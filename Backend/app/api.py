@@ -104,7 +104,12 @@ def _dataset_status() -> dict:
         gen = {cond: {"pending": 0, "approved": 0, "rejected": 0} for cond in GENERATED}
         for r in c.execute("SELECT condition, status, COUNT(*) AS k FROM generated GROUP BY condition, status"):
             gen[r["condition"]][r["status"]] = r["k"]
-    return {"items": n[0], "code_mixed_items": n[1], "generated": gen, "job": DATA_JOB}
+        by = {cond: [] for cond in GENERATED}
+        for r in c.execute("SELECT DISTINCT condition, model, reviewer FROM generated ORDER BY condition"):
+            label = r["model"] + (f" · {r['reviewer']}" if r["reviewer"] and r["reviewer"].startswith("auto") else "")
+            if label not in by[r["condition"]]:
+                by[r["condition"]].append(label)
+    return {"items": n[0], "code_mixed_items": n[1], "generated": gen, "generated_by": by, "job": DATA_JOB}
 
 
 @app.get("/api/overview")
@@ -195,7 +200,7 @@ def review_queue(condition: str, status: str = "pending") -> dict:
             out.append({"item_id": it["id"], "pos": it["pos"], "condition": condition,
                         "source": it["urd_arab"]["options"], "belebele_roman": it["urd_latn"]["options"],
                         "question": it["urd_arab"]["question"], "generated": g["options"], "raw": g["raw"],
-                        "parse_ok": bool(g["parse_ok"]), "status": g["status"], "edited": bool(g["edited"]),
+                        "parse_ok": bool(g["parse_ok"]), "status": g["status"], "model": g["model"], "edited": bool(g["edited"]),
                         "reviewer": g["reviewer"], "correct_idx": it["correct_idx"], "wrong_idx": it["wrong_idx"]})
     return {"items": out}
 

@@ -17,7 +17,7 @@ export type JudgeStatus = { id: string } & Screening;
 export type GenCounts = { pending: number; approved: number; rejected: number };
 export type Overview = {
   judges: JudgeStatus[];
-  dataset: { items: number; code_mixed_items: number; generated: Record<string, GenCounts>; job: { state: string; message: string } };
+  dataset: { items: number; code_mixed_items: number; generated: Record<string, GenCounts>; generated_by?: Record<string, string[]>; job: { state: string; message: string } };
   total_cost_usd: number;
   total_calls: number;
   runs: number;

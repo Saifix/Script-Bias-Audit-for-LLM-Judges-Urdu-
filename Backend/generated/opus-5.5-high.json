@@ -1,0 +1,3614 @@
+{
+ "_meta": {
+  "generator": "anthropic/claude-opus-5.5",
+  "effort": "high",
+  "created": "2026-11-13",
+  "source": "Belebele (facebook/belebele, urd_Arab answer options), CC BY-SA 4.0",
+  "rules": "roman_translit: word-by-word transliteration, no translation/rewording; code_mixed: Urdu matrix language, selected nouns switched to English (Lost in the Mix, ACL 2026)",
+  "human_review": "none (auto-approved)"
+ },
+ "roman_translit": [
+  {
+   "id": "6c50f12b18",
+   "options": [
+    "Afriqi mumalik par qabza karna",
+    "aik mazboot fauj aur bahriya ki tameer karna",
+    "Misri bahri jahazon se chhutkara",
+    "Bartanvi addon ka qayam"
+   ]
+  },
+  {
+   "id": "c823e5b979",
+   "options": [
+    "yeh girne ke qareeb hai",
+    "isay mehfooz kiya jana chahiye",
+    "yeh phaphundi se aaloda hai",
+    "yeh sehat-e-aama ke liye khatra hai"
+   ]
+  },
+  {
+   "id": "6c99ec3867",
+   "options": [
+    "Europi asar o rasookh",
+    "Islami mazhab",
+    "jangli hayat",
+    "luxury resorts"
+   ]
+  },
+  {
+   "id": "8de906a842",
+   "options": [
+    "18vein sadi mein",
+    "5000 BC",
+    "1861",
+    "17vein sadi"
+   ]
+  },
+  {
+   "id": "7cd288bc13",
+   "options": [
+    "aik ghair faisla kun musafir ko",
+    "be sakhta hone ke shikar aik musafir ko",
+    "aik aise musafir ko jis ne abhi tak apna visa hasil nahin kiya hai",
+    "package deals book karne ko tarjeeh dene wale musafir ko"
+   ]
+  },
+  {
+   "id": "989f014523",
+   "options": [
+    "visa ki mutaddid baar darkhwaston se ijtinab karna",
+    "paison ki bachat karna",
+    "mutaddid passport control checkpoint se ijtinab karna",
+    "passport ki koi zaroorat na hona"
+   ]
+  },
+  {
+   "id": "7de58c11d9",
+   "options": [
+    "chhote chaurahe",
+    "chhota sa kamra",
+    "chhota sa dhancha",
+    "chhoti genden"
+   ]
+  },
+  {
+   "id": "4faabed2d6",
+   "options": [
+    "bhari traffic mein phans jana",
+    "kafi cellular service ka fuqdan",
+    "bohat tezi se tez mor lena",
+    "sarak ki tameer ka baar baar samna hona"
+   ]
+  },
+  {
+   "id": "430ce9f3c5",
+   "options": [
+    "Latini zabanen",
+    "Europi zabanen",
+    "qadeem zabanen",
+    "Hindustani zabanen"
+   ]
+  },
+  {
+   "id": "6d56251918",
+   "options": [
+    "paanch dehaat",
+    "paanch raste",
+    "paanch chhat",
+    "paanch samandar"
+   ]
+  },
+  {
+   "id": "382416e90e",
+   "options": [
+    "dunya ke saat ajaibat mein se aik banna",
+    "Firaun ke ehtiram mein",
+    "aik sang-e-meel ke taur par kaam karne ke liye",
+    "marne walon ki qabron ko mehfooz karna"
+   ]
+  },
+  {
+   "id": "508f224d81",
+   "options": [
+    "taqriban 200 saal qabl",
+    "taqriban 400 saal qabl",
+    "taqriban 600 saal qabl",
+    "taqriban 800 saal qabl"
+   ]
+  },
+  {
+   "id": "d92cabae74",
+   "options": [
+    "mahireen-e-tayooriyat ko",
+    "mamaliye (thun wale janwar) ke saath kaam karne wale logon ko",
+    "murghi khana mein kaam karne walon ko",
+    "un logon ko jo pehle mutasir ho chuke hain"
+   ]
+  },
+  {
+   "id": "ceade8b476",
+   "options": [
+    "Victoria Harbour",
+    "asal Hong Kong",
+    "Hong Kong jazeera",
+    "Kowloon waterfront"
+   ]
+  },
+  {
+   "id": "423ffa3ec0",
+   "options": [
+    "urna",
+    "muntaqil",
+    "tairna",
+    "khodna"
+   ]
+  },
+  {
+   "id": "6c5ddabb44",
+   "options": [
+    "quroon-e-wusta ke aakhir mein",
+    "12vein sadi",
+    "aala quroon-e-wusta",
+    "11vein sadi"
+   ]
+  },
+  {
+   "id": "7c05dd384c",
+   "options": [
+    "radioactive phosphorus",
+    "jeneyati mawad",
+    "radioactive sulphur",
+    "virus"
+   ]
+  },
+  {
+   "id": "0739b5bfc3",
+   "options": [
+    "har aik ko aik Amriki cent",
+    "meyari inkjet printers",
+    "printable chips",
+    "deegar tashkhisati aalat"
+   ]
+  },
+  {
+   "id": "5b48d53be1",
+   "options": [
+    "blogging",
+    "web formatting",
+    "editing",
+    "website banana"
+   ]
+  },
+  {
+   "id": "68c12d9b79",
+   "options": [
+    "izafi tawanai ka ikhraj",
+    "tez roshni ki wajah se muharrik hai",
+    "tawanai ki ghair mustahkam satah",
+    "tabkari par manfi radd-e-amal"
+   ]
+  },
+  {
+   "id": "0f9e06a46f",
+   "options": [
+    "sarif tamam traffic ko reroute karna chahta ho",
+    "sarif mumkina had tak censorship aur jasoosi se bachne ke liye fikar mand ho",
+    "sarif bunyadi taur par HTTP traffic ko reroute kar raha ho",
+    "sarif ki sargarmi ke liye motadil se le kar aala satah ki bandwidth ki zaroorat ho"
+   ]
+  },
+  {
+   "id": "2832d20310",
+   "options": [
+    "aik",
+    "teen",
+    "nau",
+    "chaar"
+   ]
+  },
+  {
+   "id": "741fb032ed",
+   "options": [
+    "mausam-e-sarma ke maheenon mein cross country running ki mashq",
+    "raftar par bardasht ko farogh dena",
+    "do minute se bhi kam waqt mein",
+    "bardasht par raftar ko farogh dena"
+   ]
+  },
+  {
+   "id": "baec98ef25",
+   "options": [
+    "barhte hue tashaddud ko rokne ki zamanat ka elan kiya jaye",
+    "direction ki fori tabdeeli",
+    "khuli debate ka istemal",
+    "aik naye diplomatic iqdam ka aaghaz"
+   ]
+  },
+  {
+   "id": "8367c91f06",
+   "options": [
+    "doosron ke saath taawun karna",
+    "apne zati mufadat ko tarjeeh dena",
+    "aksariyat par aqliyat ko kya faida hoga is par zor dena",
+    "yeh tasleem karna ke lalach faida mand sabit ho sakti hai"
+   ]
+  },
+  {
+   "id": "859ab20752",
+   "options": [
+    "isi tarah ke meyarat ki tawaqqo karna jahan se woh taalluq rakhte hain",
+    "aisi khorak azmane ki khwahish karna jin se waqfiyat na ho",
+    "unhein qawaneen par amal karna jahan se woh taalluq rakhte hon",
+    "rehan sehan ke taalluq se peshgi tehqeeq se gurez karna"
+   ]
+  },
+  {
+   "id": "38da8265d3",
+   "options": [
+    "muzahire kisi mulk ki tareekh ya saqafat ko ujagar kar sakte hain",
+    "nabatati muzahire fankarana aur taleemi muzahiron ke saath ujagar kiye jate hain",
+    "events chhe maah tak jari reh sakte hain",
+    "mumalik ko shirkat ki zaroorat nahin hai"
+   ]
+  },
+  {
+   "id": "375f3adc39",
+   "options": [
+    "khawateen fighters ko Olympics mein shamil karna",
+    "Bartanvi muqabla baaz",
+    "khawateen ki aara",
+    "London ka Olympics ki mezbani karna"
+   ]
+  },
+  {
+   "id": "b03aa9f7f0",
+   "options": [
+    "monomorphic",
+    "aabadi",
+    "nau",
+    "kaseer-shakliyat"
+   ]
+  },
+  {
+   "id": "eedd8e9798",
+   "options": [
+    "Tongo",
+    "Niue",
+    "Hawaii ke school",
+    "Pago Pago"
+   ]
+  },
+  {
+   "id": "00026851e1",
+   "options": [
+    "mutasira mansookhi ka beema",
+    "mulk ki siyasi halat ke hawala se zyada sada bayaniye",
+    "mutasira sehat beema",
+    "mulk ki siyasi halat ke hawala se tafseeli maloomat"
+   ]
+  },
+  {
+   "id": "41a0531d5c",
+   "options": [
+    "azdawaji halat par guftagu karne se ijtinab karein",
+    "mohtat rahein ke saqafati ikhtilafat maqami logon ke zabardasti rawaiye ko bharka sakte hain",
+    "chamakdar zewarat pehanne se ijtinab karein",
+    "jab zaroori ho to sakhti ka istemal karein"
+   ]
+  },
+  {
+   "id": "463a99ea28",
+   "options": [
+    "ghoron ki raftar mein izafa",
+    "un ko zyada moassar samjha jata tha",
+    "woh bare load ko sambhalne ke qabil the",
+    "unhein patriyon par lage lohe se hi pehna ja raha tha"
+   ]
+  },
+  {
+   "id": "dd42e49d4f",
+   "options": [
+    "Running Copenhagen",
+    "Go Running Tours",
+    "Running Tours Paraguay",
+    "Running Tours Barcelona"
+   ]
+  },
+  {
+   "id": "654c74dfaf",
+   "options": [
+    "McMurdo station aksar band rehta hai",
+    "thos barf khatarnak hoti hai",
+    "khusoosi tractors furteele nahin hain",
+    "yeh Bahira Ross ke zariye safar karne se zyada aasan hai"
+   ]
+  },
+  {
+   "id": "70a94e56cd",
+   "options": [
+    "chipki hui barf",
+    "insan",
+    "dhoop",
+    "izafi barf bari"
+   ]
+  },
+  {
+   "id": "d6fa1432a0",
+   "options": [
+    "U-boats",
+    "shooting range",
+    "navigation",
+    "radar"
+   ]
+  },
+  {
+   "id": "288030336d",
+   "options": [
+    "Jakar ki taraf jane wala musafir aur jis ne pehle hi ticket khareed liya ho",
+    "Bumthang ki taraf jane wala musafir aur jise 7 baje rawana hona hai",
+    "Paro ki taraf jane wala musafir aur jise 11 baje ke baad rawana hona hai",
+    "mashriq ki taraf jane wala musafir aur 6:20 se pehle station par pahunchta hai"
+   ]
+  },
+  {
+   "id": "ae3151e37f",
+   "options": [
+    "Riyasat-haye Muttahida America",
+    "Cheen",
+    "Australia",
+    "Hong Kong"
+   ]
+  },
+  {
+   "id": "f175052c8e",
+   "options": [
+    "naye dost banane ki tawaqqo rakhne wala koi shakhs beroon-e-mulk jaye ga",
+    "koi aisa shakhs jo kafi tadad mein tankhwah ki talash mein ho",
+    "koi aisa jise shakhs nai maharat hasil karne ki tawaqqo ho",
+    "koi aisa shakhs jise rehaish aur khane mein dilchaspi ho"
+   ]
+  },
+  {
+   "id": "58fa228cac",
+   "options": [
+    "Schumacher ke agle pahiye ko nuqsan pahunchne ke baad",
+    "Fisichella ne apni gari ka control kho diya",
+    "Schumacher ki apni daur khatam karne ke baad",
+    "bartari hasil karne se pehle"
+   ]
+  },
+  {
+   "id": "5589935e1c",
+   "options": [
+    "computer ki game ke shuru mein aik tutorial",
+    "aik SAT tutor",
+    "azad mutala ka program",
+    "chhote league ka coach"
+   ]
+  },
+  {
+   "id": "c89bc8b64e",
+   "options": [
+    "Star Alliance",
+    "Junoobi Bahr-ul-Kahil",
+    "LATAM Oneworld",
+    "Sky Team"
+   ]
+  },
+  {
+   "id": "0ec1b0c501",
+   "options": [
+    "Germany",
+    "Bartania",
+    "France",
+    "Poland"
+   ]
+  },
+  {
+   "id": "959fe39434",
+   "options": [
+    "behan",
+    "beti",
+    "maan",
+    "khala"
+   ]
+  },
+  {
+   "id": "35d27f37d2",
+   "options": [
+    "aik moti parat qareeb ki taraf hai",
+    "pahari ilaqon ke neeche parat patli hai",
+    "door ki taraf maria kam ho sakti hai",
+    "pahari ilaqon ke neeche maria kam ho sakti hai"
+   ]
+  },
+  {
+   "id": "fab84840cb",
+   "options": [
+    "Rift Valley mein",
+    "aik rikaz par",
+    "salmati shahadat mein",
+    "Ethiopia mein"
+   ]
+  },
+  {
+   "id": "fcb919d994",
+   "options": [
+    "aik aisa musafir jo zyada se zyada SAN Parks dekhne ka mansooba bana raha ho",
+    "sirf Kruger qaumi park ka daura karne wala musafir",
+    "kam kharch karne wala musafir jise park ki fees ko le kar tashweesh ho",
+    "aik aisa musafir jo Kruger qaumi park aur kam az kam aik doosre park ka daura karne ka mansooba bana raha ho"
+   ]
+  },
+  {
+   "id": "c8f20061bf",
+   "options": [
+    "is ko riyasat mein file kiya gaya jahan AOL ka sadar daftar hai",
+    "adalat se mehkoom kiya gaya",
+    "case mein spam email ke hawale se qanoon sazi ka istemal kiya gaya",
+    "AOL par ilzam lagaya ja raha tha"
+   ]
+  },
+  {
+   "id": "f6245df1b4",
+   "options": [
+    "Samsung",
+    "Sony",
+    "ASUS",
+    "Lenovo"
+   ]
+  },
+  {
+   "id": "278e696eb1",
+   "options": [
+    "civil aur military tayyaron ka aik purana bera",
+    "naye tayyaron ki khareedari ki ijazat dene wale budget ki kami",
+    "pabandiyan jo naye tayyaron ki khareedari ko rokti hain",
+    "tayyaron ka naqis intezam shuda bera"
+   ]
+  },
+  {
+   "id": "3c0f9e1040",
+   "options": [
+    "yeh Hawaii se chhota hai",
+    "yeh aik bahr-ul-jazair hai",
+    "aham shehar Rarotonga aur Aitutaki hain",
+    "jazeeron wala mulk Hawaii ki hi tarah aik hi time zone share karta hai"
+   ]
+  },
+  {
+   "id": "52fd3e40bc",
+   "options": [
+    "shaffaf voting box",
+    "umeedwaron ki taraf se bheje gaye numainde",
+    "voting roll par dastakhat karna",
+    "umeedwaron ke numaindon ki hi janib se voton ki ginti"
+   ]
+  },
+  {
+   "id": "de51188a42",
+   "options": [
+    "present policy par tanqeed",
+    "aik elaan keh baaz tabdeeliyon se Iraq mein barhte hue tashaddud se bacha ja sakta hai",
+    "Iraq ki sarhadon ko mehfooz banane ke liye sifarishat",
+    "US ittefaq-e-raye ki darkhwast"
+   ]
+  },
+  {
+   "id": "212c3bfaaf",
+   "options": [
+    "hum asr sajawat",
+    "mausami nashte ki peshkashon ki aik range",
+    "high end bedding",
+    "maqami taur par milne wala khane peene ka saman"
+   ]
+  },
+  {
+   "id": "129b42166c",
+   "options": [
+    "July ki tareekh Nigeria ki AfCFTA mein shamooliyat ki sharait ka aik hissa thi",
+    "qawaid o zawabit aur riayaton ka kafi framework maujood hai",
+    "is ki manzoori AU Trade and Industry Commissioner ne di thi",
+    "asal qawaneen aur mehsoolat ki riayaton par ittefaq kiya gaya hai"
+   ]
+  },
+  {
+   "id": "33675251c3",
+   "options": [
+    "apni car ki driving ki hudood ki mazboot samajh",
+    "aik aisi gari jis ki seaton par leta ja sake",
+    "aik tent",
+    "khema lagane ke liye aik private property"
+   ]
+  },
+  {
+   "id": "9ac4b832d2",
+   "options": [
+    "agar aik ziyada se ziyada aperture tarjeeh hai",
+    "agar aap aik kam lens anasir chahte hain",
+    "agar aap tareek tarteebat mein flash istemal nahin karna chahte hain",
+    "agar aap ziyada focal pecheedgi ki talash mein hote hain"
+   ]
+  },
+  {
+   "id": "edc425cf05",
+   "options": [
+    "Apollo-Soyuz mission",
+    "khala mein chalna",
+    "izafi sargarmi",
+    "khala baaz number 11"
+   ]
+  },
+  {
+   "id": "8cafa6785c",
+   "options": [
+    "aik baqaida sayyah ko",
+    "aik tajurba kar musafir ko",
+    "aik bain-ul-aqwami talib ilm ko",
+    "aik karobari musafir ko"
+   ]
+  },
+  {
+   "id": "bf0f287c96",
+   "options": [
+    "woh Puerto Princesa mein apne safar par gamzan tha",
+    "yeh Palawan mein muqeem hai",
+    "mine jahaz ko jawabi tadbeer deti hai",
+    "is ko US Navy ke satwen bere se munsalik kiya gaya hai"
+   ]
+  },
+  {
+   "id": "79ada391eb",
+   "options": [
+    "khud se jane se",
+    "char ka group talash karne se",
+    "aik doosre shakhs ke sath jane se",
+    "chhe ya is se ziyada ka group talash karne se"
+   ]
+  },
+  {
+   "id": "d72c1969d4",
+   "options": [
+    "cabin ka maqam",
+    "visa ke taqaze",
+    "sharait",
+    "qasbe mein guzara jane wala waqt"
+   ]
+  },
+  {
+   "id": "49924318f9",
+   "options": [
+    "navigating",
+    "safar mein",
+    "shooting",
+    "operating"
+   ]
+  },
+  {
+   "id": "931694cc93",
+   "options": [
+    "ankhon ki izafi jaanch darkar ho sakti hai",
+    "kuch frames ke liye nuskha durust nahin ho sakta hai",
+    "woh jaali ho sakte hain",
+    "ho sakta hai keh insurance lagat ka ihata na karti ho"
+   ]
+  },
+  {
+   "id": "6c7f0635f3",
+   "options": [
+    "Jerusalem ka mustaqbil",
+    "1967 ki jang ki wajah",
+    "wadi mein fauj ki maujoodgi",
+    "sarhadon ke upar tanaza"
+   ]
+  },
+  {
+   "id": "1b4bf085be",
+   "options": [
+    "woh mashq kar rahe the",
+    "un ki season se qabl aik meeting thi",
+    "un ka itwar ke roz aik match tha",
+    "woh Bologna ke sath mashq kar rahe the"
+   ]
+  },
+  {
+   "id": "2d068613cd",
+   "options": [
+    "warm up lap ke dauran",
+    "apni bike se girne ke baad",
+    "hospital mein",
+    "tibbi amal ke sath track par hone ke dauran"
+   ]
+  },
+  {
+   "id": "59e2c942bc",
+   "options": [
+    "single R ke muqabla mein double R ka talaffuz mukhtalif hota hai",
+    "ziyada tar alfaz ka talaffuz isi tarah hota hai jaisa unhen likha jata hai",
+    "huroof C aur G wale alfaz ajeeb ho sakte hain",
+    "ziyada tar alfaz ka talaffuz mundarja zail huroof-e-illat ki bunyad par tabdeel hota hai"
+   ]
+  },
+  {
+   "id": "301ac99d48",
+   "options": [
+    "Sikh mat Hindu riwayat ke andar firqa warana taqseem ka hiyeeja tha",
+    "guru aik bunyadi pehlu hai jo Sikh mazhab ke liye munfarid hai",
+    "mazhab ke bani Guru Nanak ke baad nau guruon ki pairvi ki gayi hai",
+    "Sikh mat ki kuch riwayat ki jaren Hindu mat mein hain"
+   ]
+  },
+  {
+   "id": "5a120b1495",
+   "options": [
+    "riha",
+    "giraftar karne wale afsar ke sath mulaqat",
+    "judge Glynn ki janib se jari kiye gaye bazabta ilzamat",
+    "aik samaat"
+   ]
+  },
+  {
+   "id": "a2c9d2380d",
+   "options": [
+    "un ki maujoodgi ko nazar andaz karna",
+    "bohat aahistagi se qareeb aana",
+    "un ke mumkina khatre ki satah ko kam karna",
+    "un ka mushahida door se karna"
+   ]
+  },
+  {
+   "id": "91f7044d0a",
+   "options": [
+    "sardiyon ke dauran",
+    "is dauran jab mausam urooj par ho",
+    "Hindustani mausam-e-garma ke dauran",
+    "mausam-e-bahar ke dauran"
+   ]
+  },
+  {
+   "id": "b72a7d5036",
+   "options": [
+    "woh adalati khidmat faraham karte hain",
+    "Pakistani sadar ne un ka intikhab kiya tha",
+    "woh Pakistani aaeen ke paband hain",
+    "baaz ilaqon par un ka mukammal qaboo hai"
+   ]
+  },
+  {
+   "id": "cb8d0e4ee5",
+   "options": [
+    "intehai namuwafiq mausami halat",
+    "barf ki miqdar",
+    "barf ki motai",
+    "pighalti hui barf"
+   ]
+  },
+  {
+   "id": "ef6e2c34c1",
+   "options": [
+    "proton",
+    "pH",
+    "alkaline",
+    "electron"
+   ]
+  },
+  {
+   "id": "fec51de6e7",
+   "options": [
+    "talib ilm",
+    "Minneapolis Star Tribune ke aik sahafi hai",
+    "qabaili chairman",
+    "Red Lake mein aik authority hai"
+   ]
+  },
+  {
+   "id": "924675519c",
+   "options": [
+    "pehli jang-e-azeem",
+    "Belgium ka inqilab",
+    "doosri jang-e-azeem",
+    "European Union ka foundation"
+   ]
+  },
+  {
+   "id": "1e1e9cc3f4",
+   "options": [
+    "chhoti billiyan",
+    "bari billiyan",
+    "darmiyane size ki billiyan",
+    "barah singha"
+   ]
+  },
+  {
+   "id": "1926d74a5d",
+   "options": [
+    "doctors",
+    "khawateen ki sehat ke karkunan",
+    "mard",
+    "mard aur khawateen donon afrad"
+   ]
+  },
+  {
+   "id": "3a6c31fa13",
+   "options": [
+    "kisi aise shehar mein kaam se mutaliq conference ka safar jis ka daura musafir pehle kar chuka ho",
+    "aik bohat hi khas budget par do hafte ka taweel safar",
+    "aik aisa safar jis mein zaban ki rukawat pesh aaye gi",
+    "kisi musafir ka beroon-e-mulk pehla safar"
+   ]
+  },
+  {
+   "id": "cfec66b26d",
+   "options": [
+    "un ki umar",
+    "patthar ka istemal",
+    "un ka size",
+    "un ki tameer"
+   ]
+  },
+  {
+   "id": "76b6fd6463",
+   "options": [
+    "satellite par mabni technology",
+    "durust technology",
+    "zameeni radar par mabni aik technology",
+    "carbon ikhraj ki technology"
+   ]
+  },
+  {
+   "id": "274851960c",
+   "options": [
+    "AOL apni raftar se IM bazar ko aage barhane aur isko taraqqi dene mein kamyab raha hai",
+    "IM market ko tayyar karne wali AOL wahid company hogi",
+    "Microsoft service ke sarifeen ki majmui tadad AOL ke sarifeen ki tadad ka muqabla kare gi",
+    "Riyasat Haye Muttahida Amreeka mein AOL ka mazeed istemal nahin kiya jaye ga"
+   ]
+  },
+  {
+   "id": "5b5818f385",
+   "options": [
+    "6 x 6 cm manfi",
+    "56 x 56 mm manfi",
+    "35 mm manfi",
+    "36 x 24 mm manfi"
+   ]
+  },
+  {
+   "id": "ef6f8477e8",
+   "options": [
+    "70 run",
+    "36 run",
+    "100 run",
+    "41 run"
+   ]
+  },
+  {
+   "id": "0f137a9bc9",
+   "options": [
+    "20 mile junoob mein",
+    "40 mile junoob mein",
+    "40 mile shimal-shimal mashriq",
+    "65 mile shimal mein"
+   ]
+  },
+  {
+   "id": "ed7942c249",
+   "options": [
+    "250",
+    "10",
+    "1759",
+    "9000"
+   ]
+  },
+  {
+   "id": "678165cf67",
+   "options": [
+    "first aid",
+    "jangi ilaqe",
+    "veerane ki baqa",
+    "mukhalif mahol"
+   ]
+  },
+  {
+   "id": "6e2cf389fb",
+   "options": [
+    "mausam ki wajah se hawai jahaz asal mein utarne se qasir tha",
+    "hawai jahaz intehai door daraz maqam par crash ho gaya",
+    "crash hone se pehle hawai jahaz ne teen martaba utarne ki koshish ki",
+    "hawai jahaz ke crash ki site ki talash kharab mausam ki wajah se mutasir hui"
+   ]
+  },
+  {
+   "id": "dba2b0f64a",
+   "options": [
+    "hawai jahaz mein bomb hone ki dhamki mausool hui thi",
+    "hawai jahaz Urumqi mein utra tha",
+    "hawai jahaz ko Afghanistan mein mor diya gaya tha",
+    "hawai jahaz Kandahar mein utra tha"
+   ]
+  },
+  {
+   "id": "705bf51145",
+   "options": [
+    "AOL par ghair manqoola taqseem ka ilzam lagaya gaya tha",
+    "case mein do sar bar awurda internet service providers shamil the",
+    "case ko 2003 mein file kiya gaya",
+    "AOL ne case file karne ka aaghaz kiya"
+   ]
+  },
+  {
+   "id": "c423622f26",
+   "options": [
+    "insan ne doosre sitaron ka safar bhi kiya hai",
+    "insan doosri duniyaon ko talash karne ke qabil hi nahin hai",
+    "doosre sayyaron par bhi zindagi maujood hai",
+    "sitaron ke darmiyan kharbon mile se kam ka fasla hai"
+   ]
+  },
+  {
+   "id": "faea720309",
+   "options": [
+    "aik smartphone",
+    "aik laptop",
+    "aik tablet",
+    "aik pager"
+   ]
+  },
+  {
+   "id": "874a45fcf9",
+   "options": [
+    "woh bazar par ziyada control hasil karne ke liye zaroori hain",
+    "woh ghair qanooni copy karne se bachne mein madad karte hain",
+    "woh tehseel-e-zar ke liye mufeed hain",
+    "woh razdari rokne mein shaz o nadir hi madad karte hain"
+   ]
+  },
+  {
+   "id": "998faaeffd",
+   "options": [
+    "khurak ki farahami",
+    "chhupne ki jaghen",
+    "sathiyon ki talash",
+    "parwaz ki raftar"
+   ]
+  },
+  {
+   "id": "789bf8edc7",
+   "options": [
+    "tamam alfaz ka talaffuz",
+    "Faransisi adadi nizam",
+    "school mein parhai jane wali miyari Faransisi",
+    "baaz Faransisi alfaz ke hije"
+   ]
+  },
+  {
+   "id": "826e85395b",
+   "options": [
+    "Musashi ki bahali",
+    "samundari talash",
+    "ROV ki tameer",
+    "samundar ki naqsha sazi ke bare mein seekhna"
+   ]
+  },
+  {
+   "id": "33f21351fc",
+   "options": [
+    "mukhtalif sukoon aawar adwiyat ke sath post traumatic stress disorder ka ilaj",
+    "scopolamine ke liye herbane ke beejon ke araq ka istemal",
+    "sharyanon ke clamp ke sath khoon ke bahao ko rokna",
+    "gangrene ke mareezon ke liye aaza katna"
+   ]
+  },
+  {
+   "id": "d59e2248fb",
+   "options": [
+    "unhon ne gosht tak rasai faraham ki",
+    "unhon ne maweshiyon ko charagahon mein charane mein madad ki",
+    "unhon ne rifaqat ki pesh kash ki",
+    "unhon ne doodh tak rasai faraham ki"
+   ]
+  },
+  {
+   "id": "4eca61af7e",
+   "options": [
+    "daawe karne ke liye bain-ul-aqwami phone numberaat",
+    "beema daaron ka email pata",
+    "mukhtar naamon ke liye bain-ul-aqwami phone numberaat",
+    "policy holder ka email pata"
+   ]
+  },
+  {
+   "id": "7c70db3f84",
+   "options": [
+    "door daraz mulk ki sarkon ke taweel phailao hain",
+    "lanes tang hain",
+    "raftaar ki hudood ki tameel shaz-o-nadir hi ki jati hai",
+    "cell phone service ka koi masla nahin hona chahiye"
+   ]
+  },
+  {
+   "id": "406a4c53ae",
+   "options": [
+    "Devonport",
+    "shumali harbour zila",
+    "Central Auckland",
+    "Long Bay"
+   ]
+  },
+  {
+   "id": "bceff6628a",
+   "options": [
+    "riyasat ke 32 mandoobeen",
+    "Republican party ki namzadgi",
+    "riyasat ke tamam mandoobeen",
+    "46 feesad vote"
+   ]
+  },
+  {
+   "id": "b07c110bc7",
+   "options": [
+    "kam az kam paanch afraad",
+    "koi nahin",
+    "aik gas company ka uhdedaar",
+    "aik parosi"
+   ]
+  },
+  {
+   "id": "cc7c1c6242",
+   "options": [
+    "subtitles ki ijazat dene ke liye",
+    "taake tasveer poori screen ko dhak le",
+    "deegar tarteebon mein aasan tabdeeli ki ijazat dene ke liye",
+    "subtitles ko neeche ke bohat qareeb kaatna hai"
+   ]
+  },
+  {
+   "id": "5bd18d18f8",
+   "options": [
+    "aik cocktail bar",
+    "aik on-site gourmet restaurant",
+    "saathi mehmaan jo maaroof ya qabil-e-shanakht hain",
+    "jadeed upgrades ke saath haal hi mein tajdeed shuda kamre"
+   ]
+  },
+  {
+   "id": "30fd30d029",
+   "options": [
+    "HJR-3 ka fori tor par jaiza",
+    "hum jins parast civil unions ka mustaqbil ka haq",
+    "qanoon sazi ka hangami ijlaas",
+    "hum jins parast civil unions ki mumanat"
+   ]
+  },
+  {
+   "id": "6ab8e344ec",
+   "options": [
+    "video recording se aham pesh raft hui hai",
+    "durust tashreeh se jhoot ka pata chal sakta hai",
+    "taqreer ke saath saath chehre ke taasurat ki bhi tashreeh ki jati hai",
+    "is se ikhlaas ka takhmeena karne mein madad mil sakti hai"
+   ]
+  },
+  {
+   "id": "14667b0e25",
+   "options": [
+    "darya-e-Danube ke kinare koi shehar",
+    "Erie nehar se aage",
+    "Rhine valley mein",
+    "androon mulk ki aabi guzargah"
+   ]
+  },
+  {
+   "id": "256e0d052d",
+   "options": [
+    "naye wazir-e-azam ka taqarrur karein",
+    "nazm-o-nasq bahal karne ke liye tankon ka istemal karein",
+    "ujraton mein katauti mein izafa",
+    "kuch muashi mutalbaat ko tasleem karein"
+   ]
+  },
+  {
+   "id": "7fee11aa51",
+   "options": [
+    "tankiyon ke andar thermal tauseeh thi",
+    "system ki jaanch ke baad bijli ki kharabi thi",
+    "tankiyan poori salahiyat tak bhari hui thin",
+    "sanvi bharai ka raqba kaafi barrels nahin rakh sakta tha"
+   ]
+  },
+  {
+   "id": "feae7eb581",
+   "options": [
+    "Africa se bahar ke maqamaat ke liye izafi visa ke akhrajaat",
+    "Africa mein rawangi mehsoolaat ke akhrajaat",
+    "Africa visa ke akhrajaat",
+    "Africa se bahar ke maqamaat ke liye zameeni naql-o-haml ke akhrajaat"
+   ]
+  },
+  {
+   "id": "f18fdbc588",
+   "options": [
+    "behtareen supporting adakara",
+    "behtareen director",
+    "behtareen adakara",
+    "behtareen film-editing"
+   ]
+  },
+  {
+   "id": "f59b6bd30e",
+   "options": [
+    "iftitahi taqreebaat",
+    "Taizicheng ski area events",
+    "ikhtitami taqreebaat",
+    "androoni ice events"
+   ]
+  },
+  {
+   "id": "7e04c27d6e",
+   "options": [
+    "caron ko idhar se udhar karne wale sayyah",
+    "teen ka aik group",
+    "e saath safar karne wale do dost",
+    "paanch ka aik group"
+   ]
+  },
+  {
+   "id": "e58610907e",
+   "options": [
+    "sunna",
+    "dekhna",
+    "chalna",
+    "baat cheet"
+   ]
+  },
+  {
+   "id": "a0e3a58cbc",
+   "options": [
+    "shumali sahil",
+    "Kowloon waterfront",
+    "Hong Kong ka androon shehar",
+    "Victoria Harbour"
+   ]
+  },
+  {
+   "id": "ffffdd1d83",
+   "options": [
+    "maghrib",
+    "junoob",
+    "mashriq",
+    "shumal maghribi"
+   ]
+  },
+  {
+   "id": "39ce9e3e08",
+   "options": [
+    "aik khurdura, tang sole",
+    "chamra",
+    "aik airhi",
+    "e chaura sole"
+   ]
+  },
+  {
+   "id": "c7dddbee50",
+   "options": [
+    "shehri sabza zaar",
+    "pahar par paidal safar",
+    "adventure khel",
+    "karkardagi ke funoon"
+   ]
+  },
+  {
+   "id": "303a0aadbd",
+   "options": [
+    "garhe ko garam karne ke liye geothermal hangi aag se garam pattharon ka istemal karti hai",
+    "garam pattharon ka istemal karne wali hangi Wellington mein dastiyab hai",
+    "hangi ka istemal karte hue aksar roast kiya hua raat ka khana pakaya jata hai",
+    "geothermal hangi Rotorua mein paayi ja sakti hai"
+   ]
+  },
+  {
+   "id": "cc53cd8b8d",
+   "options": [
+    "Milky Way aur chaand",
+    "zameen aur sayyara kehkashan",
+    "earth aur chaand",
+    "sayyara kehkashan aur aakashganga"
+   ]
+  },
+  {
+   "id": "5955d1cc26",
+   "options": [
+    "tez safari ke dastavezaat",
+    "hotel ki deals",
+    "tamam shamil packages",
+    "reservation ko rokna"
+   ]
+  },
+  {
+   "id": "4e4460bb24",
+   "options": [
+    "data connection ke baare mein fikr karne ki zaroorat na hona",
+    "paison ki bachat karna",
+    "kiraye se bachna",
+    "naye naqshe khareedne ki zaroorat na hona"
+   ]
+  },
+  {
+   "id": "153a1f6329",
+   "options": [
+    "sanjeedgi se pesh aana",
+    "site ke aas paas kahin nishan chhorna",
+    "mazaq banana",
+    "saakht ko khurachna"
+   ]
+  },
+  {
+   "id": "8dab3a47fe",
+   "options": [
+    "chori shuda caron ke muqaddamat ke liye hi d wasail makhsoos karein",
+    "agency ki kamyabi ki sharah mein izafa",
+    "un jaraim par tawajjuh markooz karein jinhein hal karna aasan hona chahiye",
+    "pornography ke muqaddamat ke liye agents ko waqf karein ge"
+   ]
+  },
+  {
+   "id": "c0ddbad85c",
+   "options": [
+    "dakhli daste",
+    "aik hadsa",
+    "Soviet afwaj",
+    "aik zer-e-iltiwa tehqiqaat"
+   ]
+  },
+  {
+   "id": "0121f68e4b",
+   "options": [
+    "shumali Kivu soobe ki laraiyan baais-e-tafreeh hain",
+    "yeh sasti pahari gorilla trekking ke liye aik achhi jagah hai",
+    "Goma ke atraaf mein jane ke liye motor cycle taxi aik achha tareeqa hai",
+    "Nyiragongo aatish fishan ki chowki shehar mein waqe hai"
+   ]
+  },
+  {
+   "id": "91fd06c69c",
+   "options": [
+    "Portugali",
+    "Hispanvi tajir",
+    "Marinids",
+    "Morocco ke sultan"
+   ]
+  },
+  {
+   "id": "2edcec8b05",
+   "options": [
+    "school ka kaam",
+    "games khelna",
+    "cartoon dekhna",
+    "woh cheezein jo woh karne se lutf andoz hote hain"
+   ]
+  },
+  {
+   "id": "8cae941b84",
+   "options": [
+    "woh kisi aziz ke marne par hone wale akhrajaat ka ihata karte hain",
+    "unhein airline ki website par barah-e-raast book kiya jana lazmi hai",
+    "woh aakhri minute ke safar par hone wale akhrajaat ka ihata karte hain",
+    "unhein phone ke zariye airline ke saath barah-e-raast book karaya jana lazmi hai"
+   ]
+  },
+  {
+   "id": "088ee8d76f",
+   "options": [
+    "Petros Mantouvalos",
+    "Sakis Kechagioglou",
+    "George Nikolopoulos",
+    "Makis Triantafyllopoulos"
+   ]
+  },
+  {
+   "id": "a7362cbcb9",
+   "options": [
+    "aik crust",
+    "aik plasma",
+    "photosphere",
+    "markaz"
+   ]
+  },
+  {
+   "id": "da4b99eb3f",
+   "options": [
+    "Jardin de la Union",
+    "bosa ki gali",
+    "Templo de San Diego",
+    "Callejon del Beso"
+   ]
+  },
+  {
+   "id": "82c9402c0e",
+   "options": [
+    "sanvi bharai ka raqba poori salahiyat tak bhara ja raha hai",
+    "fire command system ki hasb-e-mamool jaanch",
+    "harari tauseeh",
+    "Fort Greely ke pump stationon mein se aik mein aag"
+   ]
+  },
+  {
+   "id": "02a3952580",
+   "options": [
+    "skate ke blade ke nichle hisse par halka sa mor",
+    "skate ke blade ke saath dohre kinare hain",
+    "skater ki majmui maharat ki satah par",
+    "barf ya yakh ka mayaar"
+   ]
+  },
+  {
+   "id": "049a30e636",
+   "options": [
+    "aik mukhtalif ittehad mein aik mukhtalif airline",
+    "aik hi ittehad ke tehat aap kisi sab se zyada safar ki jane wali airline",
+    "aik mukhtalif ittehad mein aap kisi sab se zyada safar ki jane wali airline",
+    "aik hi ittehad ke andar aik mukhtalif airline"
+   ]
+  },
+  {
+   "id": "eaf847013a",
+   "options": [
+    "bolte hue peechhe mur kar dekhna",
+    "munh ko phaarna",
+    "tezi se palkein jhapakna",
+    "angootha uthana"
+   ]
+  },
+  {
+   "id": "58c02e6ecc",
+   "options": [
+    "toofan ke mazboot hokar samandari aandhi banne ki peshangoi ki gayi hai",
+    "toofan ki musalsal hawaon ke baare mein sciencedan pur yaqeen nahin hain",
+    "toofan landfall se bohat door hai",
+    "toofan Miami se bohat door waqe hai"
+   ]
+  },
+  {
+   "id": "55bcc14f76",
+   "options": [
+    "un tak sirf makhsoos mumalik mein rasai ki ja sakti hai",
+    "toll free numberon ke zariye",
+    "corner ki store par",
+    "pay phone istemal karke aur izafi raqam ada karke"
+   ]
+  },
+  {
+   "id": "5e73be441f",
+   "options": [
+    "certification ko laghw karne ki",
+    "ba-ikhtiyar mahol paida karne ki",
+    "tanzeem ke andar zaroori tabdeeliyan karne ki",
+    "aik azad tehqiqaat karne ki"
+   ]
+  },
+  {
+   "id": "592aa0dd94",
+   "options": [
+    "mansooba bandi",
+    "awaz ki pehchan",
+    "scheduling",
+    "task automation"
+   ]
+  },
+  {
+   "id": "8f961ac6a0",
+   "options": [
+    "apni aamdani ko mustahkam karna",
+    "naye ilaqon mein wusat dena",
+    "apni profile mein izafa karna",
+    "apne hissa daaron ko mutmain karna"
+   ]
+  },
+  {
+   "id": "c423405ecd",
+   "options": [
+    "9 kilometer",
+    "11 kilometer",
+    "70 kilometer",
+    "77 kilometer"
+   ]
+  },
+  {
+   "id": "9cdf1897aa",
+   "options": [
+    "zameen ki khuli wusatein",
+    "jangalati satah-e-murtafa",
+    "gehri jagahein",
+    "moorlands"
+   ]
+  },
+  {
+   "id": "df9574371f",
+   "options": [
+    "governor",
+    "bachche",
+    "Texas ke afsaraan",
+    "maqami bashinde"
+   ]
+  },
+  {
+   "id": "e69c02011e",
+   "options": [
+    "Medecins Sans Frontieres",
+    "Angola",
+    "Mangola",
+    "aalmi idara-e-sehat"
+   ]
+  },
+  {
+   "id": "fbdbe0f026",
+   "options": [
+    "woh raat mein achhi tarah se shikar karne ke qabil hain",
+    "woh khamoshi se harkat karte hain",
+    "inki soonghne ki hiss kamzor hai",
+    "woh chhote janwaron ka shikar hi ko tarjeeh dete hain"
+   ]
+  },
+  {
+   "id": "b669201d06",
+   "options": [
+    "Germany",
+    "Poland",
+    "Scotland",
+    "Lithuania"
+   ]
+  },
+  {
+   "id": "eae1c6395b",
+   "options": [
+    "sharyan",
+    "capillaries",
+    "aaza",
+    "rag"
+   ]
+  },
+  {
+   "id": "513b00e95a",
+   "options": [
+    "Eskimo qabail",
+    "Norway ke bashinde",
+    "Erik the Red",
+    "Sweden"
+   ]
+  },
+  {
+   "id": "c765b02dda",
+   "options": [
+    "November se March",
+    "siyahati mausam ke dauran",
+    "jab pani ki satah buland ho",
+    "barish ke mausam ke bahar"
+   ]
+  },
+  {
+   "id": "3b772e8108",
+   "options": [
+    "tsunami ka koi khatra nahin tha",
+    "bashindgan ke darmiyan ghabrahat ko rokne ke liye",
+    "maqami tijaraton par parne wale asar ko rokne ke liye",
+    "kyun yeh zalzala ke magnitude ki shart par poora nahin utra"
+   ]
+  },
+  {
+   "id": "b981a06191",
+   "options": [
+    "tawaqqo hai ke donon teamein aik hi satah par karkardagi ka muzahira karein gi",
+    "donon teamon ke rozmarra ke mamoolat mein khud mukhtari ki mukhtalif satahein hain",
+    "donon teamein aik ghair marai management team ko report karti hain",
+    "donon teams aik hi waqt ke zone mein kaam karti hain"
+   ]
+  },
+  {
+   "id": "802b873cc3",
+   "options": [
+    "chhote bachon ko lana",
+    "maqam par camping",
+    "der ratak tak mausiqi bajana",
+    "jaldi jana"
+   ]
+  },
+  {
+   "id": "2d793b2364",
+   "options": [
+    "aik muashra",
+    "aik chhoti si saqafat",
+    "aik shehri riyasat",
+    "aik tehzeebi saqafat"
+   ]
+  },
+  {
+   "id": "c191072fa3",
+   "options": [
+    "traffic ki rawani",
+    "sarak ki mansooba bandi",
+    "sarak ki karrawaiyan",
+    "traffic ka bahao"
+   ]
+  },
+  {
+   "id": "5a23a7e6ea",
+   "options": [
+    "shehar hawai jahaz ke zariya qabil rasai hai",
+    "yeh nadir ki bajaye zyada door daraz hai",
+    "is mein ird gird ke shehron ki bajaye zyada tar Arabi mizaj zauq paya jata hai",
+    "shehar sayyahon ko apni taraf mazeed mutawajjeh nahin karta"
+   ]
+  },
+  {
+   "id": "0c5bbd9a2c",
+   "options": [
+    "Bahra Aswad aur Bahr Gilan",
+    "jheel Onega aur nadi Volga",
+    "Bahira Arctic aur Bahira Baltic",
+    "junoobi samandar aur Bahira Ahmar"
+   ]
+  },
+  {
+   "id": "1ba778a950",
+   "options": [
+    "Donald Trump",
+    "Tayyip Erdogan",
+    "ISIS ke jang baaz",
+    "press secretary"
+   ]
+  },
+  {
+   "id": "2292254d35",
+   "options": [
+    "ghabraye hue bashinde",
+    "tsunami ka khatra",
+    "aik jari karda warning",
+    "magnitude ki scale par 6.5"
+   ]
+  },
+  {
+   "id": "d425bccce4",
+   "options": [
+    "us ne hamle ke dauran aik gari ka istemal kiya",
+    "us ne hasb-e-iddiya dhamaka khez mawad se dhamaka kiya",
+    "hukkam ko us ki nasl ke bare mein maloom hai",
+    "woh ghair zakhmi tha"
+   ]
+  },
+  {
+   "id": "3154537a7b",
+   "options": [
+    "November ke akhir se May ke wast tak har jagah",
+    "mandiron mein",
+    "mandir ke melon ke juloson mein",
+    "Kerala ki sarkon par"
+   ]
+  },
+  {
+   "id": "d76b5748f9",
+   "options": [
+    "nauzaida ke sath safar karne wala joda",
+    "aik sath safar karne wale teen 22 sala naujawan",
+    "70 ki dahai wala aik joda",
+    "apne bachon ke sath safar karne wale do khandan"
+   ]
+  },
+  {
+   "id": "6ad90eeada",
+   "options": [
+    "web formatting ki mashq karna",
+    "aik maroof travel blog ke liye kai mazameen likhein",
+    "apni khud ki website banayein",
+    "apni editing ki salahiyaton ko nikharein"
+   ]
+  },
+  {
+   "id": "20b6b440cf",
+   "options": [
+    "Barah",
+    "Huhne",
+    "Davey",
+    "Starmer"
+   ]
+  },
+  {
+   "id": "9bcb1d4dc3",
+   "options": [
+    "train se utarne ke baad",
+    "jab aap so rahe hon",
+    "is ka muaina nahin hota",
+    "chalti hui train mein"
+   ]
+  },
+  {
+   "id": "379f4445b0",
+   "options": [
+    "alehdagi",
+    "dobara jorna",
+    "tabdeeli",
+    "izhar kiya"
+   ]
+  },
+  {
+   "id": "8bda977db8",
+   "options": [
+    "janwar ke araishi par ka rang",
+    "yeh samajhna par parwaz mein istemal nahin hue the",
+    "pankhon ke irtiqa mein baseerat",
+    "is baat ki tasdeeq ke zyada tar dinosauron ke pankh hote the"
+   ]
+  },
+  {
+   "id": "079dc6a894",
+   "options": [
+    "aik aisi tasveer jo poori screen ko dhakti nahin hai",
+    "juzvi taur par hi kate hue subtitle",
+    "aik aisi tasveer jo poori screen ko dhak leti ho",
+    "kinaron ko kaat hi dein"
+   ]
+  },
+  {
+   "id": "070efaf9f5",
+   "options": [
+    "pehle hi janch kar lena ke aap ko kin cheezon ki film banane ki ijazat hai",
+    "izafi license hasil karna",
+    "ijazaton ki dobara tehqeeq karna",
+    "purhujoom ilaqon mein film banana jahan drone qabil tawajjoh nahin hoga"
+   ]
+  },
+  {
+   "id": "7223e35695",
+   "options": [
+    "faslon mein tanawwu",
+    "taraqqi pazeer mumalik mein technology lana",
+    "flood proof makanat",
+    "global warming ke asraat ko khatam karna"
+   ]
+  },
+  {
+   "id": "621b3da811",
+   "options": [
+    "mainland",
+    "New Zealand",
+    "jazair Chatham",
+    "Polynesia"
+   ]
+  },
+  {
+   "id": "751ed38c4f",
+   "options": [
+    "sayyahon",
+    "boorhe",
+    "photographer",
+    "bachche"
+   ]
+  },
+  {
+   "id": "7e55caf197",
+   "options": [
+    "un aik ki sadarti umeedwari",
+    "un ka Senate ka intikhab larne ka irada",
+    "Buenos Aires ke soobe ke wafd ke liye unki muhim",
+    "un ka maujooda senator ke ohde se mustafi hone ka mansooba"
+   ]
+  },
+  {
+   "id": "3464d65822",
+   "options": [
+    "yoga ke mukhtalif andaz ke zariye",
+    "devtaon ke tasawwur ke sath",
+    "mantra ki takrar",
+    "sans lene ki mashqein"
+   ]
+  },
+  {
+   "id": "8a5ae9232a",
+   "options": [
+    "disk ki naql",
+    "bazar par control",
+    "raazdari rokna",
+    "ghair qanooni copy karna"
+   ]
+  },
+  {
+   "id": "8ed3b58601",
+   "options": [
+    "nahamwar khitta",
+    "goli baari",
+    "oonchi paharyan",
+    "kharab mausam"
+   ]
+  },
+  {
+   "id": "d8ba8168ea",
+   "options": [
+    "tayyar shuda khana",
+    "microwave ovens",
+    "on-site restaurant",
+    "sasti qeematein"
+   ]
+  },
+  {
+   "id": "e72cd12848",
+   "options": [
+    "tanha scienci tareeqa",
+    "mushahidat karna",
+    "mumkina mafroozay ko khatam karna",
+    "tajarbat ka ineqad"
+   ]
+  },
+  {
+   "id": "ee140356a7",
+   "options": [
+    "railway",
+    "hawai jahaz",
+    "kashti",
+    "car"
+   ]
+  },
+  {
+   "id": "1f27d4f63f",
+   "options": [
+    "Brooks",
+    "Simon",
+    "Ullman",
+    "Gruening"
+   ]
+  },
+  {
+   "id": "e736520014",
+   "options": [
+    "makhsoos mumalik mein",
+    "train ke stationon par",
+    "corner ki dukanon mein",
+    "pay phones par"
+   ]
+  },
+  {
+   "id": "ef3b3f51c0",
+   "options": [
+    "1977",
+    "1974",
+    "1930",
+    "1970"
+   ]
+  },
+  {
+   "id": "c321cd58fe",
+   "options": [
+    "John Dunlap",
+    "George Washington",
+    "John Nixon",
+    "Charles Thomson"
+   ]
+  },
+  {
+   "id": "fdc0f8b9f5",
+   "options": [
+    "mehman Hajj ke liye Makkah Mukarramah mein the",
+    "kuch mehman maqami shehri nahin the",
+    "mehman Hajj ke mauqe par wahan maujood the",
+    "mehmanon ki aksariyat ka taalluq muqaddas shehar se tha"
+   ]
+  },
+  {
+   "id": "73162a9c39",
+   "options": [
+    "us ke sar mein chotein aayin",
+    "us ne ghar ke andar maujood kisi bhi shakhs ko zakhmi nahin kiya",
+    "use Cambridge ke hospital se Great Yarmouth ke hospital mein muntaqil kar diya gaya tha",
+    "emergency services ne use gari se nikalne mein madad ki"
+   ]
+  },
+  {
+   "id": "ab7298f194",
+   "options": [
+    "paidal",
+    "asleha ke baghair hi",
+    "ghore ki peeth par",
+    "kam faujiyon ke sath"
+   ]
+  },
+  {
+   "id": "6aaa83d2ed",
+   "options": [
+    "internet routed calls",
+    "aalmi phone numbers",
+    "satellites",
+    "PSTN phones"
+   ]
+  },
+  {
+   "id": "2f32f0da73",
+   "options": [
+    "jitni jaldi mumkin ho sake",
+    "Malika Elizabeth ke daur ke baad",
+    "kabhi nahin",
+    "federal election ke baad"
+   ]
+  },
+  {
+   "id": "4df32424a4",
+   "options": [
+    "jin waqiat ki wajah se un ki takhleeq hui woh bohat haliya zamana ke hain",
+    "un ki maujoodgi ka matlab hai ke chand arziyati sargarmi se mehroom nahin hai",
+    "woh chand ke sikurne ka nateeja ho sakte hain",
+    "un mein se zyada tar chand ki satah par nahin paye gaye the"
+   ]
+  },
+  {
+   "id": "bbc06ff15e",
+   "options": [
+    "nayi anwa ki tashkeel kahan hui thi",
+    "irtiqa ke amal ki lambai",
+    "nayi anwa ka naam",
+    "afzaish nasl mein shamil parinde"
+   ]
+  },
+  {
+   "id": "d79ef9706a",
+   "options": [
+    "cell phones",
+    "internet",
+    "theaters",
+    "television"
+   ]
+  },
+  {
+   "id": "83a9a79e77",
+   "options": [
+    "school khatam karne se pehle fauj mein shamooliyat",
+    "asar qadeema ka mutalia",
+    "degree hasil karna",
+    "Trinity College mein taleem hasil karna"
+   ]
+  },
+  {
+   "id": "96e127d5d6",
+   "options": [
+    "un donon ke paas bohat se bare hotels hain",
+    "un donon ke paas riyasati haisiyat nahin hai",
+    "woh aik hi time zone share karte hain",
+    "un donon ke paas koi shehar nahin hai"
+   ]
+  },
+  {
+   "id": "04cdad4900",
+   "options": [
+    "qanoon",
+    "sarkari murasla",
+    "mazhabi rusoomat",
+    "rozana ki baat cheet"
+   ]
+  },
+  {
+   "id": "f741a1ed33",
+   "options": [
+    "Estonia",
+    "Lithuania",
+    "Scotland",
+    "Latvia"
+   ]
+  },
+  {
+   "id": "45380030ad",
+   "options": [
+    "munasib ghizaiyat par amal karna",
+    "ashrafiya ki satah par hi mustaqil karkardagi ka muzahira karna",
+    "hydrating moassar tareeqe se",
+    "taqat ke sehatmandana tawazun ko barqarar rakhta hai"
+   ]
+  },
+  {
+   "id": "1739469fcc",
+   "options": [
+    "tijarti parwazein",
+    "aag bujhane wali gariyan",
+    "maqami media",
+    "squadron leaders"
+   ]
+  },
+  {
+   "id": "da430f9373",
+   "options": [
+    "Jab dumdaar sitare zameen se takraye the",
+    "Proteins kaise bante hain",
+    "Namiyati madda kya hai",
+    "Zameen kaise bani"
+   ]
+  },
+  {
+   "id": "b08e86f26c",
+   "options": [
+    "Melay",
+    "Haram",
+    "Taqribat",
+    "Ziggurats"
+   ]
+  },
+  {
+   "id": "1d5dd9f605",
+   "options": [
+    "Maqbaray",
+    "Mandir",
+    "Tamam saat ajaibat",
+    "Azeem ahraam"
+   ]
+  },
+  {
+   "id": "9e404a5730",
+   "options": [
+    "Misr mein bahri jahazon se chhutkara",
+    "Izafi jahazon ki tameer",
+    "Fauji launching pad ka qayam",
+    "Bartanvi addon ko tabah karna"
+   ]
+  },
+  {
+   "id": "518f414237",
+   "options": [
+    "Qanoon sazi ke ijlas ke dauran",
+    "2011 mein",
+    "Peer ko",
+    "2015 mein"
+   ]
+  },
+  {
+   "id": "84cb74e2c3",
+   "options": [
+    "Light fixture ko sahih tareeqay se band nahin kiya jana",
+    "Socket mein bulb ki dhaati bunyaad sirf juzvi taur par hona",
+    "Bulb ke andar maujood filament ka jalna",
+    "Socket mein heli ka bahao sust hona"
+   ]
+  },
+  {
+   "id": "3286af7621",
+   "options": [
+    "Pani ki qillat",
+    "Sarab",
+    "Hypothermia",
+    "Dhoop jalan"
+   ]
+  },
+  {
+   "id": "7a6ff845cd",
+   "options": [
+    "Sard raat mein garam kapron ki kami",
+    "Aisa sarab nazar aana jo pani ka bharam deta hai",
+    "Sarab ka peecha karte hue tawanai ko zaya karna",
+    "Sarab ka peecha karte hue pani ko zaya karna"
+   ]
+  },
+  {
+   "id": "2c92aa8bc8",
+   "options": [
+    "Khatra kam kar diya gaya hai",
+    "Ab mazeed koi khatra nahin hai",
+    "Aik hamla mutawaqqa hai",
+    "Aqalmandi ne tasdeeq ki hai ke hamla shadeed hoga"
+   ]
+  },
+  {
+   "id": "9da0ca31cc",
+   "options": [
+    "Turkey",
+    "Honey badger",
+    "Cassowary",
+    "Capreli"
+   ]
+  },
+  {
+   "id": "e79c51605c",
+   "options": [
+    "Art aur media ki mukhtalif shaklon mein kasrat se maujoodgi",
+    "Aala darja ki convention sahuliyat",
+    "Iqtisadi tanawwo",
+    "Asiai khane ka aik taza tareen manzar"
+   ]
+  },
+  {
+   "id": "7e4397a6e2",
+   "options": [
+    "Bhari anasir ki tashkeel",
+    "Fusion reactors ki tameer",
+    "Roshni aur garmi chhor dena",
+    "Hydrogen ke atom banana"
+   ]
+  },
+  {
+   "id": "21feca71eb",
+   "options": [
+    "Larry Nassar ki badsulooki par roshni dalna",
+    "Certification ko laghv karne ka taaqub karna",
+    "Niji tafteesh ka taaqub karna",
+    "Athleton ke liye mehfooz mahol ko farogh dena"
+   ]
+  },
+  {
+   "id": "8057716a9f",
+   "options": [
+    "Yeh mehsoos karne ke baad ke us ki apni ghanti nakafi hai",
+    "Nakam Shark Tank ke zahoor ke baad",
+    "Funds hasil karne ke baad",
+    "Aik kamyab QVC zahiri shakal ke baad"
+   ]
+  },
+  {
+   "id": "cf113d2a30",
+   "options": [
+    "Tayyara Iran se Armenia jate hue gir kar tabah",
+    "Police ka helicopter gir kar tabah",
+    "Tayyara Armenia se Iran jate hue gir kar tabah",
+    "Mashhad mein plane gir kar tabah"
+   ]
+  },
+  {
+   "id": "e61d85b194",
+   "options": [
+    "Germany ka qabza",
+    "European Union mein shamil hona",
+    "Belgium ka inqilab",
+    "Aik khud mukhtar mulk banna"
+   ]
+  },
+  {
+   "id": "07dfa0022b",
+   "options": [
+    "Doosre simt ko nishana bana kar current mein se bahar nikalne ki koshish karein, us ke baad sahil par wapas hasb-e-mamool taur par tairaki karein",
+    "Current ke khilaf tezi se tairaki karein",
+    "Mukhalif simt mein tairaki karein",
+    "Satah ke neeche tairaki karein"
+   ]
+  },
+  {
+   "id": "81078ce619",
+   "options": [
+    "Gosht",
+    "Bread",
+    "Anaaj",
+    "Sabziyan"
+   ]
+  },
+  {
+   "id": "45026bcbda",
+   "options": [
+    "In musafiron ke liye jinhon ne makhsoos taur par dobara dakhli sadma ka tajurba kiya ho",
+    "Woh musafir jo beroon-e-mulk rehte hue tezi se adjust ho gaye",
+    "Woh musafir jo abhi honeymoon ki muddat mein hain",
+    "Kam sabr wale musafiron ko"
+   ]
+  },
+  {
+   "id": "c533fdc05b",
+   "options": [
+    "Pehle aao, pehle pao ka permit system",
+    "Permits sirf yakam January ko dastiyab hain",
+    "Permits sirf walk in darkhwaston ke zariye hasil ki ja sakti hain",
+    "Permits ki aik mehdood tadaad"
+   ]
+  },
+  {
+   "id": "484431e59a",
+   "options": [
+    "Choton ki hatmi ginti",
+    "Woh imarat jis ke qareeb bomb phat gaye",
+    "Agar mazeed bomb dhamake kiye jayein",
+    "Halakaton ki sarkari tadaad"
+   ]
+  },
+  {
+   "id": "0263bc19aa",
+   "options": [
+    "Paanch",
+    "Chhe",
+    "Saat",
+    "Aath"
+   ]
+  },
+  {
+   "id": "02d5f57f68",
+   "options": [
+    "Riyasat Haye Muttahida mein internet ki wasee paimane par taraqqi",
+    "IM market ka istemal",
+    "Market ko apni raftar se tayyar karne ki AOL ki azadi",
+    "Yahoo aur Microsoft ki shirakatdari"
+   ]
+  },
+  {
+   "id": "b36c1017ed",
+   "options": [
+    "Technology ke muashre par asrat samaji lihaz se mashroot hain",
+    "Technology ki taraqqi saqafat ki wajah se mutasir nahin hoti hai",
+    "Technology ke muashre par fitri asrat murattab hote hain",
+    "Technology ki taraqqi siyasi asar o rasookh par mabni nahin hai"
+   ]
+  },
+  {
+   "id": "ac2df5d005",
+   "options": [
+    "Asan shahrahon par din mein paidal safar ke liye thori tayyari ki zaroorat hai",
+    "Fasle mukhtalif hote hain, lekin unhein aik din ki muddat mein tay karna hota hai",
+    "Is sargarmi se aam taur par motadil fitness wale log lutf andoz hone ke qabil hote hain",
+    "Chhote bacha wale ahl-e-khana ke liye din mein paidal safar aik munasib outdoor sargarmi nahin hai"
+   ]
+  },
+  {
+   "id": "24ff273ffe",
+   "options": [
+    "Infiradi yaad aawari",
+    "Maloomat ka husool",
+    "Matan ki yaad aawari",
+    "Maloomat ko hi taqseem karna"
+   ]
+  },
+  {
+   "id": "2789873ca1",
+   "options": [
+    "Sandbars ko",
+    "Humpback whale",
+    "Jangli janwaron ki rihaish gah ko",
+    "Talchhat ke phelao ko"
+   ]
+  },
+  {
+   "id": "1177c111dd",
+   "options": [
+    "Assunpink Creek",
+    "Trenton",
+    "Bordentown",
+    "Princeton"
+   ]
+  },
+  {
+   "id": "302c27c8bf",
+   "options": [
+    "Aala darje ki athletic salahiyat",
+    "Scuba diving ka pehle se tajurba",
+    "canyoneering mein aik certification",
+    "Tairaki ki salahiyat"
+   ]
+  },
+  {
+   "id": "674f3f004d",
+   "options": [
+    "Awami himayat ka fuqdan hai",
+    "Bohat zyada mutanaza",
+    "Bohat zyada khatarnak hai",
+    "Bohat hi mehnga"
+   ]
+  },
+  {
+   "id": "df6ba0df72",
+   "options": [
+    "Khana",
+    "Oxygen",
+    "Pani",
+    "Carbon dioxide"
+   ]
+  },
+  {
+   "id": "b1e5052c0d",
+   "options": [
+    "Jang se pehle halaat ki bunyaad par sarhadein",
+    "Wadi Jordan mein fauji wujood ka jari rehna",
+    "Jerusalem ki mustaqbil ki halat ke lihaz se jawabat",
+    "Wadi Jordan mein fauj ka paanch sala wujood"
+   ]
+  },
+  {
+   "id": "ceb128fd96",
+   "options": [
+    "Bank ko qaumi milkiyat qarar dene ke baad",
+    "Jab bank asset management company se alag ho gaya",
+    "Virgin Group ke zariye bank ko kharidne ke baad",
+    "Qarza jati bohran ke dauran"
+   ]
+  },
+  {
+   "id": "f3cee32887",
+   "options": [
+    "Woh chori ho sakte hain",
+    "Aap ke ilm ke baghair aap aik drug carrier ban sakte hain",
+    "Woh kisi aur ke sath uljhan ka shikar ho sakte hain",
+    "Hukkam ise bomb ke mumkina khatre ke taur par dekh sakte hain"
+   ]
+  },
+  {
+   "id": "3dbc2a78bb",
+   "options": [
+    "Short black",
+    "Number one",
+    "New Zealand se Sauvignon Blanc",
+    "Flat coffee"
+   ]
+  },
+  {
+   "id": "5943cdc94b",
+   "options": [
+    "Dustin Runnels",
+    "Xinhua",
+    "Luna ke manager ne",
+    "Tommy Dreamer"
+   ]
+  },
+  {
+   "id": "abc1e19266",
+   "options": [
+    "Aik jadeed shakal mein",
+    "University ki satah par",
+    "Olympic satah par",
+    "Do tarfa shakal mein"
+   ]
+  },
+  {
+   "id": "c62b9254c5",
+   "options": [
+    "Nakafi funding",
+    "Emmy inamat ki kami",
+    "John Grant ki raye",
+    "Mohtaram Rogers ke paros ki fatah"
+   ]
+  },
+  {
+   "id": "e101ad1c46",
+   "options": [
+    "Barbule",
+    "Dandi",
+    "Baligh par",
+    "Upar peela rang"
+   ]
+  },
+  {
+   "id": "4c8b2d17cc",
+   "options": [
+    "Japan",
+    "Nepal",
+    "Hindustan",
+    "Tibet"
+   ]
+  },
+  {
+   "id": "e42ec40e5e",
+   "options": [
+    "Cherry blossom",
+    "Japani tehzeeb",
+    "Plum blossom",
+    "Shahanshahi darbar"
+   ]
+  },
+  {
+   "id": "05b1b4aa16",
+   "options": [
+    "Ephesus",
+    "Sikandar-e-Azam",
+    "Strabo",
+    "Artemis"
+   ]
+  },
+  {
+   "id": "bf3e17a930",
+   "options": [
+    "England",
+    "Germany",
+    "Portugal",
+    "Spain"
+   ]
+  },
+  {
+   "id": "fe53e7a89e",
+   "options": [
+    "Maqami mezbanon ke sath rihaish",
+    "Sasti parwazein",
+    "Maqami rehnumaon ke zariye diye jane wale tour",
+    "Aik hi manzil par aane wale doosre musafiron ke sath rabte"
+   ]
+  },
+  {
+   "id": "fc9c130ca5",
+   "options": [
+    "Air conditioning units ke istemal se guraiz karein",
+    "Andar rahein",
+    "Safed dhuein ke sans lene se bachein",
+    "Nalke ka pani peene se parhez karein"
+   ]
+  },
+  {
+   "id": "b14efaecdf",
+   "options": [
+    "Haitian",
+    "Spanish",
+    "Angrezi",
+    "Arawakan"
+   ]
+  },
+  {
+   "id": "8b8f253aa8",
+   "options": [
+    "Doorbeenein",
+    "Sayyarcha",
+    "Roshni",
+    "Rocket"
+   ]
+  },
+  {
+   "id": "732c01b105",
+   "options": [
+    "Finland",
+    "Netherlands",
+    "Australia",
+    "Mexico"
+   ]
+  },
+  {
+   "id": "6c8c50d105",
+   "options": [
+    "Censorship qawaneen ki khilaf warzi nahin ki gayi",
+    "Media Big Brother ki website par mehfooz paya gaya",
+    "Censorship qawaneen ki khilaf warzi ki gayi",
+    "Mawad ko aik server par jismani taur par rehne wala paya gaya tha"
+   ]
+  },
+  {
+   "id": "c0352ab1e7",
+   "options": [
+    "Kushada boulevard",
+    "Samne se sheesha lagi imarat",
+    "Shopping centers",
+    "Laal rang ki tile wali chhatein"
+   ]
+  },
+  {
+   "id": "fff05756a8",
+   "options": [
+    "poore Rome mein",
+    "Italy ke mukhtalif cities mein",
+    "Poland mein kuch maqamat par",
+    "Saint Peter's Square mein"
+   ]
+  },
+  {
+   "id": "bbe5b22fae",
+   "options": [
+    "khushbudar nabatat le jana",
+    "khema se koore karkat ko hatana",
+    "bheriyon se 25 gaz ka fasla rakhna",
+    "khane ke scrap wale janwaron ko roke rakhna"
+   ]
+  },
+  {
+   "id": "951d395e99",
+   "options": [
+    "bohat sara saman",
+    "aik qaim shuda athletic ka pas manzar",
+    "bohat hi kam saman",
+    "bohat sare paise"
+   ]
+  },
+  {
+   "id": "09541332f8",
+   "options": [
+    "khala mein chalna",
+    "Apollo-Soyuz",
+    "khala baaz number 11",
+    "EVA"
+   ]
+  },
+  {
+   "id": "0c1c527ec6",
+   "options": [
+    "Philippines ki hukumat",
+    "Wall Street ke bank",
+    "U.S nau abadiyati hukumat",
+    "Filipini afraad"
+   ]
+  },
+  {
+   "id": "508ab1b08b",
+   "options": [
+    "aisi paidawar par tawajjuh markooz karna jo kisan ke kunba ki zarooriyat ko pur karti hai",
+    "doosron ko farokht karne ke liye khana tayyar karna",
+    "advanced technique ke bar aks aala paidawar par tawajjuh markooz karna",
+    "kisan ke ilaqe mein maqami tor par beej hasil karna"
+   ]
+  },
+  {
+   "id": "cb7a5c0617",
+   "options": [
+    "kamyab muzakraat",
+    "tear gas",
+    "saathi zakhmi qaidi",
+    "aag"
+   ]
+  },
+  {
+   "id": "fa258934e2",
+   "options": [
+    "kya wahan immigration ka checkpoint hoga",
+    "aaya aap ko qanooni hudood mein cheezon ka elaan karne ki zaroorat hai",
+    "kya wahan customs control hoga",
+    "kya koi aisi cheez jo aap la rahe hain us ki ijazat nahin hai"
+   ]
+  },
+  {
+   "id": "25ded30055",
+   "options": [
+    "yeh aaeen ke khilaf chala gaya",
+    "tahaffuz ke khatraat thay",
+    "aaeen mein ibham tha",
+    "intikhab bohat zyada mehnga tha"
+   ]
+  },
+  {
+   "id": "ce86d1d5b5",
+   "options": [
+    "Singapore mein un ki aamad par",
+    "Wong Kan Seng ke sath",
+    "un ke darmiyani muddat ke intikhabat mein shikast khane ke baad",
+    "aik hafta taweel Asia ke un ke daure ke dauran"
+   ]
+  },
+  {
+   "id": "c6b09c4a5b",
+   "options": [
+    "musafiron ko hamesha maqami mezbanon ke hawale faraham kiye jate hain",
+    "kuch networks ko musafiron ki izafi tauseeq ki zaroorat par sakti hai",
+    "musafiron ko manzil ke shehar mein dastiyab mezbanon ki fehrist faraham ki jaye gi",
+    "maqami mezbanon ke tajziye kabhi kabhi musafiron ko dastiyab hote hain"
+   ]
+  },
+  {
+   "id": "767674da08",
+   "options": [
+    "do martaba aalmi champion",
+    "All Japan Judo Federation ki committee ke chairman",
+    "do baar Olympic gold medal jeetne wale",
+    "judo mahir"
+   ]
+  },
+  {
+   "id": "1e60df218d",
+   "options": [
+    "raat mein der se jana",
+    "family walon ki kisi jagah par qayam karna",
+    "off-site camping karna",
+    "jaldi jana"
+   ]
+  },
+  {
+   "id": "22abdc84fd",
+   "options": [
+    "is baat ko tasleem karein ke is ki pairwi karna ghair mamooli baat hai",
+    "azdawaji halat ko zahir karne ke liye aik bari angoothi pehnein",
+    "is baat ko samjhein ke saqafati tafreeq yeh batati hai ke aap apne mauqif par datay rehne se ijtinab karein",
+    "ghair matloob pesh raft ke mamle mein, mardon ko mana karne ke bare mein sakht rahein"
+   ]
+  },
+  {
+   "id": "5e67edf07f",
+   "options": [
+    "mazeed tabsare",
+    "tasweeri ishaatein",
+    "aini shahadat ki behas",
+    "mazmoon ki ishaatein"
+   ]
+  },
+  {
+   "id": "e1cd64a63a",
+   "options": [
+    "garmiyon ke mahinon mein",
+    "jab ilaqa zyada abadi wala na ho",
+    "sardiyon ke mahinon mein",
+    "jab roshni ki aloodgi ki satah kam ho"
+   ]
+  },
+  {
+   "id": "58534bd90c",
+   "options": [
+    "quroon-e-wusta ke aakhir mein",
+    "12vein sadi",
+    "ibtidai quroon-e-wusta",
+    "13vein sadi"
+   ]
+  },
+  {
+   "id": "f4944a18fe",
+   "options": [
+    "Gothic daur",
+    "Bazantini daur",
+    "saleebi jangein",
+    "quroon-e-wusta"
+   ]
+  },
+  {
+   "id": "65ed190d50",
+   "options": [
+    "malbe ka suragh lagane ka intezam kaun kare ga",
+    "tasadum ke waqt satellite kitni tezi se safar kar rahe thay",
+    "mansooba bandi tajziya ke nataij kis tarah share kiye jayen ge",
+    "hadse ka aik sahih paimana"
+   ]
+  },
+  {
+   "id": "67dddee6ed",
+   "options": [
+    "ghareeb mehman kursiyon par baith kar khana khate hain",
+    "ghonghon ka aik appetizer",
+    "raat ke khane ke dauran daulat mand afraad lait jate hain",
+    "bhune hue turkey ki aik plate"
+   ]
+  },
+  {
+   "id": "8783ad3eab",
+   "options": [
+    "All Blacks aur Australia",
+    "New Zealand aur Junoobi Africa",
+    "Junoobi Africa aur Australia",
+    "Springboks aur All Blacks"
+   ]
+  },
+  {
+   "id": "9d494455fc",
+   "options": [
+    "Harappa tehzeeb",
+    "Sindh-Saraswati tehzeeb",
+    "darya-e-Sindh ki tehzeeb",
+    "wadi-e-Sindh ki tehzeeb"
+   ]
+  },
+  {
+   "id": "056159ea97",
+   "options": [
+    "shumali nisf kurre ke sardi ke mahinon ke dauran",
+    "Montevideo ke khushk mausam ke dauran",
+    "shumali nisf kurre ke garmi ke mahinon ke dauran",
+    "Montevideo ke sardi ke mahinon ke dauran"
+   ]
+  },
+  {
+   "id": "03f575065e",
+   "options": [
+    "riyasti hukkam ki janib se sakht nigrani",
+    "Congress ke andar quwwat ya mazbooti ka fuqdan",
+    "tarameem jin ki muttafiqa manzoori darkar hai",
+    "aik ghair maujood national executive"
+   ]
+  },
+  {
+   "id": "40fe12d147",
+   "options": [
+    "saat lakh saal pehle",
+    "do crore saal pehle",
+    "3.9 million saal qabl",
+    "4.2 million saal qabl"
+   ]
+  },
+  {
+   "id": "4b9856e512",
+   "options": [
+    "hathon se harkat karna",
+    "wazan uthana",
+    "naql o harkat",
+    "knuckle ki chehal qadmi"
+   ]
+  },
+  {
+   "id": "a471ad8152",
+   "options": [
+    "Niklas Backstrom",
+    "Jaromir Jagr",
+    "Mario Lemieux",
+    "Alex Ovechkin"
+   ]
+  },
+  {
+   "id": "afa540329d",
+   "options": [
+    "karobari visa",
+    "siyahati visa",
+    "aarzi visa",
+    "talib ilm visa"
+   ]
+  },
+  {
+   "id": "b55723958d",
+   "options": [
+    "virane ki baqa",
+    "first aid ki tayyari",
+    "jangi ilaqe ki tayyari",
+    "kirdar ada karna"
+   ]
+  },
+  {
+   "id": "fc0502eda6",
+   "options": [
+    "artist",
+    "Faransisi sameen",
+    "adakar",
+    "Camille Saint-Saens"
+   ]
+  },
+  {
+   "id": "f8761a81a7",
+   "options": [
+    "Polish",
+    "Romania ke bashinde",
+    "Ukraine ke bashinde",
+    "Soviet Union"
+   ]
+  },
+  {
+   "id": "7518e68d99",
+   "options": [
+    "ishaa",
+    "photon ke ikhraj mein izafa",
+    "photon",
+    "tabkari ke ikhraj mein izafa"
+   ]
+  },
+  {
+   "id": "9c887b085a",
+   "options": [
+    "aik tarkeeb talash karna",
+    "aik online discussion board par post karna",
+    "sehat ki dekh bhaal wali masnoowat par tehqeeq karna",
+    "maali mamlaat ka intezam"
+   ]
+  },
+  {
+   "id": "62202a8257",
+   "options": [
+    "visa ke liye mukhtalif mamalik ke mukhtalif taqaze hote hain",
+    "car ke zariye sair karna un jagahon ka daura karne ka aik acha tareeqa hai jo dushwar raste se door hon.",
+    "Junoobi Africa ke parosi mamalik mein se taqreeban sabhi mein istehkam ka mahol hai",
+    "car se safar karne par 4x4 ki salah di jati hai"
+   ]
+  },
+  {
+   "id": "14bf08d4d7",
+   "options": [
+    "Zohra ke phases",
+    "Zohra ki muntaqili",
+    "suraj ki Zohra se mumasilat",
+    "suraj ki chand ke se mumasilat"
+   ]
+  },
+  {
+   "id": "176d07e26d",
+   "options": [
+    "dilchasp tareekh",
+    "siyasi asar o rasookh",
+    "mazhabi imtiyaz",
+    "saqafati sites"
+   ]
+  },
+  {
+   "id": "26e020d8ed",
+   "options": [
+    "security ke khatre",
+    "Afghan dastoor ka tazad",
+    "doosre intikhabat ke akhrajat",
+    "Afghan dastoor ke ibhamat"
+   ]
+  },
+  {
+   "id": "1f5a2e6123",
+   "options": [
+    "safede",
+    "baloot",
+    "cheer",
+    "sanobar"
+   ]
+  },
+  {
+   "id": "a10a85d004",
+   "options": [
+    "Trafalgar Square",
+    "Spring Forum",
+    "Downing Street ka dakhli rasta",
+    "Grand Connaught Rooms hotel"
+   ]
+  },
+  {
+   "id": "f96c75ab63",
+   "options": [
+    "Kyudbeck",
+    "Yuka",
+    "Schneider",
+    "Eldon"
+   ]
+  },
+  {
+   "id": "86e4eba798",
+   "options": [
+    "agar kaleesa ke andar daulat ki taqseem munasib thi",
+    "agar deen ke bunyadi usoolon mein tarmeem ki jaye",
+    "kaleesa ke andar taqat ka irtikaz",
+    "agar kaleesa ke bunyadi usoolon ko hi poora kiya ja raha hota"
+   ]
+  },
+  {
+   "id": "f842a1fa8e",
+   "options": [
+    "thrusters se sahih fasla barqarar rakhne mein",
+    "gyroscope rakhne mein",
+    "jet ko faal karne mein",
+    "hasb-e-mamool altitude dobara hasil karne mein"
+   ]
+  },
+  {
+   "id": "1e36c9621b",
+   "options": [
+    "sirf murghi khana mein kaam karne walon ko flu hua hai",
+    "chiriyon ke muqable insanon mein zyada mamle dekhe gaye hain",
+    "lekin mahireen-e-tayyuriyat ko bhi mutasir hone ka khatra lahiq hai",
+    "insanon mein zyada tar mamle mohlik sabit hue hain"
+   ]
+  },
+  {
+   "id": "f959b4a72a",
+   "options": [
+    "yeh abhi bhi paidawar mein hi hai",
+    "yeh digital camera formats ke zariya apnaya gaya tha",
+    "is mein bohat se aam formats ke muqable mein aik mukhtalif pehlu ka tanasub hai",
+    "yeh duniya mein sab se aam format hai"
+   ]
+  },
+  {
+   "id": "592587e589",
+   "options": [
+    "hawai jahaz",
+    "raat ki sleeper trainein",
+    "behri jahaz",
+    "sarhad paar rail gariyan"
+   ]
+  },
+  {
+   "id": "2cb350106c",
+   "options": [
+    "chand aahista aahista sukar raha hai",
+    "zameeni sakhtein bohat pehle takhleeq hui thin",
+    "chand ki satah par zameeni sakhton ki sirf aik kam miqdar hai",
+    "zameeni sakhton ki takhleeq bohat haliya zamana ki hai"
+   ]
+  },
+  {
+   "id": "528cfc1b9a",
+   "options": [
+    "10",
+    "2",
+    "15",
+    "1"
+   ]
+  },
+  {
+   "id": "be3397006c",
+   "options": [
+    "Martelly ne",
+    "mukhalif muzahiron ne",
+    "sadarti commission ne",
+    "CEP ke arakeen ne khud hi is ki tajweez di"
+   ]
+  },
+  {
+   "id": "14c7827523",
+   "options": [
+    "9",
+    "250",
+    "14",
+    "10"
+   ]
+  },
+  {
+   "id": "76aec1fc9b",
+   "options": [
+    "tareekh",
+    "phone",
+    "company",
+    "technology"
+   ]
+  }
+ ],
+ "code_mixed": [
+  {
+   "id": "6c50f12b18",
+   "options": [
+    "Afriqi countries par qabza karna",
+    "aik mazboot army aur navy ki tameer karna",
+    "Misri ships se chhutkara",
+    "Bartanvi bases ka qayam"
+   ]
+  },
+  {
+   "id": "c823e5b979",
+   "options": [
+    "yeh girne ke qareeb hai",
+    "ise mehfooz kiya jana chahiye",
+    "yeh mold se aalooda hai",
+    "yeh public health ke liye khatra hai"
+   ]
+  },
+  {
+   "id": "6c99ec3867",
+   "options": [
+    "Europi influence",
+    "Islami religion",
+    "jangli life",
+    "luxury resorts"
+   ]
+  },
+  {
+   "id": "8de906a842",
+   "options": [
+    "18vin century mein",
+    "5000 BC",
+    "1861",
+    "17vin century"
+   ]
+  },
+  {
+   "id": "7cd288bc13",
+   "options": [
+    "aik ghair faisla kun traveller ko",
+    "be-saakhta hone ke shikaar aik traveller ko",
+    "aik aise traveller ko jis ne abhi tak apna visa hasil nahin kiya hai",
+    "package deals book karne ko tarjeeh dene wale traveller ko"
+   ]
+  },
+  {
+   "id": "989f014523",
+   "options": [
+    "visa ki mutaddid baar applications se ijtinab karna",
+    "money ki bachat karna",
+    "mutaddid passport control checkpoint se ijtinab karna",
+    "passport ki koi need na hona"
+   ]
+  },
+  {
+   "id": "7de58c11d9",
+   "options": [
+    "chhote intersections",
+    "chhota sa room",
+    "chhota sa structure",
+    "chhoti balls"
+   ]
+  },
+  {
+   "id": "4faabed2d6",
+   "options": [
+    "bhaari traffic mein phans jana",
+    "kaafi cellular service ka fuqdaan",
+    "bohat tezi se tez turn lena",
+    "road ki construction ka baar baar saamna hona"
+   ]
+  },
+  {
+   "id": "430ce9f3c5",
+   "options": [
+    "Latini languages",
+    "Europi languages",
+    "qadeem languages",
+    "Hindustani languages"
+   ]
+  },
+  {
+   "id": "6d56251918",
+   "options": [
+    "paanch villages",
+    "paanch routes",
+    "paanch roofs",
+    "paanch seas"
+   ]
+  },
+  {
+   "id": "382416e90e",
+   "options": [
+    "duniya ke saat wonders mein se aik banna",
+    "Firaun ke respect mein",
+    "aik milestone ke taur par kaam karne ke liye",
+    "marne walon ki tombs ko mehfooz karna"
+   ]
+  },
+  {
+   "id": "508f224d81",
+   "options": [
+    "taqreeban 200 years qabl",
+    "taqreeban 400 years qabl",
+    "taqreeban 600 years qabl",
+    "taqreeban 800 years qabl"
+   ]
+  },
+  {
+   "id": "d92cabae74",
+   "options": [
+    "ornithology ke mahireen ko",
+    "mammals (than wale jaanwar) ke saath kaam karne wale logon ko",
+    "poultry farm mein kaam karne walon ko",
+    "un logon ko jo pehle mutaasir ho chuke hain"
+   ]
+  },
+  {
+   "id": "ceade8b476",
+   "options": [
+    "Victoria Harbour",
+    "asal Hong Kong",
+    "Hong Kong island",
+    "Kowloon Waterfront"
+   ]
+  },
+  {
+   "id": "423ffa3ec0",
+   "options": [
+    "urna",
+    "muntaqil",
+    "tairna",
+    "khodna"
+   ]
+  },
+  {
+   "id": "6c5ddabb44",
+   "options": [
+    "Middle Ages ke aakhir mein",
+    "12vin century",
+    "aala Middle Ages",
+    "11vin century"
+   ]
+  },
+  {
+   "id": "7c05dd384c",
+   "options": [
+    "radioactive phosphorus",
+    "jeneyati material",
+    "radioactive sulfur",
+    "virus"
+   ]
+  },
+  {
+   "id": "0739b5bfc3",
+   "options": [
+    "har aik ko aik Amriki cent",
+    "mayari inkjet printers",
+    "printable chips",
+    "deegar tashkheesi devices"
+   ]
+  },
+  {
+   "id": "5b48d53be1",
+   "options": [
+    "blogging",
+    "web formatting",
+    "editing",
+    "website banana"
+   ]
+  },
+  {
+   "id": "68c12d9b79",
+   "options": [
+    "izaafi energy ka ikhraaj",
+    "tez light ki wajah se muharrik hai",
+    "energy ki ghair mustahkam satah",
+    "radiation par manfi reaction"
+   ]
+  },
+  {
+   "id": "0f9e06a46f",
+   "options": [
+    "user tamaam traffic ko re-route karna chahta ho",
+    "user mumkina had tak censorship aur surveillance se bachne ke liye fikrmand ho",
+    "user bunyaadi taur par HTTP traffic ko re-route kar raha ho",
+    "user ki activity ke liye mutadil se le kar aala level ki bandwidth ki zaroorat ho"
+   ]
+  },
+  {
+   "id": "2832d20310",
+   "options": [
+    "aik",
+    "teen",
+    "nau",
+    "chaar"
+   ]
+  },
+  {
+   "id": "741fb032ed",
+   "options": [
+    "mausam-e-sarma ke months mein cross country running ki practice",
+    "speed par endurance ko farogh dena",
+    "do minutes se bhi kam time mein",
+    "endurance par speed ko farogh dena"
+   ]
+  },
+  {
+   "id": "baec98ef25",
+   "options": [
+    "barhte hue violence ko rokne ki guarantee ka elaan kiya jaye",
+    "direction ki fori tabdeeli",
+    "khuli debate ka use",
+    "aik naye diplomatic initiative ka aaghaz"
+   ]
+  },
+  {
+   "id": "8367c91f06",
+   "options": [
+    "doosron ke saath cooperation karna",
+    "apne zaati interests ko tarjeeh dena",
+    "majority par minority ko kya benefit hoga is par zor dena",
+    "yeh tasleem karna ke greed faidamand saabit ho sakti hai"
+   ]
+  },
+  {
+   "id": "859ab20752",
+   "options": [
+    "isi tarah ke standards ki tawaqqo karna jahan se woh taalluq rakhte hain",
+    "aisi food aazmaane ki khwahish karna jin se waqfiyat na ho",
+    "unhi laws par amal karna jahan se woh taalluq rakhte hon",
+    "rehan sehan ke taalluq se pesh-gi research se guraiz karna"
+   ]
+  },
+  {
+   "id": "38da8265d3",
+   "options": [
+    "muzahire kisi mulk ki history ya culture ko ujagar kar sakte hain",
+    "nabatati displays fankarana aur taleemi displays ke saath ujagar kiye jaate hain",
+    "events chhe months tak jaari reh sakte hain",
+    "mumalik ko participation ki zaroorat nahin hai"
+   ]
+  },
+  {
+   "id": "375f3adc39",
+   "options": [
+    "khawateen fighters ko Olympics mein shaamil karna",
+    "Bartanvi competitors",
+    "khawateen ke opinions",
+    "London ka Olympics ki hosting karna"
+   ]
+  },
+  {
+   "id": "b03aa9f7f0",
+   "options": [
+    "monomorphic",
+    "aabadi",
+    "nau",
+    "kaseer-shakliyat"
+   ]
+  },
+  {
+   "id": "eedd8e9798",
+   "options": [
+    "Tongo",
+    "Niue",
+    "Hawaii ke schools",
+    "Pago Pago"
+   ]
+  },
+  {
+   "id": "00026851e1",
+   "options": [
+    "mutaasira mansookhi ka insurance",
+    "mulk ki siyasi situation ke hawale se zyada saada bayaniye",
+    "mutaasira health insurance",
+    "mulk ki siyasi situation ke hawale se tafseeli information"
+   ]
+  },
+  {
+   "id": "41a0531d5c",
+   "options": [
+    "azdawaji status par guftagu karne se ijtinab karein",
+    "mohtaat rahein ke saqafati differences maqaami logon ke zabardasti behaviour ko bharka sakte hain",
+    "chamakdaar jewellery pehenne se ijtinab karein",
+    "jab zaroori ho to sakhti ka istemaal karein"
+   ]
+  },
+  {
+   "id": "463a99ea28",
+   "options": [
+    "ghoron ki speed mein izaafa",
+    "un ko zyada moassar samjha jata tha",
+    "woh bade load ko sambhalne ke qaabil the",
+    "unhein tracks par lage iron se hi pehna ja raha tha"
+   ]
+  },
+  {
+   "id": "dd42e49d4f",
+   "options": [
+    "Running Copenhagen",
+    "Go Running Tours",
+    "Running Tours Paraguay",
+    "Running Tours Barcelona"
+   ]
+  },
+  {
+   "id": "654c74dfaf",
+   "options": [
+    "McMurdo Station aksar band rehta hai",
+    "thos ice khatarnaak hoti hai",
+    "khusoosi tractors furteele nahin hain",
+    "yeh Ross Sea ke zariye travel karne se zyada aasaan hai"
+   ]
+  },
+  {
+   "id": "70a94e56cd",
+   "options": [
+    "chipki hui snow",
+    "insaan",
+    "dhoop",
+    "izaafi snowfall"
+   ]
+  },
+  {
+   "id": "d6fa1432a0",
+   "options": [
+    "U-boats",
+    "shooting range",
+    "navigation",
+    "radar"
+   ]
+  },
+  {
+   "id": "288030336d",
+   "options": [
+    "Jakar ki taraf jaane wala traveller aur jis ne pehle hi ticket khareed liya ho",
+    "Bumthang ki taraf jaane wala traveller aur jise 7 baje rawana hona hai",
+    "Paro ki taraf jaane wala traveller aur jise 11 baje ke baad rawana hona hai",
+    "east ki taraf jaane wala traveller aur 6:20 se pehle station par pahunchta hai"
+   ]
+  },
+  {
+   "id": "ae3151e37f",
+   "options": [
+    "United States of America",
+    "China",
+    "Australia",
+    "Hong Kong"
+   ]
+  },
+  {
+   "id": "f175052c8e",
+   "options": [
+    "naye friends banane ki tawaqqo rakhne wala koi shakhs bairoon-e-mulk jayega",
+    "koi aisa shakhs jo kaafi tadaad mein salary ki talaash mein ho",
+    "koi aisa jise shakhs nai skill hasil karne ki tawaqqo ho",
+    "koi aisa shakhs jise accommodation aur food mein dilchaspi ho"
+   ]
+  },
+  {
+   "id": "58fa228cac",
+   "options": [
+    "Schumacher ke aglay wheel ko nuqsaan pahunchne ke baad",
+    "Fisichella ne apni car ka control kho diya",
+    "Schumacher ki apni race khatam karne ke baad",
+    "lead hasil karne se pehle"
+   ]
+  },
+  {
+   "id": "5589935e1c",
+   "options": [
+    "computer ki game ke shuru mein aik tutorial",
+    "aik SAT tutor",
+    "azad study ka program",
+    "chhote league ka coach"
+   ]
+  },
+  {
+   "id": "c89bc8b64e",
+   "options": [
+    "Star Alliance",
+    "South Pacific",
+    "LATAM Oneworld",
+    "SkyTeam"
+   ]
+  },
+  {
+   "id": "0ec1b0c501",
+   "options": [
+    "Germany",
+    "Britain",
+    "France",
+    "Poland"
+   ]
+  },
+  {
+   "id": "959fe39434",
+   "options": [
+    "behan",
+    "beti",
+    "maan",
+    "khala"
+   ]
+  },
+  {
+   "id": "35d27f37d2",
+   "options": [
+    "aik moti crust qareeb ki taraf hai",
+    "pahari areas ke neeche crust patli hai",
+    "door ki side par maria kam ho sakti hai",
+    "pahari areas ke neeche maria kam ho sakti hai"
+   ]
+  },
+  {
+   "id": "fab84840cb",
+   "options": [
+    "Rift Valley mein",
+    "aik fossil par",
+    "salmaati evidence mein",
+    "Ethiopia mein"
+   ]
+  },
+  {
+   "id": "fcb919d994",
+   "options": [
+    "aik aisa traveller jo zyada se zyada SANParks dekhne ka plan bana raha ho",
+    "sirf Kruger National Park ka daura karne wala traveller",
+    "kam kharch karne wala traveller jise park ki fees ko le kar tashweesh ho",
+    "aik aisa traveller jo Kruger National Park aur kam az kam aik doosre park ka daura karne ka plan bana raha ho"
+   ]
+  },
+  {
+   "id": "c8f20061bf",
+   "options": [
+    "is ko state mein file kiya gaya jahan AOL ka head office hai",
+    "court se mahkoom kiya gaya",
+    "case mein spam email ke hawale se legislation ka istemaal kiya gaya",
+    "AOL par ilzaam lagaya ja raha tha"
+   ]
+  },
+  {
+   "id": "f6245df1b4",
+   "options": [
+    "Samsung",
+    "Sony",
+    "ASUS",
+    "Lenovo"
+   ]
+  },
+  {
+   "id": "278e696eb1",
+   "options": [
+    "civil aur military tayyaron ka aik purana fleet",
+    "naye planes ki khareedari ki ijazat dene wale budget ki kami",
+    "restrictions jo naye planes ki khareedari ko rokti hain",
+    "planes ka naqis intizam shuda fleet"
+   ]
+  },
+  {
+   "id": "3c0f9e1040",
+   "options": [
+    "yeh Hawaii se chhota hai",
+    "yeh aik archipelago hai",
+    "aham cities Rarotonga aur Aitutaki hain",
+    "islands wala country Hawaii ki hi tarah aik hi time zone share karta hai"
+   ]
+  },
+  {
+   "id": "52fd3e40bc",
+   "options": [
+    "shaffaf voting box",
+    "candidates ki taraf se bheje gaye representatives",
+    "voting roll par signature karna",
+    "candidates ke representatives ki hi janib se votes ki ginti"
+   ]
+  },
+  {
+   "id": "de51188a42",
+   "options": [
+    "present policy par criticism",
+    "aik announcement ke baaz tabdeeliyon se Iraq mein barhte hue violence se bacha ja sakta hai",
+    "Iraq ki borders ko mahfooz banane ke liye recommendations",
+    "US consensus ki request"
+   ]
+  },
+  {
+   "id": "212c3bfaaf",
+   "options": [
+    "ham-asr decor",
+    "mausami breakfast ki offerings ki aik range",
+    "high end bedding",
+    "maqami taur par milne wali khane peene ki supplies"
+   ]
+  },
+  {
+   "id": "129b42166c",
+   "options": [
+    "July ki date Nigeria ki AfCFTA mein shamooliyat ki conditions ka aik hissa thi",
+    "qawaid-o-zawabit aur concessions ka kafi framework maujood hai",
+    "is ki approval AU Trade and Industry Commissioner ne di thi",
+    "asal qawaneen aur tariffs ki riayaton par ittefaq kiya gaya hai"
+   ]
+  },
+  {
+   "id": "33675251c3",
+   "options": [
+    "apni car ki driving ki limits ki mazboot samajh",
+    "aik aisi vehicle jis ki seats par leta ja sake",
+    "aik tent",
+    "tent lagane ke liye aik private property"
+   ]
+  },
+  {
+   "id": "9ac4b832d2",
+   "options": [
+    "agar aik zyada se zyada aperture priority hai",
+    "agar aap aik kam lens elements chahte hain",
+    "agar aap tareek settings mein flash istemal nahin karna chahte hain",
+    "agar aap zyada focal complexity ki talash mein hote hain"
+   ]
+  },
+  {
+   "id": "edc425cf05",
+   "options": [
+    "Apollo-Soyuz mission",
+    "space mein chalna",
+    "izafi activity",
+    "astronaut number 11"
+   ]
+  },
+  {
+   "id": "8cafa6785c",
+   "options": [
+    "aik baqaida tourist ko",
+    "aik tajurba kaar traveller ko",
+    "aik bain-ul-aqwami student ko",
+    "aik karobari traveller ko"
+   ]
+  },
+  {
+   "id": "bf0f287c96",
+   "options": [
+    "woh Puerto Princesa mein apne journey par gamzan tha",
+    "yeh Palawan mein muqeem hai",
+    "mine ship ko countermeasures deti hai",
+    "is ko US Navy ke saatwen fleet se munsalik kiya gaya hai"
+   ]
+  },
+  {
+   "id": "79ada391eb",
+   "options": [
+    "khud se jane se",
+    "chaar ka group talash karne se",
+    "aik doosre person ke saath jane se",
+    "chhe ya us se zyada ka group talash karne se"
+   ]
+  },
+  {
+   "id": "d72c1969d4",
+   "options": [
+    "cabin ki location",
+    "visa ke requirements",
+    "conditions",
+    "town mein guzara jane wala time"
+   ]
+  },
+  {
+   "id": "49924318f9",
+   "options": [
+    "navigating",
+    "safar mein",
+    "shooting",
+    "operating"
+   ]
+  },
+  {
+   "id": "931694cc93",
+   "options": [
+    "aankhon ka izafi test darkaar ho sakta hai",
+    "kuch frames ke liye prescription durust nahin ho sakti hai",
+    "woh jaali ho sakte hain",
+    "ho sakta hai ke insurance cost ka ihata na karti ho"
+   ]
+  },
+  {
+   "id": "6c7f0635f3",
+   "options": [
+    "Jerusalem ka future",
+    "1967 ki war ki wajah",
+    "valley mein army ki maujoodgi",
+    "borders ke oopar dispute"
+   ]
+  },
+  {
+   "id": "1b4bf085be",
+   "options": [
+    "woh practice kar rahe the",
+    "un ki season se qabl aik meeting thi",
+    "un ka Sunday ke roz aik match tha",
+    "woh Bologna ke saath practice kar rahe the"
+   ]
+  },
+  {
+   "id": "2d068613cd",
+   "options": [
+    "warm up lap ke dauran",
+    "apni bike se girne ke baad",
+    "hospital mein",
+    "tibbi amle ke saath track par hone ke dauran"
+   ]
+  },
+  {
+   "id": "59e2c942bc",
+   "options": [
+    "single R ke muqable mein double R ka pronunciation mukhtalif hota hai",
+    "zyada tar words ka pronunciation isi tarah hota hai jaisa unhein likha jata hai",
+    "letters C aur G wale words ajeeb ho sakte hain",
+    "zyada tar words ka pronunciation mundarja zail vowels ki bunyad par tabdeel hota hai"
+   ]
+  },
+  {
+   "id": "301ac99d48",
+   "options": [
+    "Sikhism Hindu tradition ke andar firqa warana taqseem ka nateeja tha",
+    "Guru aik bunyadi aspect hai jo Sikh religion ke liye munfarid hai",
+    "religion ke founder Guru Nanak ke baad nau Gurus ki pairwi ki gayi hai",
+    "Sikhism ki kuch traditions ki roots Hinduism mein hain"
+   ]
+  },
+  {
+   "id": "5a120b1495",
+   "options": [
+    "riha",
+    "giraftar karne wale officer ke saath meeting",
+    "judge Glynn ki janib se jari kiye gaye bazabta charges",
+    "aik hearing"
+   ]
+  },
+  {
+   "id": "a2c9d2380d",
+   "options": [
+    "un ki presence ko nazar andaz karna",
+    "bohat aahistagi se qareeb aana",
+    "un ke mumkina khatre ke level ko kam karna",
+    "un ka observation door se karna"
+   ]
+  },
+  {
+   "id": "91f7044d0a",
+   "options": [
+    "winter ke dauran",
+    "is dauran jab season urooj par ho",
+    "Hindustani summer ke dauran",
+    "spring ke dauran"
+   ]
+  },
+  {
+   "id": "b72a7d5036",
+   "options": [
+    "woh adalati services faraham karte hain",
+    "Pakistani president ne un ka selection kiya tha",
+    "woh Pakistani constitution ke paband hain",
+    "baaz areas par un ka mukammal control hai"
+   ]
+  },
+  {
+   "id": "cb8d0e4ee5",
+   "options": [
+    "intehai na-muwafiq mausami conditions",
+    "snow ki miqdar",
+    "snow ki motai",
+    "pighalti hui snow"
+   ]
+  },
+  {
+   "id": "ef6e2c34c1",
+   "options": [
+    "proton",
+    "pH",
+    "alkaline",
+    "electron"
+   ]
+  },
+  {
+   "id": "fec51de6e7",
+   "options": [
+    "student",
+    "Minneapolis Star Tribune ke aik journalist hai",
+    "qabaili chairman",
+    "Red Lake mein aik authority hai"
+   ]
+  },
+  {
+   "id": "924675519c",
+   "options": [
+    "pehli world war",
+    "Belgium ka revolution",
+    "doosri world war",
+    "European Union ka foundation"
+   ]
+  },
+  {
+   "id": "1e1e9cc3f4",
+   "options": [
+    "chhoti cats",
+    "bari cats",
+    "darmiyane size ki cats",
+    "barah singha"
+   ]
+  },
+  {
+   "id": "1926d74a5d",
+   "options": [
+    "doctors",
+    "khawateen ki health ke workers",
+    "men",
+    "mard aur khawateen dono individuals"
+   ]
+  },
+  {
+   "id": "3a6c31fa13",
+   "options": [
+    "kisi aise city mein kaam se mutaliq conference ka trip jis ka daura musafir pehle kar chuka ho",
+    "aik bohat hi khaas budget par do hafte ka taweel trip",
+    "aik aisa trip jis mein language ki rukawat pesh aaye gi",
+    "kisi traveller ka bairoon-e-mulk pehla trip"
+   ]
+  },
+  {
+   "id": "cfec66b26d",
+   "options": [
+    "un ki age",
+    "stone ka istemal",
+    "un ka size",
+    "un ki construction"
+   ]
+  },
+  {
+   "id": "76b6fd6463",
+   "options": [
+    "satellite par mabni technology",
+    "durust technology",
+    "zameeni radar par mabni aik technology",
+    "carbon emission ki technology"
+   ]
+  },
+  {
+   "id": "274851960c",
+   "options": [
+    "AOL apni speed se IM market ko aage barhane aur us ko taraqqi dene mein kamyab raha hai",
+    "IM market ko tayyar karne wali AOL wahid company hogi",
+    "Microsoft service ke users ki majmui tadaad AOL ke users ki tadaad ka muqabla kare gi",
+    "United States mein AOL ka mazeed istemal nahin kiya jaye ga"
+   ]
+  },
+  {
+   "id": "5b5818f385",
+   "options": [
+    "6 x 6 cm negative",
+    "56 x 56 mm negative",
+    "35 mm negative",
+    "36 x 24 mm negative"
+   ]
+  },
+  {
+   "id": "ef6f8477e8",
+   "options": [
+    "70 runs",
+    "36 runs",
+    "100 runs",
+    "41 runs"
+   ]
+  },
+  {
+   "id": "0f137a9bc9",
+   "options": [
+    "20 miles junoob mein",
+    "40 miles junoob mein",
+    "40 miles shumal-shumal mashriq",
+    "65 miles shumal mein"
+   ]
+  },
+  {
+   "id": "ed7942c249",
+   "options": [
+    "250",
+    "10",
+    "1759",
+    "9000"
+   ]
+  },
+  {
+   "id": "678165cf67",
+   "options": [
+    "first aid",
+    "jangi zones",
+    "wilderness ki baqa",
+    "mukhalif environment"
+   ]
+  },
+  {
+   "id": "6e2cf389fb",
+   "options": [
+    "weather ki wajah se plane asal mein utarne se qasir tha",
+    "plane intehai door daraz location par crash ho gaya",
+    "crash hone se pehle plane ne teen martaba utarne ki koshish ki",
+    "plane ke crash ki site ki talash kharab weather ki wajah se mutasir hui"
+   ]
+  },
+  {
+   "id": "dba2b0f64a",
+   "options": [
+    "plane mein bomb hone ki threat mausool hui thi",
+    "plane Urumqi mein utra tha",
+    "plane ko Afghanistan mein mor diya gaya tha",
+    "plane Kandahar mein utra tha"
+   ]
+  },
+  {
+   "id": "705bf51145",
+   "options": [
+    "AOL par ghair manqoola distribution ka ilzam lagaya gaya tha",
+    "case mein do sar-bar-awurda internet service providers shamil the",
+    "case ko 2003 mein file kiya gaya",
+    "AOL ne case file karne ka aaghaz kiya"
+   ]
+  },
+  {
+   "id": "c423622f26",
+   "options": [
+    "insaan ne doosre stars ka safar bhi kiya hai",
+    "insaan doosri worlds ko talash karne ke qabil hi nahin hai",
+    "doosre planets par bhi life maujood hai",
+    "stars ke darmiyan kharbon miles se kam ka distance hai"
+   ]
+  },
+  {
+   "id": "faea720309",
+   "options": [
+    "aik smartphone",
+    "aik laptop",
+    "aik tablet",
+    "aik pager"
+   ]
+  },
+  {
+   "id": "874a45fcf9",
+   "options": [
+    "woh market par zyada control hasil karne ke liye zaroori hain",
+    "woh ghair qanooni copy karne se bachne mein madad karte hain",
+    "woh revenue collection ke liye mufeed hain",
+    "woh privacy rokne mein shaz-o-nadir hi madad karte hain"
+   ]
+  },
+  {
+   "id": "998faaeffd",
+   "options": [
+    "food ki supply",
+    "chhupne ki places",
+    "partners ki talash",
+    "flight ki speed"
+   ]
+  },
+  {
+   "id": "789bf8edc7",
+   "options": [
+    "tamam words ka pronunciation",
+    "Faransisi adadi system",
+    "school mein parhai jane wali mayari French",
+    "baaz Faransisi words ke spellings"
+   ]
+  },
+  {
+   "id": "826e85395b",
+   "options": [
+    "Musashi ki recovery",
+    "samandari exploration",
+    "ROV ki construction",
+    "ocean ki mapping ke baare mein seekhna"
+   ]
+  },
+  {
+   "id": "33f21351fc",
+   "options": [
+    "mukhtalif sukoon awar medicines ke saath post traumatic stress disorder ka treatment",
+    "scopolamine ke liye herbane ke seeds ke extract ka istemal",
+    "arteries ke clamp ke saath blood flow ko rokna",
+    "gangrene ke patients ke liye limbs kaatna"
+   ]
+  },
+  {
+   "id": "d59e2248fb",
+   "options": [
+    "unhon ne meat tak rasai faraham ki",
+    "unhon ne cattle ko pastures mein charane mein madad ki",
+    "unhon ne companionship ki pesh kash ki",
+    "unhon ne milk tak rasai faraham ki"
+   ]
+  }
+ ]
+}

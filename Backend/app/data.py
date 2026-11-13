@@ -144,3 +144,34 @@ def review(conn: sqlite3.Connection, item_id: str, condition: str, action: str, 
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def import_generated(conn: sqlite3.Connection, data: dict[str, list[dict]], model: str,
+                     approve_as: str | None = None, replace: bool = False) -> dict[str, int]:
+    """Import externally written roman_translit / code_mixed options: {condition: [{"id", "options": [4]}]}.
+    `approve_as` marks rows approved with that reviewer label (recorded for provenance); otherwise they go to the
+    review queue as pending. Existing rows are kept unless `replace`. Returns counts per outcome."""
+    items = {it["id"]: it for it in load_items(conn)}
+    counts = {"imported": 0, "skipped_existing": 0, "rejected": 0}
+    for cond, rows in data.items():
+        if cond not in GENERATED:
+            raise ValueError(f"unknown generated condition {cond}")
+        for row in rows:
+            it, opts = items.get(row.get("id")), row.get("options")
+            ok = (it is not None and isinstance(opts, list) and len(opts) == 4
+                  and all(isinstance(o, str) and o.strip() for o in opts)
+                  and (cond != "code_mixed" or it["code_mixed"]))
+            if not ok:
+                counts["rejected"] += 1
+                continue
+            if not replace and conn.execute("SELECT 1 FROM generated WHERE item_id=? AND condition=?", (it["id"], cond)).fetchone():
+                counts["skipped_existing"] += 1
+                continue
+            conn.execute(
+                "INSERT OR REPLACE INTO generated (item_id, condition, options, raw, model, parse_ok, status, edited, reviewer, reviewed_at, created_at) "
+                "VALUES (?,?,?,?,?,1,?,0,?,?,?)",
+                (it["id"], cond, json.dumps([o.strip() for o in opts], ensure_ascii=False), "", model,
+                 "approved" if approve_as else "pending", approve_as, now() if approve_as else None, now()),
+            )
+            counts["imported"] += 1
+    return counts
