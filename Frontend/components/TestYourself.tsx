@@ -183,7 +183,7 @@ export function TestYourself() {
           {demo.results.some((r) => r.kind === "pairwise") && <PairwisePanel demo={demo} />}
           {demo.results.some((r) => r.kind === "comprehension") && <McqPanel demo={demo} />}
           <RawPanel demo={demo} />
-          <p className="faint" style={{ margin: 0 }}>{demo.calls} calls · {demo.cached} from cache · {fmt.usd(demo.cost_usd)}</p>
+          <p className="faint" style={{ margin: 0 }}>{demo.calls} replies · {demo.cached} reused from earlier runs</p>
         </div>
       )}
     </div>
@@ -255,9 +255,9 @@ function VoiceNote({ onFields }: { onFields: (f: Fields, transcript: string) => 
 function HowToRead() {
   const steps: [string, string, string][] = [
     ["1", "The judge (an LLM)", "Reads the passage, question and answer in one version and replies with plain text: a score like “8”, a pick like “A”, “B” or “TIE”, or an option number."],
-    ["2", "The platform", "Turns each reply into a number (“Score: 8/10” → 8, “I would reply A” → A). Replies it cannot read are shown as unparseable — never guessed."],
+    ["2", "The platform — plain code, no AI", "Reads each reply with fixed rules (“Score: 8/10” → 8, “I would reply A” → A). No second LLM interprets anything, so no extra bias is added. Replies it cannot read are marked unparseable, never guessed."],
     ["3", "The comparison", "Holds the content fixed and compares versions: a fair judge gives the same score, says TIE in pairwise, and picks the same option in every script."],
-    ["4", "The researchers", "Across all 300 questions the platform averages these differences with 95% confidence intervals; one question is only an illustration, not evidence."],
+    ["4", "Statistics, then the researchers", "Across all 300 questions the platform's statistics code averages the differences with 95% confidence intervals; the researchers interpret those numbers. One question is an illustration, not evidence."],
   ];
   return (
     <div className="tile flat">

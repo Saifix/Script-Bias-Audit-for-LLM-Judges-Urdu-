@@ -128,7 +128,6 @@ export default function RunsPage() {
                   <div><div className="stat-label">Calls</div><strong>{fmt.int(est.calls)}</strong></div>
                   <div><div className="stat-label">Cached</div><strong>{fmt.int(est.cached)}</strong></div>
                   <div><div className="stat-label">New calls</div><strong>{fmt.int(est.new_calls)}</strong></div>
-                  <div><div className="stat-label">Est. cost</div><strong>{fmt.usd(est.est_cost_usd)}{!est.cost_complete && " +"}</strong></div>
                 </div>
                 <div className="row"><RunLock /><button className="btn" onClick={create} disabled={busy || est.tasks === 0}>Start run</button></div>
               </div>
@@ -137,7 +136,6 @@ export default function RunsPage() {
               <p className="faint" style={{ marginBottom: 0 }}>Flagged (did not pass screening): {Object.entries(est.flagged_judges).map(([j, st]) => `${j} (${st === "fail" ? "failed" : "not screened"})`).join(", ")}</p>
             )}
             {est?.note && <p className="faint" style={{ marginBottom: 0 }}>{est.note}</p>}
-            {est && !est.cost_complete && <p className="faint" style={{ marginBottom: 0 }}>Some model prices are unknown, so the estimate is a lower bound.</p>}
             {est && est.tasks === 0 && <p className="faint" style={{ marginBottom: 0 }}>Nothing to run — load data (and approve generated text for those conditions) first.</p>}
           </div>
           <ErrorNote error={err} />
@@ -169,7 +167,6 @@ export default function RunsPage() {
                 <span>{fmt.int(r.done)} / {fmt.int(r.total)} tasks</span>
                 <span>{fmt.int(r.cache_hits)} from cache</span>
                 <span>{fmt.int(r.prompt_tokens + r.completion_tokens)} tokens</span>
-                <span>{fmt.usd(r.cost)}</span>
                 {r.unparseable > 0 && <span>{r.unparseable} unparseable</span>}
                 <span className="mono">{r.config.judges.join(", ")}</span>
                 <span>{r.config.conditions.map(label).join(", ")}</span>
