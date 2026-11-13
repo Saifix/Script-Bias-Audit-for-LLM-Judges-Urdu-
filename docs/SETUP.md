@@ -82,7 +82,7 @@ correct vs. wrong) and start it. The Overview then shows pass/fail per judge (AU
 
 ## Adding a judge
 
-Edit `Backend/config.toml`, no rebuild needed (the file is mounted into the container):
+Edit `Backend/config.toml` (mounted into the container, so no rebuild is needed), then run `docker compose restart backend`:
 
 ```toml
 [[judges]]
