@@ -62,6 +62,8 @@ def judge_options(cfg: dict, model: str) -> dict:
     """Request options for a judge model: max_tokens and extra body fields (e.g. reasoning off)."""
     j = next((j for j in cfg["judges"] if j["id"] == model), {})
     extra = {"reasoning": {"enabled": False}} if j.get("reasoning_off") else {}
+    if j.get("provider"):  # OpenRouter provider routing, e.g. {ignore = ["DeepInfra"]}
+        extra["provider"] = dict(j["provider"])
     return {"max_tokens": int(j.get("max_tokens", cfg["settings"]["judge_max_tokens"])), "extra": extra}
 
 

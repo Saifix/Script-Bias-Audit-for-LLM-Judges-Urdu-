@@ -83,6 +83,7 @@ name = "Qwen3 235B"
 family = "Qwen (Alibaba)"
 tier = 3
 reasoning_off = true
+provider = { ignore = ["DeepInfra"] }   # DeepInfra's copy sometimes echoed the prompt / returned broken text
 
 [[judges]]
 id = "meta-llama/llama-4-maverick"
