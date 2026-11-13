@@ -39,7 +39,8 @@ correct option and one wrong option. The passage and question are always shown i
 100-item subset gets a code-mixed version following the noun-switching approach of *Lost in the Mix*
 (Mohamed et al., ACL 2026). Every generated text is approved, edited or rejected by a human reviewer before use.
 
-**Judges.** Small open LLMs accessed through OpenRouter (currently **Qwen 3.5 9B** and **Llama 3.1 8B Instruct**),
+**Judges.** Three small open-weights LLMs from three different companies, accessed through OpenRouter:
+**Qwen 3.5 9B** (Alibaba), **Llama 3.1 8B Instruct** (Meta) and **Gemma 3 12B** (Google),
 at temperature 0 with fixed prompts. The exact model ID, provider and timestamp of every call are recorded.
 
 **Experiments.**
@@ -72,13 +73,13 @@ Ties and unparseable outputs are reported separately, never silently counted as 
 
 Planned headline results:
 
-| Finding | Metric | Qwen 3.5 9B | Llama 3.1 8B |
-|---|---|---|---|
-| Scores Roman Urdu lower than Urdu script? | severity gap (95% CI) | – | – |
-| Prefers one script in head-to-head? | pairwise win rate vs. Urdu script | – | – |
-| Understands Roman Urdu as well? | comprehension accuracy | – | – |
-| Still catches wrong answers in Roman Urdu? | AUC per script | – | – |
-| Does a rubric or transliteration fix it? | gap with vs. without mitigation | – | – |
+| Finding | Metric | Qwen 3.5 9B | Llama 3.1 8B | Gemma 3 12B |
+|---|---|---|---|---|
+| Scores Roman Urdu lower than Urdu script? | severity gap (95% CI) | – | – | – |
+| Prefers one script in head-to-head? | pairwise win rate vs. Urdu script | – | – | – |
+| Understands Roman Urdu as well? | comprehension accuracy | – | – | – |
+| Still catches wrong answers in Roman Urdu? | AUC per script | – | – | – |
+| Does a rubric or transliteration fix it? | gap with vs. without mitigation | – | – | – |
 
 ## Why it matters
 

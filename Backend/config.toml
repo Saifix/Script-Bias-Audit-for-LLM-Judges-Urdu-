@@ -33,6 +33,10 @@ reasoning_off = true
 id = "meta-llama/llama-3.1-8b-instruct"
 reasoning_off = true
 
+[[judges]]
+id = "google/gemma-3-12b-it"   # third vendor (Google), same small open-weights class; multilingual incl. Urdu
+reasoning_off = true
+
 # Optional API judges - uncomment to enable.
 # [[judges]]
 # id = "anthropic/claude-haiku-4.5"
