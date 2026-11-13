@@ -7,4 +7,5 @@ export const CONTRIBUTORS: Contributor[] = [
   { name: "Saif ur Rehman", studentId: "24280071", image: "/contributors/saif-ur-rehman.jpg" },
   { name: "Hussnain Ali Murtaza", studentId: "25280069", image: "/contributors/hussnain-ali-murtaza.jpg" },
   { name: "Junaid Tariq", studentId: "25280044" },
+  { name: "Mukhammad Khasnen", studentId: "25280090" },
 ];
