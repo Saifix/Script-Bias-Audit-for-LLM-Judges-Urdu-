@@ -353,15 +353,31 @@ def run_rows(run_id: int) -> list[dict]:
         return [dict(r) for r in c.execute("SELECT * FROM results WHERE run_id=? ORDER BY task_id", (run_id,))]
 
 
-def run_summary(run_id: int) -> dict:
+_SUMMARIES: dict[tuple[int, int], tuple[tuple, dict]] = {}
+
+
+def summary_cached(run_id: int, n_resamples: int | None = None) -> dict:
+    """Run summary, memoised until the run's status or result count changes (finished runs never change)."""
     s = load_config()["settings"]
+    n = s["bootstrap_resamples"] if n_resamples is None else n_resamples
     with db() as c:
-        run = c.execute("SELECT config FROM runs WHERE id=?", (run_id,)).fetchone()
-    if not run:
-        raise KeyError(run_id)
+        run = c.execute("SELECT config, status FROM runs WHERE id=?", (run_id,)).fetchone()
+        if not run:
+            raise KeyError(run_id)
+        count = c.execute("SELECT COUNT(*) FROM results WHERE run_id=?", (run_id,)).fetchone()[0]
+    stamp = (run["status"], count)
+    hit = _SUMMARIES.get((run_id, n))
+    if hit and hit[0] == stamp:
+        return hit[1]
     cfg = json.loads(run["config"])
-    return summarize(run_rows(run_id), threshold=s["acceptance_threshold"], n_resamples=s["bootstrap_resamples"],
-                     seed=s["seed"], panel=cfg["flags"].get("panel", False))
+    out = summarize(run_rows(run_id), threshold=s["acceptance_threshold"], n_resamples=n,
+                    seed=s["seed"], panel=cfg["flags"].get("panel", False))
+    _SUMMARIES[(run_id, n)] = (stamp, out)
+    return out
+
+
+def run_summary(run_id: int) -> dict:
+    return summary_cached(run_id)
 
 
 def screening_status(app_cfg: dict | None = None) -> dict[str, dict]:
@@ -375,7 +391,7 @@ def screening_status(app_cfg: dict | None = None) -> dict[str, dict]:
         judges = [j for j in json.loads(run["config"])["judges"] if j not in out]
         if not judges:
             continue
-        summary = summarize([r for r in run_rows(run["id"]) if r["judge"] in judges], n_resamples=0)
+        summary = summary_cached(run["id"], n_resamples=0)
         for j in judges:
             aucs = {p["condition"]: p["auc"] for p in summary["judges"].get(j, {}).get("pointwise", [])}
             passed = bool(aucs) and all(a is not None and a > thr for a in aucs.values())
@@ -432,7 +448,7 @@ def insights() -> dict:
         return [v for j, v in summary["judges"].items() if j != "panel"]
 
     if "pointwise" in latest:
-        sm = summarize(run_rows(latest["pointwise"]), threshold=s["acceptance_threshold"], n_resamples=0)
+        sm = summary_cached(latest["pointwise"], n_resamples=0)
         conds = sorted({p["condition"] for js in judges_of(sm) for p in js["pointwise"]}, key=CONDITIONS.index)
         out["pointwise"] = {"run_id": latest["pointwise"], "judges": len(judges_of(sm)), "by_condition": {
             c: {"gap": _avg([p["gap_correct"]["gap"] for js in judges_of(sm) for p in js["pointwise"] if p["condition"] == c and p["gap_correct"]]),
@@ -440,12 +456,12 @@ def insights() -> dict:
                 "accept_wrong": _avg([p["accept_wrong"] for js in judges_of(sm) for p in js["pointwise"] if p["condition"] == c])}
             for c in conds}}
     if "pairwise" in latest:
-        sm = summarize(run_rows(latest["pairwise"]), n_resamples=0)
+        sm = summary_cached(latest["pairwise"], n_resamples=0)
         conds = sorted({p["condition"] for js in judges_of(sm) for p in js["pairwise"]}, key=CONDITIONS.index)
         out["pairwise"] = {"run_id": latest["pairwise"], "by_condition": {
             c: _avg([p["win_rate"] for js in judges_of(sm) for p in js["pairwise"] if p["condition"] == c]) for c in conds}}
     if "comprehension" in latest:
-        sm = summarize(run_rows(latest["comprehension"]), n_resamples=0)
+        sm = summary_cached(latest["comprehension"], n_resamples=0)
         conds = sorted({p["condition"] for js in judges_of(sm) for p in js["comprehension"]}, key=CONDITIONS.index)
         out["comprehension"] = {"run_id": latest["comprehension"], "by_condition": {
             c: _avg([p["accuracy"] for js in judges_of(sm) for p in js["comprehension"] if p["condition"] == c]) for c in conds}}
@@ -478,7 +494,7 @@ def trend(label: str | None = None) -> dict:
 
     def summ(run_id: int) -> dict:
         if run_id not in cache:
-            cache[run_id] = summarize(run_rows(run_id), n_resamples=app_cfg["settings"]["bootstrap_resamples"], seed=app_cfg["settings"]["seed"])
+            cache[run_id] = summary_cached(run_id)
         return cache[run_id]
 
     for kind in ("pointwise", "pairwise", "comprehension"):

@@ -17,7 +17,7 @@ const TYPES = [
 export default function RunsPage() {
   const cfg = useApi<AppConfig>("/config");
   const ov = useApi<Overview>("/overview");
-  const runs = useApi<{ runs: Run[] }>("/runs", 2000);
+  const runs = useApi<{ runs: Run[] }>("/runs", 5000);
   const [type, setType] = useState("screening");
   const [judges, setJudges] = useState<string[]>([]);
   const [conditions, setConditions] = useState<string[]>([]);
@@ -143,40 +143,68 @@ export default function RunsPage() {
         </div>
       </div>
 
-      <h2 className="section">All runs</h2>
+      <h2 className="section">Rounds</h2>
       <div className="stack">
-        {runs.data?.runs.map((r) => {
-          const active = r.status === "running";
-          const flagged = Object.keys(r.config.flagged_judges ?? {});
-          return (
-            <div key={r.id} className="tile tight">
-              <div className="row between">
-                <div className="row">
-                  <strong>#{r.id} · {TYPES.find((t) => t.value === r.type)?.label ?? r.type}</strong>
-                  <span className="faint">{r.config.label ?? "Round 1"}{r.config.replicate ? ` · replicate ${r.config.replicate}` : ""}</span>
-                  <Badge kind={r.status} />
-                  {flagged.length > 0 && <Badge kind="warn">{flagged.length} flagged judge{flagged.length > 1 ? "s" : ""}</Badge>}
-                  {Object.entries(r.config.flags ?? {}).filter(([, v]) => v).map(([k]) => <Badge key={k} kind="running">{k}</Badge>)}
+        {(() => {
+          const all = runs.data?.runs ?? [];
+          const groups = new Map<string, Run[]>();
+          for (const r of [...all].sort((a, b) => a.id - b.id)) {
+            const k = r.config.label ?? "Round 1";
+            groups.set(k, [...(groups.get(k) ?? []), r]);
+          }
+          const ordered = [...groups.entries()].sort((a, b) => Math.max(...b[1].map((r) => r.id)) - Math.max(...a[1].map((r) => r.id)));
+          const kindLabel = (r: Run) => {
+            const f = Object.entries(r.config.flags ?? {}).filter(([, v]) => v).map(([k]) => k)[0];
+            const base = TYPES.find((t) => t.value === r.type)?.label ?? r.type;
+            return f ? `Fix: ${f === "transliterate" ? "transliterate first" : f === "panel" ? "judge panel" : f}` : base;
+          };
+          return ordered.map(([name, rs], gi) => {
+            const done = rs.reduce((a, r) => a + r.done, 0), total = rs.reduce((a, r) => a + r.total, 0);
+            const state = rs.some((r) => r.status === "running") ? "running" : rs.some((r) => r.status === "failed") ? "failed"
+              : rs.every((r) => r.status === "done") ? "done" : "stopped";
+            const judges = [...new Set(rs.flatMap((r) => r.config.judges))].map((j) => judgeName(cfg.data, j));
+            return (
+              <details key={name} className="tile tight round" open={state === "running" || gi === 0}>
+                <summary>
+                  <div className="row between" style={{ width: "100%" }}>
+                    <div className="row">
+                      <strong>{name}</strong>
+                      <Badge kind={state} />
+                      <span className="faint">{rs.length} experiment{rs.length > 1 ? "s" : ""} · {judges.join(", ")}</span>
+                    </div>
+                    <div className="row" style={{ minWidth: 220 }}>
+                      <div style={{ flex: 1, minWidth: 120 }}><Progress value={done} total={total} /></div>
+                      <span className="faint">{total ? Math.round((100 * done) / total) : 0}%</span>
+                    </div>
+                  </div>
+                </summary>
+                <div className="table-wrap" style={{ marginTop: 12 }}>
+                  <table>
+                    <thead><tr><th>Experiment</th><th>Status</th><th style={{ width: "30%" }}>Progress</th><th className="num">Answers</th><th className="num">Unreadable</th><th></th></tr></thead>
+                    <tbody>
+                      {rs.map((r) => (
+                        <tr key={r.id}>
+                          <td><b>{kindLabel(r)}</b><div className="faint">#{r.id}{r.config.replicate ? ` · replicate ${r.config.replicate}` : ""}</div></td>
+                          <td><Badge kind={r.status} />{r.error && <div className="faint" style={{ maxWidth: 260 }}>{r.error.slice(0, 120)}</div>}</td>
+                          <td style={{ verticalAlign: "middle" }}><Progress value={r.done} total={r.total} /></td>
+                          <td className="num">{fmt.int(r.done)} / {fmt.int(r.total)}</td>
+                          <td className="num">{r.unparseable || "–"}</td>
+                          <td>
+                            <div className="row" style={{ justifyContent: "flex-end", gap: 6 }}>
+                              {r.status === "running" ? <button className="btn secondary small" onClick={() => control(r.id, "stop")}>Stop</button>
+                                : r.status !== "done" && <button className="btn small" onClick={() => control(r.id, "start")}>{r.status === "created" ? "Start" : "Resume"}</button>}
+                              {r.done > 0 && <Link className="btn secondary small" href={`/results?run=${r.id}`}>Results</Link>}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <div className="row">
-                  {active ? <button className="btn secondary small" onClick={() => control(r.id, "stop")}>Stop</button>
-                    : r.status !== "done" && <button className="btn small" onClick={() => control(r.id, "start")}>{r.status === "created" ? "Start" : "Resume"}</button>}
-                  {r.type !== "generate" && r.done > 0 && <Link className="btn secondary small" href={`/results?run=${r.id}`}>Results</Link>}
-                </div>
-              </div>
-              <div style={{ margin: "12px 0 8px" }}><Progress value={r.done} total={r.total} /></div>
-              <div className="row faint" style={{ gap: 20 }}>
-                <span>{fmt.int(r.done)} / {fmt.int(r.total)} tasks</span>
-                <span>{fmt.int(r.cache_hits)} from cache</span>
-                <span>{fmt.int(r.prompt_tokens + r.completion_tokens)} tokens</span>
-                {r.unparseable > 0 && <span>{r.unparseable} unparseable</span>}
-                <span>{r.config.judges.map((j) => judgeName(cfg.data, j)).join(", ")}</span>
-                <span>{r.config.conditions.map(label).join(", ")}</span>
-              </div>
-              {r.error && <p className="notice error" style={{ marginBottom: 0 }}>{r.error}</p>}
-            </div>
-          );
-        })}
+              </details>
+            );
+          });
+        })()}
         {runs.data?.runs.length === 0 && <p className="muted">No runs yet.</p>}
       </div>
     </>
