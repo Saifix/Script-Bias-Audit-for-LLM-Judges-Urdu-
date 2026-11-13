@@ -13,7 +13,7 @@ const TERMS: [string, string][] = [
 export function Glossary({ open = false }: { open?: boolean }) {
   return (
     <details className="tile flat glossary" open={open}>
-      <summary><b>How to read these numbers</b> <span className="faint">— plain-language guide</span></summary>
+      <summary><b>How to read these numbers</b> <span className="faint">— what each metric means</span></summary>
       <dl>
         {TERMS.map(([t, d]) => (
           <div key={t}><dt>{t}</dt><dd>{d}</dd></div>

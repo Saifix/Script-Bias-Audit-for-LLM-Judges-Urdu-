@@ -191,7 +191,7 @@ proven cause-and-effect):
 
 ## Try it
 
-The project runs as a private web platform. Its **Findings** page explains the results in plain words; the home page shows the latest numbers and a **Test yourself** tool:
+The project runs as a private web platform. Its **Findings** page summarises the results for a general audience; the home page shows the latest numbers and a **Test yourself** tool:
 type a question, record a voice note, or pick a dataset question, and see how each judge scores the same answer in
 every script.
 

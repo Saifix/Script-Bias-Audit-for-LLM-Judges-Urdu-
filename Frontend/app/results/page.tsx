@@ -91,7 +91,7 @@ export default function ResultsPage() {
 
       <ErrorNote error={runs.error ?? summary.error} />
       <div style={{ marginBottom: 20 }}><Glossary /></div>
-      {wordsLoading && <div className="tile plain" style={{ marginBottom: 20 }}><p className="eyebrow">In plain words</p><p className="muted" style={{ margin: 0 }}>Writing a short summary of these numbers…</p></div>}
+      {wordsLoading && <div className="tile plain" style={{ marginBottom: 20 }}><p className="eyebrow">Summary</p><p className="muted" style={{ margin: 0 }}>Preparing the summary…</p></div>}
       {words.data?.summary && <div style={{ marginBottom: 20 }}><PlainWords summary={words.data.summary} /></div>}
       {words.data?.findings && words.data.findings.length > 0 && <div style={{ marginBottom: 24 }}><Scorecard findings={words.data.findings} /></div>}
       {runId && !summary.data && !summary.error && <p className="muted">Loading results…</p>}

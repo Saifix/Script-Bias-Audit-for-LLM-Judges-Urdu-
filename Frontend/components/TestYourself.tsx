@@ -266,7 +266,7 @@ export function PlainWords({ summary }: { summary: { text: string; name: string 
   if (!summary) return null;
   return (
     <div className="tile plain">
-      <p className="eyebrow">In plain words</p>
+      <p className="eyebrow">Summary</p>
       <p className="plain-text">{summary.text}</p>
       <p className="faint" style={{ margin: 0 }}>Written by {summary.name} from the numbers below. It only reads the numbers — the judges&apos; replies are scored by plain code.</p>
     </div>

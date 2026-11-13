@@ -56,7 +56,7 @@ const GUIDELINES = [
 export default function FindingsPage() {
   return (
     <>
-      <Header eyebrow="Findings" title="What we found, in plain words"
+      <Header eyebrow="Findings" title="Summary of findings"
         lede="We gave AI judges the exact same answers written four ways — Urdu script, Roman Urdu, English and Urdu–English mixed — and checked whether their verdict changed. It did." />
 
       <div className="tile crux">
