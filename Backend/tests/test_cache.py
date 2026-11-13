@@ -124,3 +124,24 @@ def test_budget_cap_blocks_paid_calls(env, monkeypatch):
         finally:
             await client.aclose()
     assert asyncio.run(mock()).text
+
+
+def test_per_model_concurrency_limit(env):
+    import time as _t
+    active = {"now": 0, "max": 0}
+
+    async def handler(request):
+        active["now"] += 1
+        active["max"] = max(active["max"], active["now"])
+        await asyncio.sleep(0.02)
+        active["now"] -= 1
+        return httpx.Response(200, json={"choices": [{"message": {"content": "8"}}], "usage": {}})
+
+    async def go():
+        client = LLMClient(concurrency=8, transport=httpx.MockTransport(handler), key="k", model_limits={"slow/model": 2})
+        try:
+            await asyncio.gather(*(client.complete("slow/model", f"p{i}") for i in range(10)))
+        finally:
+            await client.aclose()
+    asyncio.run(go())
+    assert active["max"] == 2  # never more than 2 in flight for this model

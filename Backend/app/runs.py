@@ -291,7 +291,8 @@ async def execute_run(run_id: int, client: LLMClient | None = None) -> None:
     pending = [t for t in tasks if t.id not in done]
     _set_run(run_id, status="running", total=len(tasks), error=None)
     own = client is None
-    client = client or LLMClient(s["concurrency"], s["max_retries"])
+    limits = {j["id"]: int(j["max_concurrency"]) for j in app_cfg["judges"] if j.get("max_concurrency")}
+    client = client or LLMClient(s["concurrency"], s["max_retries"], model_limits=limits)
 
     async def one(t: Task) -> None:
         row = await run_task(t, items[t.item_id], cfg, client, app_cfg)

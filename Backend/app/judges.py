@@ -210,8 +210,11 @@ class LLMClient:
     """OpenAI-compatible chat client pointed at OpenRouter. Every call goes through the cache."""
 
     def __init__(self, concurrency: int = 8, max_retries: int = 6, backoff: float = 1.0,
-                 transport: httpx.AsyncBaseTransport | None = None, key: str | None = None):
+                 transport: httpx.AsyncBaseTransport | None = None, key: str | None = None,
+                 model_limits: dict[str, int] | None = None):
         self.sem = asyncio.Semaphore(concurrency)
+        # per-model caps for providers that rate-limit hard (config: judges[].max_concurrency)
+        self.model_sems = {m: asyncio.Semaphore(n) for m, n in (model_limits or {}).items() if n and n > 0}
         self.max_retries = max_retries
         self.backoff = backoff
         self.key = api_key() if key is None else key
@@ -239,6 +242,13 @@ class LLMClient:
             self._inflight.pop(key, None)
 
     async def _call(self, key, model, prompt, max_tokens, repeat, task, extra) -> Call:
+        limit = self.model_sems.get(model)
+        if limit is not None:
+            async with limit:
+                return await self._call_inner(key, model, prompt, max_tokens, repeat, task, extra)
+        return await self._call_inner(key, model, prompt, max_tokens, repeat, task, extra)
+
+    async def _call_inner(self, key, model, prompt, max_tokens, repeat, task, extra) -> Call:
         async with self.sem:
             if model.startswith("mock/"):
                 text, served, provider = mock_reply(model, prompt, task, repeat), model, "mock"

@@ -83,6 +83,7 @@ name = "Qwen 3.7 Max"
 family = "Qwen (Alibaba)"
 tier = 3
 reasoning_off = true
+max_concurrency = 2   # its provider rate-limits (HTTP 429) at higher parallelism
 
 [[judges]]
 id = "meta-llama/llama-4-maverick"
@@ -92,8 +93,8 @@ tier = 3
 reasoning_off = true
 
 [[judges]]
-id = "google/gemini-3.8-flash"
-name = "Gemini 3.8 Flash"
+id = "google/gemini-2.5-flash"   # Gemini 3.x Flash/Pro force "thinking" on OpenRouter; 2.5 Flash can answer directly
+name = "Gemini 2.5 Flash"
 family = "Google"
 tier = 3
 reasoning_off = true

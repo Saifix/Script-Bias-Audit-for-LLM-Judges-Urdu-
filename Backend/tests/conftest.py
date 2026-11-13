@@ -42,6 +42,8 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("OPENROUTER_API_KEY", "")
     monkeypatch.setenv("BACKEND_TOKEN", TOKEN)
     monkeypatch.setenv("RUN_PASSWORD", RUN_PW)
+    import app.judges
+    app.judges._SPENT.update(value=0.0, at=0.0)  # spend counter is per process; start each test clean
     init_db()
     with db() as c:
         save_items(c, build_items(fake_rows(12), n=10, seed=7, code_mixed_n=4))
