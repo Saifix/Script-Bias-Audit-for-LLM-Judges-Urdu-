@@ -251,8 +251,9 @@ async def explain(facts: str, length: str, extra: str = "") -> dict | None:
     client = LLMClient(1, max_retries=2)
     try:
         call = await client.complete(cfg["model"], render("explain", facts=facts, length=length, extra=extra),
-                                     max_tokens=220, task="explain")
-    except Exception:
+                                     max_tokens=500, task="explain")
+    except Exception as e:  # never break the page over a summary, but leave a trace
+        print(f"summary model failed: {type(e).__name__}: {str(e)[:300]}", flush=True)
         return None
     finally:
         await client.aclose()

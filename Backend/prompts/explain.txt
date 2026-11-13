@@ -10,5 +10,5 @@ You explain results from a study that tests whether AI judges treat the same ans
 - If a judge failed the screening test, say its results are unreliable.
 
 ### Instruction
-Write {length} in plain, simple English for a non-technical reader. Name judges by their short names. Lead with the most important real difference and its number. {extra}
+Write {length} (at most three sentences, under 90 words in total) in plain, simple English for a non-technical reader. Name judges by their short names. Lead with the most important real difference and its number, then cover the other judges briefly. {extra}
 Reply with only the sentences.
