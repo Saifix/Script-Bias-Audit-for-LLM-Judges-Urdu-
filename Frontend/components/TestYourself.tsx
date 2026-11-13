@@ -48,6 +48,7 @@ export function TestYourself() {
   const [err, setErr] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const linkedQ = useRef(0);
 
   useEffect(() => { if (cfg.data && judges.length === 0) setJudges(cfg.data.judges); }, [cfg.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -57,7 +58,14 @@ export function TestYourself() {
       setSample(s); setPos(s.pos + 1); setDemo(null); setErr(null);
     } catch (e) { setErr((e as Error).message === "no items loaded" ? "No questions loaded yet — load the dataset on the Data page." : (e as Error).message); }
   }
-  useEffect(() => { if (mode === "dataset" && !sample) pick(); }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (mode === "dataset" && !sample && !linkedQ.current) pick(); }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {  // deep link: /?test=1&q=12 opens "From the dataset" with question 12 loaded
+    const p = new URLSearchParams(window.location.search);
+    if (!p.get("test")) return;
+    setOpen(true);
+    const q = Number(p.get("q"));
+    if (q > 0) { linkedQ.current = q; setMode("dataset"); pick(q); }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function run() {
     setBusy(true); setErr(null);
@@ -169,10 +177,12 @@ export function TestYourself() {
       {demo && (
         <div className="stack" ref={resultsRef} style={{ gap: 20, scrollMarginTop: 90 }}>
           <Errors demo={demo} />
+          <HowToRead />
           <TextsPanel demo={demo} />
           {demo.results.some((r) => r.kind === "pointwise") && <ScoresPanel demo={demo} />}
           {demo.results.some((r) => r.kind === "pairwise") && <PairwisePanel demo={demo} />}
           {demo.results.some((r) => r.kind === "comprehension") && <McqPanel demo={demo} />}
+          <RawPanel demo={demo} />
           <p className="faint" style={{ margin: 0 }}>{demo.calls} calls · {demo.cached} from cache · {fmt.usd(demo.cost_usd)}</p>
         </div>
       )}
@@ -239,6 +249,64 @@ function VoiceNote({ onFields }: { onFields: (f: Fields, transcript: string) => 
       {state === "sending" && <span className="muted">Listening and filling the fields…</span>}
       <ErrorNote error={err} />
     </div>
+  );
+}
+
+function HowToRead() {
+  const steps: [string, string, string][] = [
+    ["1", "The judge (an LLM)", "Reads the passage, question and answer in one version and replies with plain text: a score like “8”, a pick like “A”, “B” or “TIE”, or an option number."],
+    ["2", "The platform", "Turns each reply into a number (“Score: 8/10” → 8, “I would reply A” → A). Replies it cannot read are shown as unparseable — never guessed."],
+    ["3", "The comparison", "Holds the content fixed and compares versions: a fair judge gives the same score, says TIE in pairwise, and picks the same option in every script."],
+    ["4", "The researchers", "Across all 300 questions the platform averages these differences with 95% confidence intervals; one question is only an illustration, not evidence."],
+  ];
+  return (
+    <div className="tile flat">
+      <p className="chart-title">How to read these results</p>
+      <div className="grid cols-4" style={{ marginTop: 12 }}>
+        {steps.map(([n, who, what]) => (
+          <div key={n} className="stack" style={{ gap: 4 }}>
+            <span className="eyebrow" style={{ margin: 0 }}>Step {n}</span>
+            <b>{who}</b>
+            <span className="muted" style={{ fontSize: 14 }}>{what}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const KIND_NAME: Record<string, string> = { pointwise: "Score", pairwise: "Pairwise pick", comprehension: "Multiple choice" };
+
+/** Every judge reply exactly as received, next to what the platform read from it. */
+function RawPanel({ demo }: { demo: Demo }) {
+  const custom = demo.item === null;
+  const read = (r: Result) => r.error ? "error" : r.kind === "pointwise" ? (r.score ?? "unparseable")
+    : r.kind === "pairwise" ? (r.winner == null ? "unparseable" : r.winner === "tie" ? "Tie" : `picked ${nameOf(r.winner, custom)}`)
+    : r.choice == null ? "unparseable" : `option ${r.choice} (${r.correct ? "right" : "wrong"})`;
+  const shown = (r: Result) => r.kind !== "pairwise" ? "" : r.order === "AB" ? `${nameOf(r.condition, custom)} shown as A` : `${nameOf(r.condition, custom)} shown as B`;
+  return (
+    <details className="tile">
+      <summary className="chart-title" style={{ color: "var(--ink)", marginTop: 0 }}>Raw replies from the judges ({demo.results.length})</summary>
+      <p className="chart-sub" style={{ marginTop: 8 }}>Exactly what each model replied, and what the platform read from it. Judges are asked to reply very briefly, so long replies are cut off.</p>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>Judge</th><th>Test</th><th>Version</th><th>Answer</th><th>Order</th><th>Reply (raw)</th><th>Read as</th></tr></thead>
+          <tbody>
+            {demo.results.map((r, i) => (
+              <tr key={i}>
+                <td className="mono">{r.judge}</td>
+                <td>{KIND_NAME[r.kind]}</td>
+                <td>{nameOf(r.condition, custom)}</td>
+                <td>{r.answer && r.answer !== "answer" ? r.answer : ""}</td>
+                <td className="faint">{shown(r)}</td>
+                <td className="mono" style={{ whiteSpace: "pre-wrap", maxWidth: 280 }}>{r.error ? r.error.slice(0, 80) : JSON.stringify(r.raw ?? "")}</td>
+                <td><b>{String(read(r))}</b></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
   );
 }
 
