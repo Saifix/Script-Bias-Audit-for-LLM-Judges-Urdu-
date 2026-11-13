@@ -9,3 +9,7 @@ Frontend/next-env.d.ts
 *.tsbuildinfo
 *.pem
 *.key
+
+# original contributor photos (optimised copies live in Frontend/public/contributors)
+/Saif.png
+/Syed Sheraz Anjum.png
