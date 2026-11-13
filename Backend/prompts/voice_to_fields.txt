@@ -1,0 +1,14 @@
+A user recorded a voice note to test an AI judge. They described a short reading passage, a question about it, and an answer. The transcript may be in Urdu, Roman Urdu, English or a mix, and may contain filler words.
+
+### Transcript
+{transcript}
+
+### Instruction
+Extract the passage, the question and the answer, and write each one in four versions:
+- "urdu_script": Urdu in Urdu (Nastaliq/Arabic) script
+- "roman_translit": the same Urdu written in Roman (Latin) letters, transliterated word by word
+- "english": an English translation
+- "code_mixed": Roman Urdu with Urdu as the matrix language and selected nouns switched to English
+Keep the meaning identical across versions. If the user gave no passage, write a one-sentence passage that contains the answer.
+Reply with only JSON in exactly this shape:
+{"urdu_script": {"passage": "", "question": "", "answer": ""}, "roman_translit": {"passage": "", "question": "", "answer": ""}, "english": {"passage": "", "question": "", "answer": ""}, "code_mixed": {"passage": "", "question": "", "answer": ""}}

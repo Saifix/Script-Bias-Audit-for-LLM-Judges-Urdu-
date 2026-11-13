@@ -4,7 +4,7 @@ import time
 from fastapi.testclient import TestClient
 
 from app.api import app
-from tests.conftest import TOKEN
+from tests.conftest import HEADERS, TOKEN
 
 
 def wait(client: TestClient, run_id: int, timeout: float = 30) -> dict:
@@ -26,7 +26,7 @@ def start(client: TestClient, **body) -> dict:
 
 
 def test_full_pipeline(env):
-    with TestClient(app, headers={"X-Backend-Token": TOKEN}) as client:
+    with TestClient(app, headers=HEADERS) as client:
         ov = client.get("/api/overview").json()
         assert ov["dataset"]["items"] == 10 and ov["dataset"]["code_mixed_items"] == 4
         assert {j["id"] for j in ov["judges"]} == {"mock/judge-a", "mock/judge-b"}

@@ -2,7 +2,7 @@
 from fastapi.testclient import TestClient
 
 from app.api import app
-from tests.conftest import TOKEN
+from tests.conftest import HEADERS, TOKEN
 
 
 def test_requires_backend_token(env):
@@ -11,7 +11,7 @@ def test_requires_backend_token(env):
         assert c.get("/api/overview").status_code == 401
         assert c.get("/api/overview", headers={"X-Backend-Token": "wrong" * 10}).status_code == 401
         assert c.post("/api/runs", json={"type": "screening"}).status_code == 401
-        assert c.get("/api/overview", headers={"X-Backend-Token": TOKEN}).status_code == 200
+        assert c.get("/api/overview", headers=HEADERS).status_code == 200
         auth = {"X-Backend-Token": TOKEN}
         assert c.get("/docs", headers=auth).status_code == 404  # API docs disabled
         assert c.get("/openapi.json", headers=auth).status_code == 404
@@ -24,7 +24,7 @@ def test_fails_closed_without_configured_token(env, monkeypatch):
 
 
 def test_reviewer_comes_from_signed_in_user(env):
-    with TestClient(app, headers={"X-Backend-Token": TOKEN}) as c:
+    with TestClient(app, headers=HEADERS) as c:
         r = c.post("/api/runs", json={"type": "generate", "conditions": ["roman_translit"], "n_items": 1})
         assert r.status_code == 200
         import time

@@ -395,3 +395,49 @@ def write_exports(run_id: int) -> None:
     d.mkdir(exist_ok=True)
     (d / f"run_{run_id}.csv").write_text(results_csv(run_id), encoding="utf-8")
     (d / f"run_{run_id}.json").write_text(json.dumps(results_json(run_id), ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+# ---------------------------------------------------------------- home-page insights
+
+
+def _avg(xs: list) -> float | None:
+    xs = [x for x in xs if x is not None]
+    return sum(xs) / len(xs) if xs else None
+
+
+def insights() -> dict:
+    """Headline numbers from the latest finished run of each type, averaged over real judges (not the panel)."""
+    app_cfg = load_config()
+    s = app_cfg["settings"]
+    status = screening_status(app_cfg)
+    latest: dict[str, int] = {}
+    with db() as c:
+        for r in c.execute("SELECT id, type FROM runs WHERE status='done' ORDER BY id DESC"):
+            latest.setdefault(r["type"], r["id"])
+    out: dict = {
+        "screening": {"pass": sum(v["status"] == "pass" for v in status.values()),
+                      "screened": len(status), "judges": len(app_cfg["judges"])},
+    }
+
+    def judges_of(summary: dict) -> list[dict]:
+        return [v for j, v in summary["judges"].items() if j != "panel"]
+
+    if "pointwise" in latest:
+        sm = summarize(run_rows(latest["pointwise"]), threshold=s["acceptance_threshold"], n_resamples=0)
+        conds = sorted({p["condition"] for js in judges_of(sm) for p in js["pointwise"]}, key=CONDITIONS.index)
+        out["pointwise"] = {"run_id": latest["pointwise"], "judges": len(judges_of(sm)), "by_condition": {
+            c: {"gap": _avg([p["gap_correct"]["gap"] for js in judges_of(sm) for p in js["pointwise"] if p["condition"] == c and p["gap_correct"]]),
+                "auc": _avg([p["auc"] for js in judges_of(sm) for p in js["pointwise"] if p["condition"] == c]),
+                "accept_wrong": _avg([p["accept_wrong"] for js in judges_of(sm) for p in js["pointwise"] if p["condition"] == c])}
+            for c in conds}}
+    if "pairwise" in latest:
+        sm = summarize(run_rows(latest["pairwise"]), n_resamples=0)
+        conds = sorted({p["condition"] for js in judges_of(sm) for p in js["pairwise"]}, key=CONDITIONS.index)
+        out["pairwise"] = {"run_id": latest["pairwise"], "by_condition": {
+            c: _avg([p["win_rate"] for js in judges_of(sm) for p in js["pairwise"] if p["condition"] == c]) for c in conds}}
+    if "comprehension" in latest:
+        sm = summarize(run_rows(latest["comprehension"]), n_resamples=0)
+        conds = sorted({p["condition"] for js in judges_of(sm) for p in js["comprehension"]}, key=CONDITIONS.index)
+        out["comprehension"] = {"run_id": latest["comprehension"], "by_condition": {
+            c: _avg([p["accuracy"] for js in judges_of(sm) for p in js["comprehension"] if p["condition"] == c]) for c in conds}}
+    return out

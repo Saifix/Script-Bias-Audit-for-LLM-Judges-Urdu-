@@ -3,18 +3,19 @@ from __future__ import annotations
 
 import hmac
 import threading
+import time
 from contextlib import asynccontextmanager
 from typing import Literal
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel
 
 from . import runs
-from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, load_config
+from .config import CONDITIONS, GENERATED, REFERENCE, RUN_TYPES, api_key, backend_token, load_config, run_password
 from .data import build_items, condition_view, fetch_belebele, load_items, review, save_items
 from .db import db, init_db
-from .playground import run_playground
+from .playground import run_playground, voice_to_fields
 
 
 @asynccontextmanager
@@ -39,6 +40,25 @@ async def require_backend_token(request: Request, call_next):
 
 
 DATA_JOB = {"state": "idle", "message": ""}
+
+_RUN_FAILS: dict[str, tuple[int, float]] = {}
+
+
+def require_run_password(x_run_password: str | None = Header(default=None),
+                         x_auth_user: str | None = Header(default=None)) -> None:
+    """Starting/resuming experiments and reloading data cost money, so they need a second password (RUN_PASSWORD).
+    5 wrong tries lock that user out of experiments for 10 minutes."""
+    who, now_ = x_auth_user or "anonymous", time.time()
+    n, until = _RUN_FAILS.get(who, (0, 0.0))
+    if n >= 5 and until > now_:
+        raise HTTPException(429, "Too many wrong experiment passwords. Try again in 10 minutes.")
+    expected = run_password()
+    if not expected:
+        raise HTTPException(403, "Experiments are locked: RUN_PASSWORD is not configured on the server.")
+    if not x_run_password or not hmac.compare_digest(x_run_password.encode(), expected.encode()):
+        _RUN_FAILS[who] = ((n + 1) if until > now_ else 1, now_ + 600)
+        raise HTTPException(403, "Wrong experiment password." if x_run_password else "Experiment password required.")
+    _RUN_FAILS.pop(who, None)
 
 
 class LoadRequest(BaseModel):
@@ -121,7 +141,7 @@ def _load_job(n: int, seed: int, code_mixed_n: int) -> None:
         DATA_JOB.update(state="failed", message=f"{type(e).__name__}: {e}"[:400])
 
 
-@app.post("/api/data/load")
+@app.post("/api/data/load", dependencies=[Depends(require_run_password)])
 def load_data(req: LoadRequest) -> dict:
     s = load_config()["settings"]
     if DATA_JOB["state"] == "running":
@@ -215,6 +235,27 @@ async def playground(req: PlaygroundRequest) -> dict:
         raise HTTPException(400, str(e))
 
 
+class VoiceRequest(BaseModel):
+    audio: str          # base64, no data: prefix
+    format: str = "webm"
+
+
+@app.post("/api/voice")
+async def voice(req: VoiceRequest) -> dict:
+    """Voice note -> Whisper transcript -> passage/question/answer in all four scripts."""
+    try:
+        return await voice_to_fields(req.audio, req.format)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    except Exception as e:  # provider errors (e.g. no credits) shown to the user
+        raise HTTPException(502, f"Voice note failed: {str(e)[:200]}")
+
+
+@app.get("/api/insights")
+def insights() -> dict:
+    return {**runs.insights(), "dataset": _dataset_status()}
+
+
 @app.get("/api/items/sample")
 def sample_item(pos: int | None = None) -> dict:
     """One item for the demo picker: by position (1-based) or random."""
@@ -243,7 +284,7 @@ def estimate(req: RunRequest) -> dict:
     return {"config": cfg, **runs.estimate(cfg, load_config())}
 
 
-@app.post("/api/runs")
+@app.post("/api/runs", dependencies=[Depends(require_run_password)])
 async def create_run(req: RunRequest) -> dict:
     cfg = _cfg(req)
     est = runs.estimate(cfg, load_config())
@@ -259,7 +300,7 @@ def list_runs() -> dict:
     return {"runs": runs.list_runs()}
 
 
-@app.post("/api/runs/{run_id}/start")
+@app.post("/api/runs/{run_id}/start", dependencies=[Depends(require_run_password)])
 async def start(run_id: int) -> dict:
     runs.start_run(run_id)
     return {"ok": True}

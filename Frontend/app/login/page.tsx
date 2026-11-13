@@ -37,7 +37,7 @@ export default function LoginPage() {
         <div className="brand-big"><Logo size={56} /></div>
         <div style={{ textAlign: "center" }}>
           <h1 className="title" style={{ fontSize: 32, marginBottom: 6 }}>Welcome back</h1>
-          <p className="muted" style={{ margin: 0 }}>Sign in to <span className="gradient-text" style={{ fontWeight: 600 }}>Script-Bias Audit</span></p>
+          <p className="muted" style={{ margin: 0 }}>Sign in to <b>Script-Bias Audit</b></p>
         </div>
         <label className="field">Username
           <input className="input" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required autoFocus />

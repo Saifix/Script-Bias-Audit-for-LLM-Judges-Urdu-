@@ -2,11 +2,11 @@
 from fastapi.testclient import TestClient
 
 from app.api import app
-from tests.conftest import TOKEN
+from tests.conftest import HEADERS, TOKEN
 
 
 def test_playground_sample_item(env):
-    with TestClient(app, headers={"X-Backend-Token": TOKEN}) as c:
+    with TestClient(app, headers=HEADERS) as c:
         item = c.get("/api/items/sample", params={"pos": 1}).json()
         r = c.post("/api/playground", json={"judges": ["mock/judge-a", "mock/judge-b"], "item_id": item["id"]})
         assert r.status_code == 200, r.text
@@ -29,7 +29,7 @@ def test_playground_custom_text(env):
         "english": {"passage": "Ali bought apples from the market.", "question": "What did Ali buy?", "answer": "apples"},
         "code_mixed": {"passage": "", "question": "", "answer": ""},  # empty -> ignored
     }
-    with TestClient(app, headers={"X-Backend-Token": TOKEN}) as c:
+    with TestClient(app, headers=HEADERS) as c:
         d = c.post("/api/playground", json={"judges": ["mock/judge-a"], "custom": custom, "rubric": True}).json()
         assert d["conditions"] == ["urdu_script", "roman_translit", "english"]
         kinds = [x["kind"] for x in d["results"]]

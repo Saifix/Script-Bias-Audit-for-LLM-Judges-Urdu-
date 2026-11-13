@@ -3,6 +3,8 @@ and return scores, pairwise picks and multiple-choice picks side by side. Uses t
 from __future__ import annotations
 
 import asyncio
+import json
+import re
 
 from .config import CONDITIONS, REFERENCE, judge_options, load_config
 from .data import condition_view, load_items
@@ -123,4 +125,51 @@ async def run_playground(req: dict) -> dict:
         "cost_usd": sum(r.get("cost", 0) for r in results),
         "calls": len(results),
         "cached": sum(bool(r.get("cached")) for r in results),
+    }
+
+
+# ---------------------------------------------------------------- voice note -> form fields
+
+VOICE_FORMATS = {"webm", "ogg", "m4a", "mp3", "wav", "flac", "aac"}
+MAX_AUDIO_B64 = 8_000_000  # ~6 MB of audio, a few minutes of opus
+FIELD_CONDS = ["urdu_script", "roman_translit", "english", "code_mixed"]
+
+
+def _parse_fields(text: str) -> dict:
+    """Pull the JSON object out of a model reply (tolerates code fences / chatter)."""
+    m = re.search(r"\{.*\}", text or "", re.S)
+    data = json.loads(m.group(0)) if m else {}
+    out = {}
+    for cond in FIELD_CONDS:
+        v = data.get(cond) if isinstance(data.get(cond), dict) else {}
+        out[cond] = {k: str(v.get(k, "")).strip() for k in ("passage", "question", "answer")}
+    return out
+
+
+async def voice_to_fields(audio_b64: str, fmt: str) -> dict:
+    """Transcribe a voice note (Whisper via OpenRouter) and let the generator LLM fill the form in all four scripts."""
+    fmt = fmt.lower()
+    if fmt not in VOICE_FORMATS:
+        raise ValueError(f"unsupported audio format {fmt}")
+    if not audio_b64 or len(audio_b64) > MAX_AUDIO_B64:
+        raise ValueError("voice note is empty or too long")
+    app_cfg = load_config()
+    gen = app_cfg["generator"]
+    client = LLMClient(2, max_retries=2)
+    try:
+        heard = await client.transcribe(app_cfg["voice"]["model"], audio_b64, fmt)
+        if not heard.text.strip():
+            raise ValueError("could not hear anything in the voice note")
+        reply = await client.complete(gen["model"], render("voice_to_fields", transcript=heard.text.strip()),
+                                      max_tokens=int(gen.get("max_tokens", 600)) * 2, task="voice_format")
+    finally:
+        await client.aclose()
+    try:
+        fields = _parse_fields(reply.text)
+    except json.JSONDecodeError:
+        raise ValueError("could not turn the voice note into fields; please type them instead")
+    return {
+        "transcript": heard.text.strip(),
+        "fields": fields,
+        "cost_usd": (0 if heard.cached else heard.cost) + (0 if reply.cached else reply.cost),
     }

@@ -11,6 +11,9 @@ concurrency = 4
 [generator]
 model = "mock/generator"
 
+[voice]
+model = "mock/whisper"
+
 [[judges]]
 id = "mock/judge-a"
 

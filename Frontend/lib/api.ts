@@ -53,10 +53,27 @@ export type ConsRow = { condition: string; n_items: number; mean_variance: numbe
 export type JudgeSummary = { pointwise: PointRow[]; pairwise: PairRow[]; comprehension: CompRow[]; consistency: ConsRow[] };
 export type Summary = { reference: string; threshold: number; judges: Record<string, JudgeSummary> };
 
-export async function api<T>(path: string, body?: unknown): Promise<T> {
+export type Insights = {
+  screening: { pass: number; screened: number; judges: number };
+  dataset: Overview["dataset"];
+  pointwise?: { run_id: number; judges: number; by_condition: Record<string, { gap: number | null; auc: number | null; accept_wrong: number | null }> };
+  pairwise?: { run_id: number; by_condition: Record<string, number | null> };
+  comprehension?: { run_id: number; by_condition: Record<string, number | null> };
+};
+
+/** Experiment password (needed to start/resume runs or reload data). Kept only for this browser tab. */
+export const runPassword = {
+  get: (): string => { try { return sessionStorage.getItem("run-pw") ?? ""; } catch { return ""; } },
+  set: (v: string) => { try { sessionStorage.setItem("run-pw", v); } catch { /* storage blocked */ } },
+};
+
+export async function api<T>(path: string, body?: unknown, opts: { runPassword?: string } = {}): Promise<T> {
+  const headers: Record<string, string> = {};
+  if (body !== undefined) headers["content-type"] = "application/json";
+  if (opts.runPassword) headers["x-run-password"] = opts.runPassword;
   const r = await fetch(`/api${path}`, {
     method: body === undefined ? "GET" : "POST",
-    headers: body === undefined ? undefined : { "content-type": "application/json" },
+    headers,
     body: body === undefined ? undefined : JSON.stringify(body),
     cache: "no-store",
   });

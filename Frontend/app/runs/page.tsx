@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { RunLock } from "../../components/RunLock";
 import { Badge, ErrorNote, Header, Progress, Segmented } from "../../components/ui";
-import { api, fmt, label, useApi, type AppConfig, type Estimate, type Overview, type Run } from "../../lib/api";
+import { api, fmt, label, runPassword, useApi, type AppConfig, type Estimate, type Overview, type Run } from "../../lib/api";
 
 const TYPES = [
   { value: "screening", label: "Screening", help: "Correct vs. wrong in Urdu script and English on the pilot subset. Sets pass/fail." },
@@ -51,11 +52,11 @@ export default function RunsPage() {
 
   async function create() {
     setBusy(true);
-    try { await api("/runs", body); runs.reload(); } catch (e) { setErr((e as Error).message); }
+    try { await api("/runs", body, { runPassword: runPassword.get() }); runs.reload(); } catch (e) { setErr((e as Error).message); }
     setBusy(false);
   }
   async function control(id: number, action: "start" | "stop") {
-    try { await api(`/runs/${id}/${action}`, {}); runs.reload(); } catch (e) { setErr((e as Error).message); }
+    try { await api(`/runs/${id}/${action}`, {}, { runPassword: runPassword.get() }); runs.reload(); } catch (e) { setErr((e as Error).message); }
   }
 
   const screening = Object.fromEntries((ov.data?.judges ?? []).map((j) => [j.id, j.status]));
@@ -67,7 +68,7 @@ export default function RunsPage() {
 
   return (
     <>
-      <Header eyebrow="Runs" title="Run an experiment" lede="Every call is cached, so re-running or resuming a run never pays twice." />
+      <Header eyebrow="Experiments" title="Run an experiment" lede="Full experiments call real models and cost money, so starting or resuming one needs the experiment password. Every call is cached, so nothing is paid for twice." />
 
       <div className="tile">
         <div className="stack">
@@ -130,7 +131,7 @@ export default function RunsPage() {
                   <div><div className="stat-label">New calls</div><strong>{fmt.int(est.new_calls)}</strong></div>
                   <div><div className="stat-label">Est. cost</div><strong>{fmt.usd(est.est_cost_usd)}{!est.cost_complete && " +"}</strong></div>
                 </div>
-                <button className="btn" onClick={create} disabled={busy || est.tasks === 0}>Start run</button>
+                <div className="row"><RunLock /><button className="btn" onClick={create} disabled={busy || est.tasks === 0}>Start run</button></div>
               </div>
             ) : <span className="faint">Estimating…</span>}
             {est && Object.keys(est.flagged_judges).length > 0 && (

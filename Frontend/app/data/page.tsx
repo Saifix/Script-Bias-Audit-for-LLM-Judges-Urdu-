@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import { RunLock } from "../../components/RunLock";
 import { Badge, ErrorNote, Header, Segmented } from "../../components/ui";
-import { api, CONDITION_LABELS, label, RTL, useApi, type AppConfig, type Overview } from "../../lib/api";
+import { api, CONDITION_LABELS, runPassword, label, RTL, useApi, type AppConfig, type Overview } from "../../lib/api";
 
 type View = { passage: string; question: string; options: string[]; status: string } | null;
 type Item = { id: string; pos: number; correct_idx: number; wrong_idx: number; code_mixed: boolean; link: string; views: Record<string, View> };
@@ -32,7 +33,7 @@ export default function DataPage() {
     const force = !!ds?.items;
     if (force && !confirm("Replace the loaded items? This also clears all generated text and reviews.")) return;
     try {
-      await api("/data/load", { n: n || undefined, seed: seed === "" ? undefined : seed, force });
+      await api("/data/load", { n: n || undefined, seed: seed === "" ? undefined : seed, force }, { runPassword: runPassword.get() });
       setMsg("Loading started…");
       ov.reload();
     } catch (e) { setErr((e as Error).message); }
@@ -41,7 +42,7 @@ export default function DataPage() {
   async function generate(cond: string) {
     setErr(null);
     try {
-      const r = await api<{ id: number; new_calls: number; est_cost_usd: number }>("/runs", { type: "generate", conditions: [cond] });
+      const r = await api<{ id: number; new_calls: number; est_cost_usd: number }>("/runs", { type: "generate", conditions: [cond] }, { runPassword: runPassword.get() });
       setMsg(`Generation run #${r.id} started (${r.new_calls} new calls, est. $${r.est_cost_usd.toFixed(3)}). Track it on the Runs page.`);
     } catch (e) { setErr((e as Error).message); }
   }
@@ -51,7 +52,8 @@ export default function DataPage() {
 
   return (
     <>
-      <Header eyebrow="Data" title="Belebele items" lede="Parallel items across scripts. Passage and question always appear in the same script as the answer." />
+      <Header eyebrow="Data" title="Questions" lede="300 parallel Belebele questions in every script. Reloading (which clears reviews) and generating (which calls paid models) need the experiment password." />
+      <div style={{ marginBottom: 20 }}><RunLock /></div>
 
       <div className="grid cols-2">
         <div className="tile">

@@ -45,7 +45,13 @@ def load_config() -> dict:
     cfg["settings"] = {**DEFAULTS, **cfg.get("settings", {})}
     cfg.setdefault("judges", [])
     cfg.setdefault("generator", {"model": "mock/generator", "max_tokens": 600})
+    cfg.setdefault("voice", {"model": "mock/whisper"})
     return cfg
+
+
+def run_password() -> str:
+    """Extra password needed to start/resume experiment runs or reload data (they cost money). Empty = runs locked."""
+    return os.environ.get("RUN_PASSWORD", "").strip()
 
 
 def judge_options(cfg: dict, model: str) -> dict:

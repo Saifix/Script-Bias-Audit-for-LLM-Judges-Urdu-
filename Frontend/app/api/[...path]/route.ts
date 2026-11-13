@@ -20,6 +20,8 @@ async function proxy(req: NextRequest, ctx: { params: Promise<{ path: string[] }
   const url = `${BACKEND}/api/${path.map(encodeURIComponent).join("/")}${req.nextUrl.search}`;
   const headers: Record<string, string> = { "x-backend-token": token, "x-auth-user": user };
   if (hasBody) headers["content-type"] = req.headers.get("content-type") ?? "application/json";
+  const runPw = req.headers.get("x-run-password");
+  if (runPw) headers["x-run-password"] = runPw.slice(0, 200);
   try {
     const r = await fetch(url, { method: req.method, headers, body: hasBody ? await req.text() : undefined, cache: "no-store" });
     const out = new Headers({ "content-type": r.headers.get("content-type") ?? "application/json", "cache-control": "no-store" });

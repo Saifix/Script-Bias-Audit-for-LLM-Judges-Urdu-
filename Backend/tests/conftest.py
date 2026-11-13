@@ -9,6 +9,8 @@ from app.data import build_items, save_items
 from app.db import db, init_db
 
 TOKEN = "t" * 40  # BACKEND_TOKEN used by the tests
+RUN_PW = "saif-test"  # RUN_PASSWORD used by the tests
+HEADERS = {"X-Backend-Token": TOKEN, "X-Run-Password": RUN_PW}
 
 URDU_WORDS = ["کتاب", "پانی", "شہر", "سیب", "گاڑی", "دریا", "بازار", "اسکول", "کھانا", "موسم"]
 ROMAN_WORDS = ["kitab", "pani", "shehar", "seb", "gari", "darya", "bazar", "school", "khana", "mausam"]
@@ -39,6 +41,7 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("CONFIG_PATH", str(Path(__file__).parent / "config.test.toml"))
     monkeypatch.setenv("OPENROUTER_API_KEY", "")
     monkeypatch.setenv("BACKEND_TOKEN", TOKEN)
+    monkeypatch.setenv("RUN_PASSWORD", RUN_PW)
     init_db()
     with db() as c:
         save_items(c, build_items(fake_rows(12), n=10, seed=7, code_mixed_n=4))

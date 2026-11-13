@@ -45,8 +45,22 @@ FRONTEND_BIND=127.0.0.1
   everything. API docs are disabled.
 - **The OpenRouter key never leaves the backend container.** It is not sent to the browser or logged. Give the key a
   credit limit on OpenRouter as a final spending cap.
+- **Experiment password.** Starting or resuming a run, generating text, or reloading data needs a second password
+  (`RUN_PASSWORD`, entered next to "Start run"), so a signed-in user cannot run up costs by accident.
+  5 wrong attempts lock that user out of experiments for 10 minutes. The free "Test yourself" tool does not need it.
 - **Reviewer identity** is the signed-in user, set server-side, so the browser cannot spoof it.
 - Security headers: `X-Frame-Options: DENY`, `nosniff`, `same-origin` referrer, and HSTS behind Caddy.
+
+## Home page
+
+Headline insight cards from the latest finished runs (score gap vs. Urdu script, pairwise preference, comprehension
+accuracy, readiness), then **Test yourself**: type a passage/question/answer in each script, **record a voice note**
+(transcribed with Whisper via OpenRouter, `[voice] model` in `config.toml`, then auto-filled into all four scripts for
+you to check), or pull a random question from the dataset, and see each judge's scores and picks side by side.
+
+## Contributors
+
+Edit `Frontend/lib/contributors.ts` (names, roles, links) and put photos in `Frontend/public/contributors/`.
 
 ## Workflow
 

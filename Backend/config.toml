@@ -21,6 +21,10 @@ judge_max_tokens = 8          # small: judges reply with a number / A / B / TIE
 model = "openai/gpt-4o-mini"
 max_tokens = 600
 
+# Speech-to-text for voice notes in "Test yourself" (OpenRouter /audio/transcriptions). Handles Urdu.
+[voice]
+model = "openai/whisper-large-v3"
+
 [[judges]]
 id = "qwen/qwen3.5-9b"   # qwen-2.5-7b-instruct was removed from OpenRouter
 reasoning_off = true
@@ -40,7 +44,5 @@ reasoning_off = true
 # [[judges]]
 # id = "google/gemini-2.5-flash"
 # reasoning_off = true
-
-# Offline mock judge: deterministic, no network. Useful for demos and tests.
-[[judges]]
-id = "mock/judge"
+#
+# Any ID starting with "mock/" is an offline fake judge used only by the automated tests.

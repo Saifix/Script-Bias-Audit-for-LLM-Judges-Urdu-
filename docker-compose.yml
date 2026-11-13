@@ -8,6 +8,7 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       HF_TOKEN: ${HF_TOKEN:-}
       BACKEND_TOKEN: ${BACKEND_TOKEN:?set BACKEND_TOKEN in .env}   # only the frontend proxy knows it
+      RUN_PASSWORD: ${RUN_PASSWORD:-}   # extra password to start paid experiment runs (empty = runs locked)
     volumes:
       - data:/data                                  # SQLite DB, call cache, HF cache, exports
       - ./Backend/config.toml:/app/config.toml:ro   # edit judges without rebuilding

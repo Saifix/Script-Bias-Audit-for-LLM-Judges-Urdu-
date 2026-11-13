@@ -127,7 +127,14 @@ def mock_reply(model: str, prompt: str, task: str, repeat: int = 0) -> str:
         return _section(prompt, "Texts")  # echoes the source lines
     if task == "to_urdu":
         return _section(prompt, "Text")
+    if task == "voice_format":  # echo the transcript into every field
+        t = _section(prompt, "Transcript")
+        f = {"passage": t, "question": "What is this about?", "answer": t[:40]}
+        return json.dumps({k: f for k in ("urdu_script", "roman_translit", "english", "code_mixed")}, ensure_ascii=False)
     return "?"
+
+
+MOCK_TRANSCRIPT = "Ali ne bazaar se do kilo seb khareede. Sawal: Ali ne kya khareeda? Jawab: do kilo seb."
 
 
 # ---------------------------------------------------------------- client
@@ -229,7 +236,30 @@ class LLMClient:
             )
         return call
 
-    async def _post(self, body: dict) -> dict:
+    async def transcribe(self, model: str, audio_b64: str, fmt: str) -> Call:
+        """Speech-to-text via OpenRouter /audio/transcriptions (e.g. Whisper). Cached by audio hash."""
+        digest = hashlib.sha256(audio_b64.encode()).hexdigest()
+        key = cache_key(model, f"[audio:{fmt}:{digest}]", 0)
+        hit = self._cache_get(key)
+        if hit:
+            return hit
+        async with self.sem:
+            if model.startswith("mock/"):
+                text, cost, secs = MOCK_TRANSCRIPT, 0.0, 0
+            else:
+                data = await self._post({"model": model, "input_audio": {"data": audio_b64, "format": fmt}},
+                                        path="/audio/transcriptions")
+                self.network_calls += 1
+                text = data.get("text") or ""
+                usage = data.get("usage") or {}
+                cost, secs = float(usage.get("cost") or 0.0), int(usage.get("seconds") or 0)
+        call = Call(text, model, model, "openrouter" if not model.startswith("mock/") else "mock", secs, 0, cost, False, key, now())
+        with db() as c:
+            c.execute("INSERT OR REPLACE INTO cache VALUES (?,?,?,?,?,?,?,?,?,?)",
+                      (key, model, model, call.provider, f"[audio:{fmt}:{digest}]", text, secs, 0, cost, call.ts))
+        return call
+
+    async def _post(self, body: dict, path: str = "/chat/completions") -> dict:
         """POST with exponential backoff on 429 / 5xx / network errors."""
         if not self.key:
             raise LLMError("OPENROUTER_API_KEY is not set; only mock/ models can run.")
@@ -238,7 +268,7 @@ class LLMClient:
         for attempt in range(self.max_retries + 1):
             retry_after = None
             try:
-                r = await self.http.post("/chat/completions", json=body, headers=headers)
+                r = await self.http.post(path, json=body, headers=headers)
             except httpx.TransportError as e:
                 err = f"network error ({type(e).__name__})"
             else:

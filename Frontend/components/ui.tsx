@@ -4,24 +4,24 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const LINKS = [
-  ["/", "Overview"],
-  ["/demo", "Live demo"],
+  ["/", "Home"],
   ["/data", "Data"],
   ["/review", "Review"],
-  ["/runs", "Runs"],
+  ["/runs", "Experiments"],
   ["/results", "Results"],
+  ["/contributors", "Contributors"],
 ] as const;
 
 const isActive = (path: string, href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
-/** Brand mark: a balance (a fair judge) on the kit's violet→pink→orange gradient. */
+/** Brand mark: a balance (a fair judge) on a graphite tile. */
 export function Logo({ size = 28 }: { size?: number }) {
   const id = useId();
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
       <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7B61FF" /><stop offset=".55" stopColor="#E14BB4" /><stop offset="1" stopColor="#FF8A3D" />
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#48484A" /><stop offset="1" stopColor="#1C1C1E" />
         </linearGradient>
       </defs>
       <rect width="32" height="32" rx="9" fill={`url(#${id})`} />
@@ -158,9 +158,9 @@ export function SiteFooter() {
           <a href="https://openrouter.ai" target="_blank" rel="noreferrer">OpenRouter</a>
         </div>
         <div>
-          <p className="footer-head">Method</p>
-          <span>Pointwise · Pairwise</span>
-          <span>Comprehension · Repeats</span>
+          <p className="footer-head">Project</p>
+          <Link href="/contributors">Contributors</Link>
+          <span>Pointwise · Pairwise · Comprehension</span>
           <span>Bootstrap 95% CIs</span>
         </div>
       </div>
