@@ -148,7 +148,9 @@ every script.
 
 ## Team
 
-See the **Contributors** page in the platform.
+Syed Sheraz Anjum (25240017) · Saif ur Rehman (24280071) · Hussnain Ali Murtaza (25280069) · Junaid Tariq (25280044)
+
+2601 SSE Responsible AI Engineering, LUMS
 
 ## References
 

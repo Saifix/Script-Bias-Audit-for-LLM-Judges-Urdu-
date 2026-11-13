@@ -337,3 +337,5 @@ details.more > summary { font-size: 14px; color: var(--ink); font-weight: 500; p
 details.round > summary { list-style: none; cursor: pointer; margin: 0; color: var(--ink); }
 details.round > summary::-webkit-details-marker { display: none; }
 details.round[open] > summary { padding-bottom: 4px; }
+
+.course { text-align: center; margin: 32px 0 0; font-size: 15px; font-weight: 500; color: var(--ink-2); letter-spacing: 0.01em; }

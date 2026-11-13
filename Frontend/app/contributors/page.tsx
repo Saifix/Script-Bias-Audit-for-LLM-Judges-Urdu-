@@ -16,6 +16,7 @@ export default function ContributorsPage() {
           </div>
         ))}
       </div>
+      <p className="course">2601 SSE Responsible AI Engineering, LUMS</p>
     </>
   );
 }
