@@ -80,6 +80,8 @@ class RunRequest(BaseModel):
     n_items: int | None = None
     repeats: int | None = None
     flags: dict[str, bool] | None = None
+    label: str | None = None        # round label, e.g. "Round 3 · medium"
+    replicate: int | None = None    # > 0: fresh (uncached) judge calls
     start: bool = True
 
 

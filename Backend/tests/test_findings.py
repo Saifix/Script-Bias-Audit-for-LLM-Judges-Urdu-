@@ -54,5 +54,11 @@ def test_replicate_makes_fresh_calls_and_trend(env):
         assert row["tier"] == 1 and "english" in row["gap"] and row["runs"]["pointwise"] == b
         t1 = c.get("/api/trend", params={"label": "Round 1"}).json()
         assert next(r for r in t1["judges"] if r["id"] == "mock/judge-a")["runs"]["pointwise"] == a
+        # label + replicate must survive the HTTP API (regression: they were silently dropped)
+        r = c.post("/api/runs", json={"type": "screening", "judges": ["mock/judge-a"], "label": "Round 9 · api",
+                                      "replicate": 3, "start": False})
+        assert r.status_code == 200 and r.json()["cached"] == 0
+        cfg_api = next(x for x in c.get("/api/runs").json()["runs"] if x["id"] == r.json()["id"])["config"]
+        assert cfg_api["label"] == "Round 9 · api" and cfg_api["replicate"] == 3
         cfgj = c.get("/api/config").json()
         assert cfgj["judge_meta"]["mock/judge-a"]["tier"] == 1
