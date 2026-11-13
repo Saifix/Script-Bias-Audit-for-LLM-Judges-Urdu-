@@ -137,14 +137,15 @@ def test_per_model_concurrency_limit(env):
         active["now"] -= 1
         return httpx.Response(200, json={"choices": [{"message": {"content": "8"}}], "usage": {}})
 
-    async def go():
-        client = LLMClient(concurrency=8, transport=httpx.MockTransport(handler), key="k", model_limits={"slow/model": 2})
+    async def go():  # two clients (= two parallel runs) must share the cap
+        a = LLMClient(concurrency=8, transport=httpx.MockTransport(handler), key="k", model_limits={"slow/model": 2})
+        b = LLMClient(concurrency=8, transport=httpx.MockTransport(handler), key="k", model_limits={"slow/model": 2})
         try:
-            await asyncio.gather(*(client.complete("slow/model", f"p{i}") for i in range(10)))
+            await asyncio.gather(*(c.complete("slow/model", f"p{i}-{n}") for i in range(8) for n, c in enumerate((a, b))))
         finally:
-            await client.aclose()
+            await a.aclose(); await b.aclose()
     asyncio.run(go())
-    assert active["max"] == 2  # never more than 2 in flight for this model
+    assert active["max"] == 2  # never more than 2 in flight for this model, across clients
 
 
 def test_region_refusal_is_retried(env):

@@ -206,6 +206,17 @@ def cached_keys(keys: list[str]) -> set[str]:
     return found
 
 
+_MODEL_SEMS: dict[tuple[int, str], asyncio.Semaphore] = {}
+
+
+def _model_semaphore(model: str, n: int) -> asyncio.Semaphore:
+    """One semaphore per (event loop, model): all runs in the server share it."""
+    key = (id(asyncio.get_event_loop()), model)
+    if key not in _MODEL_SEMS:
+        _MODEL_SEMS[key] = asyncio.Semaphore(n)
+    return _MODEL_SEMS[key]
+
+
 def _transient_400(r: httpx.Response) -> bool:
     """Some providers intermittently refuse a request routed through an unsupported region
     ("User location is not supported"); a retry usually goes through, so treat it like a 5xx."""
@@ -219,8 +230,9 @@ class LLMClient:
                  transport: httpx.AsyncBaseTransport | None = None, key: str | None = None,
                  model_limits: dict[str, int] | None = None):
         self.sem = asyncio.Semaphore(concurrency)
-        # per-model caps for providers that rate-limit hard (config: judges[].max_concurrency)
-        self.model_sems = {m: asyncio.Semaphore(n) for m, n in (model_limits or {}).items() if n and n > 0}
+        # per-model caps for providers that rate-limit hard (config: judges[].max_concurrency).
+        # Shared by every client in the process, so parallel runs together stay under the cap.
+        self.model_sems = {m: _model_semaphore(m, n) for m, n in (model_limits or {}).items() if n and n > 0}
         self.max_retries = max_retries
         self.backoff = backoff
         self.key = api_key() if key is None else key
