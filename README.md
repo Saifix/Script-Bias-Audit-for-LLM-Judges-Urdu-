@@ -145,20 +145,53 @@ in round 2); judges are not fully deterministic at temperature 0, so single ques
 300-question averages should be read. Model substitutions: Gemini 3.x and Qwen 3.7 Max could not be used (forced
 "thinking", heavy rate limits), so Gemini 2.5 Flash and Qwen3 235B represent the large tier.
 
+## Why does this happen?
+
+The most likely explanations, combining published research with what our own data shows (well supported, but not
+proven cause-and-effect):
+
+1. **Judges prefer what looks familiar.** LLM judges give higher scores to text that is more familiar to them (lower
+   perplexity), regardless of content ([Wataoka et al., 2024](https://arxiv.org/abs/2410.21819)). Clean English and
+   standard Urdu script are common in training data; informal Roman Urdu is not. *Our evidence:* the order is always
+   English > Urdu script > Roman Urdu, and the penalty remains **even on questions the judge understood in both
+   scripts** — answered correctly in each — by 0.57 to 1.35 points (all real differences for every capable judge).
+2. **Roman Urdu has no standard spelling.** The same word can be written many ways (up to 20 variants per word in one
+   study: [arXiv 2004.00088](https://arxiv.org/abs/2004.00088)), so each spelling is rare in training data. *Our
+   evidence:* converting Roman Urdu to Urdu script — one standard spelling, same meaning — removes most of the penalty.
+3. **Low-resource languages are judged less reliably, and scale does not fix it.** Multilingual LLM judges are
+   inconsistent across languages, worst for low-resource ones, and neither bigger models nor multilingual training fix
+   this ([Fu & Liu, Findings of EMNLP 2025](https://arxiv.org/abs/2505.12201)). *Our evidence:* judges understand Roman
+   Urdu about 15 points worse, and the score penalty does not shrink from small to large models.
+4. **It is the script, not the language mix.** Code-mixed text (Roman Urdu with English nouns) is penalised as much as
+   plain Roman Urdu, so adding English words does not help.
+
 ## Why it matters
 
-- **Fairness for real users.** If judges penalise Roman Urdu, chatbots tuned with those judges learn to avoid the way
-  most Urdu speakers write, and evaluations under-rate systems that serve them well.
-- **Trustworthy evaluation.** Leaderboards and research that use LLM-as-a-judge for South Asian languages need to
-  know whether the judge measures quality or script.
-- **Practical fixes.** Testing cheap mitigations (a rubric line, transliteration, judge panels) tells practitioners
-  what actually works, not just that a problem exists.
-- **Reusable method.** The same controlled design — identical content, only the script changes — applies to Hindi
-  (Devanagari vs. Hinglish), Arabic (Arabizi), Bengali and other languages written in more than one script.
+- **For people:** many Urdu speakers type Roman Urdu online. When AI grades answers, ranks replies or moderates
+  content, their writing is quietly marked down — and their mistakes are caught less often.
+- **For AI systems:** chatbots are often tuned with AI judges or reward models. A judge that prefers English and Urdu
+  script teaches chatbots to avoid the way many Urdu speakers actually write.
+- **For research:** leaderboards and studies that use LLM-as-a-judge for South Asian languages may be measuring
+  script, not quality. The same controlled test applies to Hindi/Hinglish, Arabic/Arabizi, Bengali and other
+  two-script languages.
+
+## Guidelines for others
+
+1. **Test your AI judge before you trust it** — same content in Urdu script, Roman Urdu and English; if scores
+   differ, it is grading the script.
+2. **Convert Roman Urdu to Urdu script before judging** — the most effective fix we found, and it restores error
+   detection.
+3. **Do not rely on "ignore spelling" instructions** — they make judges more lenient, not fairer.
+4. **Do not assume a bigger model or a panel fixes it** — bigger judges were better overall but just as biased in
+   scoring; a panel averages the same bias.
+5. **Report results per script**, including Roman Urdu and code-mixed text.
+6. **Keep a human in the loop for Roman Urdu**, especially when decisions affect people.
+7. **Choose judges by measured fairness, not size** — Gemini 2.5 Flash and Llama 4 Maverick were fair head-to-head;
+   the Qwen models were not.
 
 ## Try it
 
-The project runs as a private web platform. Its home page shows the latest findings and a **Test yourself** tool:
+The project runs as a private web platform. Its **Findings** page explains the results in plain words; the home page shows the latest numbers and a **Test yourself** tool:
 type a question, record a voice note, or pick a dataset question, and see how each judge scores the same answer in
 every script.
 

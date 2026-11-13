@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useTheme } from "../../components/Charts";
+import { Glossary } from "../../components/Glossary";
 import { ErrorNote, Header } from "../../components/ui";
 import { api, fmt, useApi } from "../../lib/api";
 
@@ -25,6 +26,27 @@ const METRICS: Metric[] = [
   { key: "comp", title: "Understanding gap", sub: "Accuracy answering the question itself: Roman Urdu minus Urdu script (points). 0 = understands both equally.", get: (r) => r.accuracy?.roman_translit != null && r.accuracy?.urdu_script != null ? (r.accuracy.roman_translit - r.accuracy.urdu_script) * 100 : null, ref: 0, unit: " pts", digits: 0 },
   { key: "auc", title: "Catching wrong answers in Roman Urdu", sub: "AUC: how well scores separate right from wrong answers in Roman Urdu. 0.5 = chance, 1 = perfect.", get: (r) => r.auc?.roman_translit, ref: 0.5, unit: "", domain: [0.4, 1], digits: 2 },
 ];
+
+/** Plain-language takeaway: for each company, does the measure move toward "fair" from its smallest to its largest model? */
+function trendTakeaway(m: Metric, rows: Row[], families: string[]): string | null {
+  const fmtv = (v: number) => `${v.toFixed(m.digits)}${m.unit.trim() === "%" ? "%" : m.unit}`;
+  const better: string[] = [], notBetter: string[] = [], parts: string[] = [];
+  for (const f of families) {
+    const fr = rows.filter((r) => r.family === f && m.get(r) != null).sort((a, b) => a.tier - b.tier);
+    if (fr.length < 2) continue;
+    const a = m.get(fr[0])!, b = m.get(fr[fr.length - 1])!;
+    parts.push(`${f.split(" ")[0]} ${fmtv(a)} → ${fmtv(b)}`);
+    const tol = m.key === "auc" ? 0.02 : m.key === "gap" ? 0.15 : 3;
+    // AUC: higher is better; others: closer to the fair line is better
+    const improved = m.key === "auc" ? b > a + tol : Math.abs(b - m.ref) < Math.abs(a - m.ref) - tol;
+    (improved ? better : notBetter).push(f.split(" ")[0]);
+  }
+  if (!parts.length) return null;
+  const verdict = !better.length ? "No company gets fairer as its models get bigger."
+    : !notBetter.length ? "Every company improves as its models get bigger."
+    : `Improves with size: ${better.join(", ")}; does not: ${notBetter.join(", ")}.`;
+  return `Smallest → largest model: ${parts.join(" · ")}. ${verdict}`;
+}
 
 function TrendChart({ m, rows, families }: { m: Metric; rows: Row[]; families: string[] }) {
   const t = useTheme();
@@ -62,6 +84,7 @@ function TrendChart({ m, rows, families }: { m: Metric; rows: Row[]; families: s
           </LineChart>
         </ResponsiveContainer>
       </div>
+      {trendTakeaway(m, rows, families) && <p className="takeaway"><b>What this shows:</b> {trendTakeaway(m, rows, families)}</p>}
     </div>
   );
 }
@@ -87,6 +110,7 @@ export default function TrendsPage() {
         lede="Each line is one company's models, from small to large. A fair judge sits on the “fair” line in every chart. Numbers come from each judge's latest full run." />
       <ErrorNote error={latest.error} />
       {latest.data && rows.length === 0 && <div className="tile"><p className="muted" style={{ margin: 0 }}>No finished experiment runs yet.</p></div>}
+      <div style={{ margin: "4px 0 16px" }}><Glossary /></div>
       {rows.length > 0 && tiersSeen.length < 2 && (
         <p className="notice">Only {TIER_LABEL[tiersSeen[0]]?.toLowerCase()} models have been run so far — the lines will appear once medium and large models are tested.</p>
       )}

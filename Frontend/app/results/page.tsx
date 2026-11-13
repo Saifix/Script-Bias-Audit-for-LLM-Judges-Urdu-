@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AccuracyChart, AcceptanceChart, AucChart, GapChart, WinRateChart } from "../../components/Charts";
 import { judgeName } from "../../components/JudgePicker";
 import { PlainWords } from "../../components/TestYourself";
+import { Glossary } from "../../components/Glossary";
 import { Scorecard } from "../../components/Scorecard";
 import { Badge, ErrorNote, Header, Segmented } from "../../components/ui";
 import { fmt, label, useApi, type AppConfig, type Finding, type Gap, type Run, type Summary } from "../../lib/api";
@@ -89,6 +90,7 @@ export default function ResultsPage() {
       )}
 
       <ErrorNote error={runs.error ?? summary.error} />
+      <div style={{ marginBottom: 20 }}><Glossary /></div>
       {wordsLoading && <div className="tile plain" style={{ marginBottom: 20 }}><p className="eyebrow">In plain words</p><p className="muted" style={{ margin: 0 }}>Writing a short summary of these numbers…</p></div>}
       {words.data?.summary && <div style={{ marginBottom: 20 }}><PlainWords summary={words.data.summary} /></div>}
       {words.data?.findings && words.data.findings.length > 0 && <div style={{ marginBottom: 24 }}><Scorecard findings={words.data.findings} /></div>}

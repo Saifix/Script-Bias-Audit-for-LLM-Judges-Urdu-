@@ -5,6 +5,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } f
 
 const LINKS = [
   ["/", "Home"],
+  ["/findings", "Findings"],
   ["/data", "Data"],
   ["/runs", "Experiments"],
   ["/results", "Results"],
