@@ -145,3 +145,21 @@ def test_per_model_concurrency_limit(env):
             await client.aclose()
     asyncio.run(go())
     assert active["max"] == 2  # never more than 2 in flight for this model
+
+
+def test_region_refusal_is_retried(env):
+    hits = {"n": 0}
+
+    def handler(request):
+        hits["n"] += 1
+        if hits["n"] == 1:
+            return httpx.Response(400, json={"error": {"message": "Provider returned error", "metadata": {"raw": "User location is not supported for the API use."}}})
+        return httpx.Response(200, json={"choices": [{"message": {"content": "7"}}], "usage": {}})
+
+    async def go():
+        client = LLMClient(backoff=0.001, transport=httpx.MockTransport(handler), key="k")
+        try:
+            return await client.complete("google/gemini-2.5-flash", "p")
+        finally:
+            await client.aclose()
+    assert asyncio.run(go()).text == "7" and hits["n"] == 2

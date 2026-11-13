@@ -206,6 +206,12 @@ def cached_keys(keys: list[str]) -> set[str]:
     return found
 
 
+def _transient_400(r: httpx.Response) -> bool:
+    """Some providers intermittently refuse a request routed through an unsupported region
+    ("User location is not supported"); a retry usually goes through, so treat it like a 5xx."""
+    return r.status_code == 400 and "location is not supported" in r.text
+
+
 class LLMClient:
     """OpenAI-compatible chat client pointed at OpenRouter. Every call goes through the cache."""
 
@@ -316,8 +322,8 @@ class LLMClient:
                     if not data.get("error"):
                         return data
                     err = f"provider error: {str(data['error'])[:200]}"
-                elif r.status_code == 429 or r.status_code >= 500:
-                    err = f"HTTP {r.status_code}"
+                elif r.status_code == 429 or r.status_code >= 500 or _transient_400(r):
+                    err = f"HTTP {r.status_code}" + (" (provider region refused; retrying)" if r.status_code == 400 else "")
                     retry_after = r.headers.get("retry-after")
                 else:
                     raise LLMError(f"HTTP {r.status_code} for {body['model']}: {r.text[:300]}")
