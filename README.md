@@ -79,18 +79,53 @@ Ties and unparseable outputs are reported separately, never silently counted as 
 
 ## Results
 
-> **Status: pending the first full run.** The platform, data pipeline and judges are ready; the full experiment has
-> not been run yet. Results will be added here as tables and charts once it completes.
+Full run on 13 Nov 2026: 300 questions × 4 versions × 3 judges, about 33,000 judge calls in total (cost $0.82).
+Numbers in brackets are bootstrap 95% confidence intervals; **bold** = the interval excludes "no difference".
+Llama 3.1 8B failed the screening gate (it barely separates right from wrong answers even in Urdu script, AUC 0.65 on
+the pilot), so its results are flagged and should not carry the conclusions.
 
-Planned headline results:
+**Screening (can the judge tell right from wrong? AUC, 20-question pilot):** Qwen 0.76 / 0.91, Gemma 0.77 / 0.93,
+Llama 0.65 / 0.75 (Urdu script / English). All three are weaker in Urdu script than in English.
 
-| Finding | Metric | Qwen 3.5 9B | Llama 3.1 8B | Gemma 3 12B |
+| Finding | Metric | Qwen 3.5 9B | Gemma 3 12B | Llama 3.1 8B ⚑ |
 |---|---|---|---|---|
-| Scores Roman Urdu lower than Urdu script? | severity gap (95% CI) | – | – | – |
-| Prefers one script in head-to-head? | pairwise win rate vs. Urdu script | – | – | – |
-| Understands Roman Urdu as well? | comprehension accuracy | – | – | – |
-| Still catches wrong answers in Roman Urdu? | AUC per script | – | – | – |
-| Does a rubric or transliteration fix it? | gap with vs. without mitigation | – | – | – |
+| Correct answers scored lower in Roman Urdu? | score gap vs Urdu script (1–10 scale) | **−0.81** [−1.16, −0.47] | **−0.59** [−0.95, −0.24] | −0.12 [−0.39, +0.15] |
+| … and in code-mixed? | score gap vs Urdu script | **−0.91** [−1.27, −0.56] | **−0.86** [−1.22, −0.50] | **−0.31** [−0.57, −0.01] |
+| … and in English? | score gap vs Urdu script | +0.34 [−0.06, +0.72] | **+0.57** [+0.19, +0.91] | +0.21 [−0.12, +0.53] |
+| Prefers Urdu script head-to-head? | Roman Urdu win rate vs Urdu script (50% = fair) | **13.7%** [12, 15] | **39.5%** [38, 41] | **39.9%** [37, 42] |
+| | code-mixed win rate vs Urdu script | **12.3%** [11, 14] | **37.0%** [36, 38] | **40.3%** [38, 43] |
+| Understands Roman Urdu as well? | comprehension accuracy: Urdu / Roman / Mixed / English | 76 / 57 / 58 / 92% | 82 / 67 / 69 / 91% | 48 / 33 / 36 / 69% |
+| Still catches wrong answers? | AUC: Urdu / Roman / Mixed / English | 0.68 / 0.60 / 0.59 / 0.76 | 0.74 / 0.64 / 0.63 / 0.83 | 0.57 / 0.54 / 0.53 / 0.67 |
+| Wrong answers waved through? | share of wrong answers scored ≥ 7: Urdu / Roman | 38% / 41% | 39% / **51%** | 78% / 71% |
+| Same score when asked again? | identical score on repeat: Urdu / Roman / Mixed / English | 46 / 50 / 45 / 69% | 77 / 76 / 67 / 79% | 45 / 36 / 32 / 56% |
+
+**Mitigations** (score gap on correct answers vs Urdu script, Roman Urdu / code-mixed):
+
+| | Qwen 3.5 9B | Gemma 3 12B |
+|---|---|---|
+| No mitigation | **−0.81** / **−0.91** | **−0.59** / **−0.86** |
+| Rubric ("ignore script, spelling and formality") | −0.39 / −0.34 | −0.32 / **−0.52** |
+| Transliterate to Urdu script first | **+0.07** / −0.32 | −0.27 / **−0.55** |
+| Panel of all three judges (averaged) | **−0.51** / **−0.69** (panel) | |
+
+- **Transliterating first works best.** It removes most of the gap *and* restores error detection: Roman Urdu AUC goes
+  from 0.60 → 0.68 (Qwen) and 0.64 → 0.72 (Gemma), back to Urdu-script level, and Gemma's wrong-answer acceptance drops
+  from 51% to 39%.
+- **The rubric shrinks the gap by making judges more lenient**, not fairer: wrong answers scored ≥ 7 rise from 41% to
+  59% (Qwen) and 51% to 61% (Gemma) in Roman Urdu. Not a good fix.
+- **A panel does not cancel the bias** — all three judges lean the same way, so the average still penalises Roman Urdu
+  (−0.51) and code-mixed (−0.69).
+
+**Summary.** Both capable judges (Qwen, Gemma) systematically disadvantage the scripts most Urdu speakers actually use
+online: the same correct answer scores lower in Roman Urdu and code-mixed text, loses head-to-head against its Urdu-script
+twin, and wrong answers are caught less reliably. Judges also *understand* Roman Urdu less well, and converting it to
+Urdu script before judging largely removes the gap — which suggests much of the bias comes from weaker handling of
+Roman script rather than a pure stylistic preference.
+
+**Limitations.** Three small open models; a single dataset (Belebele); Roman Urdu and code-mixed answer options were
+written by Claude Opus 5.5 and not human-reviewed, while their passages/questions come from Belebele's Roman Urdu;
+judges are not fully deterministic at temperature 0 (see the repeat row), so single questions are noisy and only the
+300-question averages should be read.
 
 ## Why it matters
 
