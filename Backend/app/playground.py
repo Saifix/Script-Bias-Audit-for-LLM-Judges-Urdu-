@@ -250,8 +250,9 @@ async def explain(facts: str, length: str, extra: str = "") -> dict | None:
     cfg = load_config()["summary"]
     client = LLMClient(1, max_retries=2)
     try:
+        # reasoning off: the facts are already judged by code, and thinking tokens could use up the whole reply
         call = await client.complete(cfg["model"], render("explain", facts=facts, length=length, extra=extra),
-                                     max_tokens=500, task="explain")
+                                     max_tokens=700, task="explain", extra={"reasoning": {"enabled": False}})
     except Exception as e:  # never break the page over a summary, but leave a trace
         print(f"summary model failed: {type(e).__name__}: {str(e)[:300]}", flush=True)
         return None
