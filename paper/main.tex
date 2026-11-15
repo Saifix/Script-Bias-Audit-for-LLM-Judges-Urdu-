@@ -34,202 +34,120 @@ Lahore University of Management Sciences (LUMS), Lahore, Pakistan}}
 \maketitle
 
 \begin{abstract}
-Large language models (LLMs) are now widely used as judges to grade answers and compare model outputs. Many Urdu
-speakers type Urdu in Latin letters, known as Roman Urdu, and often mix English words into it. We do not know whether
-LLM judges treat this kind of text as fairly as standard Urdu script. In this project we test this with a controlled
-design. We take 300 reading-comprehension questions from the Belebele dataset and write each answer in four versions:
-Urdu script, Roman Urdu, Urdu--English code-mixed and English. Only the script changes, not the content. Nine LLM judges
-from three companies and three size groups score, compare and answer these items, which gives 191{,}760 judgements in
-total. Every judge that passed our screening test gave the same correct answer a lower score in Roman Urdu than in Urdu
-script, by 0.55 to 1.26 points on a 1--10 scale. The drop for code-mixed text was 0.59 to 1.30 points, while English
-answers received higher scores. The result repeated in a second round. It also held for questions the judge had
-understood in both scripts, and it did not get smaller with larger models. Converting Roman Urdu to Urdu script before
-judging was the most useful fix we tested. Telling the judge to ignore spelling mostly made it more lenient. We also
-describe the evaluation platform we built, the problems we faced and the work that remains.
+LLMs are often used as judges to grade answers. Many Urdu speakers write Urdu in Latin letters (Roman Urdu) and mix in
+English words, but we do not know whether LLM judges grade such answers as fairly as answers in Urdu script. We took
+300 reading-comprehension items from Belebele and wrote each answer in Urdu script, Roman Urdu, Urdu--English
+code-mixed text and English, keeping the content the same. Nine judges from three companies, in three model sizes,
+scored and compared these answers. Every judge that passed our screening test gave the same correct answer 0.55 to 1.26
+points less (out of 10) in Roman Urdu than in Urdu script, and 0.59 to 1.30 points less in code-mixed text, while
+English answers scored higher. We saw the same gap in a repeat round and on items the judge had understood in both
+scripts. Larger models did not have a smaller gap. Of the fixes we tried, converting the answer to Urdu script before
+judging helped the most. We end with the work planned for the final paper.
 \end{abstract}
 
 \begin{IEEEkeywords}
-LLM-as-a-judge, fairness, script bias, Roman Urdu, code-mixing, evaluation
+LLM-as-a-judge, fairness, script bias, Roman Urdu, code-mixing
 \end{IEEEkeywords}
 
 % =====================================================================
 \section{Introduction}
-LLMs are often used to evaluate the output of other systems. They grade answers, rank chatbot replies and provide
-preference data for training reward models \cite{zheng2023judging}. This approach assumes that the judge scores the
-content of an answer and not the way it is written. Earlier work shows that this assumption does not always hold.
-Judges prefer their own outputs \cite{panickssery2024llm}, prefer text that is more familiar to them
-\cite{wataoka2024self} and change their verdicts after small changes in the input \cite{ye2025justice}.
+LLM judges are now a common part of evaluation. They grade answers, rank chatbot replies and produce preference data
+for reward models \cite{zheng2023judging}. A fair judge should score an answer on its content alone. Past studies
+show this does not always happen: judges prefer their own outputs \cite{panickssery2024llm},
+favour familiar text \cite{wataoka2024self} and change their verdict after small edits to the input
+\cite{ye2025justice}.
 
-Urdu gives a case that has not been studied in this way. The same language is written in two scripts. The standard form
-is the Perso-Arabic Urdu script
-(\raisebox{-0.3ex}{\includegraphics[height=1.9ex]{figures/urdu_example.pdf}}, ``five villages''). In daily life,
-especially in messages and on social media, many people write it in Latin letters as Roman Urdu (\rom{paanch dehaat}).
-People also mix in English words (\rom{paanch villages}). Roman Urdu has no fixed spelling \cite{khan2022clustering},
-so each spelling of a word appears less often in training data. If a judge gives a lower score to a correct Roman Urdu
-answer than to the same answer in Urdu script, then grading tools, leaderboards and reward models that use this judge
-will be unfair to a large number of users. This is a clear responsible-AI concern.
+Urdu is an interesting case because it is written in two scripts. Books and newspapers use the Perso-Arabic script
+(\raisebox{-0.3ex}{\includegraphics[height=1.9ex]{figures/urdu_example.pdf}}, ``five villages''), but on phones and
+social media many people type Roman Urdu (\rom{paanch dehaat}), often with English words mixed in
+(\rom{paanch villages}). Roman Urdu also has no standard spelling \cite{khan2022clustering}. If a judge marks down a
+correct answer only because it is in Roman Urdu, any grading tool or leaderboard built on that judge will be unfair to
+a large group of users.
 
-\textbf{Problem statement.} When the content is kept the same, does the script of an answer (Urdu script, Roman Urdu,
-code-mixed or English) change how an LLM judge scores it, compares it and understands it? And can simple fixes remove
-the difference? We study three research questions:
-\begin{itemize}
-\item \textbf{RQ1:} Is there a difference in scores or in pairwise preference?
-\item \textbf{RQ2:} Is the difference only because the judge understands Roman Urdu less well?
-\item \textbf{RQ3:} Does the difference become smaller with larger models or with simple mitigations?
-\end{itemize}
-
-\textbf{Contributions so far.} (i) A four-version Urdu dataset in which only the script changes. (ii) An evaluation
-platform that records every model call. (iii) A four-round study with nine judges that shows a clear and repeated
-penalty for Roman Urdu and code-mixed text. (iv) A first comparison of three mitigations.
+We therefore ask whether the script of an answer changes how an LLM judge scores, compares and understands it when the
+content stays the same. We look at three questions. Is there a gap (RQ1)? Is it explained by weaker understanding of
+Roman Urdu (RQ2)? Does it get smaller with bigger models or with simple fixes (RQ3)? So far we have built the dataset
+and an evaluation platform, and finished a four-round study with nine judges.
 
 % =====================================================================
 \section{Related Work}
-\textbf{Bias in LLM judges.} The CALM framework \cite{ye2025justice} measures twelve kinds of judge bias by changing
-one feature of the input and checking whether the verdict changes. We use the same idea, but the feature we change is
-the script of one language, which CALM does not test. Work on self-preference \cite{panickssery2024llm} and familiarity
-\cite{wataoka2024self} shows that judges can give higher scores to text with lower perplexity. This gives one possible
-reason for script bias. We treat it as a hypothesis and not as a proven cause. MT-Bench \cite{zheng2023judging} also
-reported position bias in judges, so we show every pair in both orders.
+Our design follows CALM \cite{ye2025justice}, which changes one input feature at a time and checks whether the
+verdict moves. CALM covers twelve biases, but script is not one of them. Familiarity and self-preference effects
+\cite{panickssery2024llm,wataoka2024self} may explain script bias, and we treat this as a hypothesis for now. We show
+each pair in both orders because of the position bias found in MT-Bench \cite{zheng2023judging}.
 
-\textbf{Multilingual judges.} Fu and Liu found low agreement between judges across 25 languages, with the weakest
-results for low-resource languages, and found that larger models did not solve this \cite{fu2025reliable}. Zhou et al.\
-showed that the same content can get different scores in different languages \cite{zhou2026lower}. MM-Eval
-\cite{son2026mmeval} and the CIA suite \cite{doddapaneni2025cross} provide benchmarks for multilingual evaluators, and
-Hada et al.\ recommend checking automatic evaluation against native speakers \cite{hada2024large}. All of these studies
-compare different languages. None of them compares two scripts of the same language with the content kept fixed.
+Judges are also known to be less reliable outside English. Fu and Liu found low agreement between judges across 25
+languages, worst for low-resource ones \cite{fu2025reliable}, and Zhou et al.\ found that the same content gets
+different scores in different languages \cite{zhou2026lower}. MM-Eval \cite{son2026mmeval} and the CIA suite
+\cite{doddapaneni2025cross} benchmark multilingual evaluators, and Hada et al.\ suggest checking them against native
+speakers \cite{hada2024large}. All of these compare languages. We compare two scripts of the same language.
 
-\textbf{Romanization and Urdu.} Results on romanized text are mixed. Khullar et al.\ found that LLM triage accuracy
-changes between native and romanized scripts for Indian languages \cite{khullar2026script}. On the other hand, U-MIRAGE
-reported better results in Roman Urdu than in Urdu script for medical questions \cite{faheem2026umirage}. For this
-reason we did not assume the direction of the effect in advance. RomanSetu \cite{husain2024romansetu} and RomanLens
-\cite{saji2025romanlens} study how romanization affects multilingual models, and Jamil and Rafi study Roman Urdu as a
-safety risk \cite{jamil2026code}. None of these studies looks at fairness in evaluation.
+Results on romanized text are mixed. Native and romanized scripts gave different triage accuracy for Indian languages
+\cite{khullar2026script}, while U-MIRAGE found Roman Urdu did better than Urdu script on medical questions
+\cite{faheem2026umirage}. RomanSetu \cite{husain2024romansetu}, RomanLens \cite{saji2025romanlens} and a study of Roman
+Urdu as a safety risk \cite{jamil2026code} look at model ability or safety, and not at evaluation. Dialect is known to
+affect judge consistency \cite{faisal2025dialectal} and decisions about people \cite{hofmann2024ai}, code-mixing has its
+own benchmarks \cite{yang2025codemixbench,mohamed2025lost,gupta2026code}, and UrBLiMP tests Urdu grammar knowledge
+\cite{adeeba2026urblimp}. As far as we know, no study has checked whether an LLM judge grades the same Urdu answer
+differently when only the script changes.
 
-\textbf{Dialect and code-mixing.} Dialect reduces the consistency of LLM judges in toxicity detection
-\cite{faisal2025dialectal} and can lead to biased decisions about people \cite{hofmann2024ai}. CodeMixBench
-\cite{yang2025codemixbench}, Lost in the Mix \cite{mohamed2025lost} and Code Mixologist \cite{gupta2026code} study how
-models understand and produce code-mixed text, and UrBLiMP tests the Urdu grammar knowledge of LLMs
-\cite{adeeba2026urblimp}. We follow the noun-switching approach of \cite{mohamed2025lost} for code-mixing. We also
-follow the point from this work that understanding should be measured before a score difference is called bias.
-
-\textbf{Research gap.} To our knowledge, no earlier work tests whether an LLM judge grades the same Urdu answer
-differently when only its script changes, separates this from comprehension, and tests ways to reduce it. This is the
-gap our project addresses.
-
-% =====================================================================
 \input{figures/pipeline.tex}
 
 % =====================================================================
 \section{Dataset}
 \label{sec:data}
-\textbf{Source.} We use Belebele \cite{bandarkar2024belebele}, a multiple-choice reading-comprehension dataset with the
-same passages, questions and four answer options in 122 language variants. It includes Urdu in Arabic script
-(\texttt{urd\_Arab}), romanized Urdu (\texttt{urd\_Latn}) and English (\texttt{eng\_Latn}). We matched the three
-versions by passage link and question number and sampled 300 items with a fixed random seed (13). For each item we use
-the correct option and one wrong option, which is also chosen with the seed. In this way every judge sees exactly the
-same answers. Urdu passages have 99.9 words on average and answers have 5.3 words. In English the averages are 78.9
-and 4.2 words.
+Belebele \cite{bandarkar2024belebele} has the same multiple-choice reading-comprehension items in 122 language
+variants, including Urdu in Arabic script, romanized Urdu and English. We matched the three versions and sampled 300
+items with a fixed seed. For each item we use the correct option and one wrong option, so every judge sees the same
+answers.
 
-\textbf{Why we made our own Roman Urdu.} In a pilot study we found that Belebele's Roman Urdu options are often
-reworded instead of transliterated. For example, \rom{dehaat} (villages) becomes \rom{gaon} (Fig.~\ref{fig:pipeline}).
-Out of 1{,}200 options, 590 (49.2\%) of Belebele's Roman Urdu options have a different number of words from the
-Urdu-script option. Using them would mix the effect of the script with the effect of the wording. We therefore
-transliterated all 1{,}200 options word by word using Claude Opus~5.5 with written rules: transliterate and do not
-translate (\rom{seb}, not \rom{apple}), use common Pakistani spellings, and keep the standard spelling of foreign names.
-Only 117 (9.8\%) of our options differ in word count, and almost all of these differ by one word because izafat
-compounds are joined with hyphens (\rom{sehat-e-aama}).
-
-\textbf{Code-mixed version.} Following \cite{mohamed2025lost}, the same model rewrote each option in Roman Urdu with
-Urdu grammar, verbs and function words, and changed some nouns to English (\rom{paanch villages}). All 300 items have a
-code-mixed version.
-
-\textbf{Checks.} The generated options were checked automatically: each item must have four non-empty options and no
-Urdu script may remain. Each row stores the name of the generating model and an ``auto-approved'' label. No human
-review has been done yet (Sec.~\ref{sec:remaining}). For the Roman Urdu and code-mixed versions, the passage and
-question come from Belebele's \texttt{urd\_Latn} text. The derived data uses Belebele's CC BY-SA 4.0 licence.
+We did not use Belebele's own Roman Urdu answers. In a pilot, many of them turned out to be reworded and not
+transliterated; for example \rom{dehaat} (villages) became \rom{gaon}. Across all 1{,}200 options, 590 (49.2\%) had a
+different word count from the Urdu-script option, which would mix up the effect of script with the effect of wording.
+So Claude Opus~5.5 transliterated every option word by word, following written rules such as \rom{seb} and never
+\rom{apple}, and common Pakistani spellings. Only 117 (9.8\%) of our options differ in word count, nearly always because
+izafat compounds are hyphenated (\rom{sehat-e-aama}). The same model also wrote a code-mixed version of each option,
+keeping Urdu grammar and switching some nouns to English as in \cite{mohamed2025lost}. All generated text passed
+automatic checks, but no person has reviewed it yet. The passages and questions for the Roman Urdu and code-mixed
+versions come from Belebele's romanized text.
 
 % =====================================================================
 \section{Methodology}
 \label{sec:method}
-\textbf{Judges.} We use nine judges from three companies in three size groups (Fig.~\ref{fig:pipeline}): Qwen from
-Alibaba, Llama from Meta, and Gemma and Gemini from Google. All judges are called through OpenRouter at temperature 0,
-with reasoning turned off and a reply limit of 8 tokens. The only exception is the pairwise task for Llama~4 Maverick,
-explained in Sec.~\ref{sec:impl}. For every call we store the model, the provider, the token count, the cost and the
-time.
+The nine judges come from Alibaba (Qwen), Meta (Llama) and Google (Gemma, Gemini), with one small, one medium and one
+large model from each (Fig.~\ref{fig:pipeline}). We call them through OpenRouter at temperature 0, with reasoning
+turned off and an 8-token reply limit, and log every call.
 
-\textbf{Experiments.} We run five experiments.
-\begin{enumerate}
-\item \emph{Screening:} on 20 items in Urdu script and English, the judge must separate correct from wrong answers with
-an AUC above 0.7 in both. A judge that fails is flagged, because its bias numbers would not be reliable.
-\item \emph{Comprehension:} the judge answers the multiple-choice question itself in each version.
-\item \emph{Pointwise scoring:} the judge rates the correct and the wrong answer in all four versions with the prompt
-``Rate how correct and helpful this answer is from 1 to 10'' (2{,}400 calls per judge).
-\item \emph{Pairwise comparison:} the judge sees the same answer in two versions, one of them always Urdu script, and is
-asked ``Which answer is better, A or B? Reply A, B or TIE.'' Each pair is shown in both orders (3{,}600 calls per
-judge). A fair judge should answer TIE.
-\item \emph{Repeats:} 50 items are scored three times to check how stable the scores are.
-\end{enumerate}
+Each judge goes through five experiments. A screening test on 20 items checks that it can tell correct from wrong
+answers, with an AUC above 0.7 in Urdu script and English. In the comprehension task the judge answers the question
+itself. In pointwise scoring it rates each answer from 1 to 10. In pairwise comparison it sees the same answer in Urdu
+script and in one other version and replies A, B or TIE; each pair is shown in both orders, and a fair judge should say
+TIE. Lastly, 50 items are scored three times to measure randomness. We also try three mitigations: a rubric line telling
+the judge to ignore script and spelling, converting the text to Urdu script first (with GPT-4o-mini), and averaging the
+three judges of a round.
 
-\textbf{Mitigations.} We test three simple fixes. (a) \emph{Rubric:} we add the line ``Ignore script, spelling and
-formality; judge only correctness'' to the prompt. (b) \emph{Transliteration:} a separate model (GPT-4o-mini) converts
-the Roman Urdu or code-mixed passage, question and answer into Urdu script before judging. (c) \emph{Panel:} we take
-the average score of the three judges in a round.
-
-\textbf{Reading replies and metrics.} Replies are read by fixed rules in code, for example ``Score: 8/10'' becomes 8.
-Urdu digits are also accepted. Ties and unreadable replies are counted separately and never treated as wrong. Urdu
-script is the reference version. For each judge and version we report:
-\begin{itemize}
-\item \emph{score gap:} the average difference in score for the same correct answer (negative means a lower score);
-\item \emph{AUC:} the chance that a correct answer gets a higher score than a wrong one (ties count as half);
-\item \emph{acceptance:} the share of answers scored 7 or more, reported separately for correct and wrong answers;
-\item \emph{win rate:} how often the non-Urdu-script version wins a pairwise comparison (ties count as half, so 50\%
-is fair);
-\item \emph{comprehension accuracy} and the share of identical scores across repeats.
-\end{itemize}
-We report 95\% confidence intervals from a bootstrap with 1{,}000 resamples \cite{efron1993bootstrap}, paired over
-items for score gaps. For RQ2, we also compute the score gap only on items that the judge answered correctly in both
-scripts in the comprehension task.
-
-\textbf{Rounds.} Round~1 uses the three small judges. Round~2 repeats Round~1 with fresh calls to check whether the
-results replicate. Rounds~3 and~4 use the medium and large judges.
+Replies are turned into numbers by simple rules in code, and no LLM reads them. Using Urdu script as the reference, we
+measure the score gap on the same correct answer, the AUC between correct and wrong answers, the share of wrong answers
+scored 7 or more, the pairwise win rate (50\% is fair) and comprehension accuracy. The 95\% confidence intervals come from
+a bootstrap with 1{,}000 resamples \cite{efron1993bootstrap}. Round~1 uses the small judges and Round~2 repeats it with
+fresh calls. Rounds~3 and~4 use the medium and large judges.
 
 % =====================================================================
 \section{Implementation Progress}
 \label{sec:impl}
-\textbf{Platform.} We built a private web platform for the study. The backend uses Python, FastAPI and SQLite, and the
-frontend uses Next.js. The site has Findings, Results and Trends pages and a ``Test yourself'' page, where a user can
-type or speak a question and see how each judge scores it in each script. It runs with Docker Compose on an AWS EC2
-server behind an HTTPS proxy. Every model call is saved in a cache, so a stopped run can continue and no call is paid
-for twice. The replication round uses a separate cache range so that its calls are new. A spending limit of US\$30
-blocks paid calls once it is reached. Automated tests (pytest and Vitest) run the whole system with offline mock
-judges.
-
-\textbf{Work completed.} All four rounds are complete, together with one corrective re-run. In total we have 33 runs,
-191{,}760 recorded judgements and 132{,}671 unique API calls through 20 providers, at a total cost of US\$9.49. All
-tables and figures in this paper are produced from the database by one script.
-
-\textbf{Challenges and decisions.}
 \label{sec:challenges}
-\begin{enumerate}
-\item \emph{Reworded data:} Belebele's Roman Urdu is often reworded (Sec.~\ref{sec:data}), so we created our own
-transliterations.
-\item \emph{Model availability:} Gemini~3.x and Qwen~3.7~Max either always use reasoning or were heavily rate-limited by
-their only provider. We used Gemini~2.5~Flash and Qwen3-235B for the large group instead.
-\item \emph{Cut-off replies:} with the 8-token limit, Llama~4 Maverick started 86\% of its pairwise replies with
-step-by-step reasoning and was cut off before giving a verdict. Its first pairwise run was therefore not usable, although
-its scoring and comprehension replies were fine. We re-ran its 3{,}600 pairwise calls with a limit of 1{,}024 tokens
-for this task only (432 tokens per reply on average, cost US\$1.88). We also extended the rules so that a long reply is
-read from its final verdict, such as ``The final answer is: TIE'' or ``Therefore, it's a tie''. If the verdict is not
-clear, the reply stays unreadable. Unreadable replies fell from 86\% to 0.4\%. Applying the new rules to the four
-earlier pairwise runs did not change any of their 43{,}200 results. In this re-run Maverick reasons before giving its
-verdict, which the other judges do not do.
-\item \emph{Provider problems:} one provider's copy of Qwen3-235B repeated the prompt or returned broken text, so we
-added a setting to exclude specific providers for each judge.
-\item \emph{Randomness:} even at temperature 0, only 32--98\% of repeated scores were identical, depending on the
-judge and the script. For this reason we only use averages over 300 items.
-\item \emph{Screening near the cut-off:} Qwen~3.5~9B passed screening in Round~1 (AUC 0.76) but just failed in Round~2
-(AUC 0.69).
-\end{enumerate}
+We built a web platform for the study with a Python backend, a Next.js frontend and an SQLite database, hosted on an
+AWS server. It caches every call, so a stopped run can resume without paying twice, and it blocks all paid calls above a
+US\$30 limit. All four rounds are done. With one re-run, they give 191{,}760 judgements from 132{,}671 API calls at a
+total cost of US\$9.49.
+
+Some problems changed our plan along the way. Gemini~3.x and Qwen~3.7~Max could not be used, because they always reason
+or were heavily rate-limited, so Gemini~2.5~Flash and Qwen3-235B are our large models. One provider returned broken
+output for Qwen3-235B and we blocked it for that model. Llama~4 Maverick started most of its pairwise replies with
+step-by-step reasoning, and the 8-token limit cut off 86\% of them. We re-ran its 3{,}600 pairwise calls with a
+1{,}024-token limit (US\$1.88) and updated the parser to read the final verdict of a long reply. Unreadable replies went
+down to 0.4\%, and on all earlier pairwise runs the new parser gives exactly the old results. Even at temperature 0, only
+32--98\% of repeated scores were identical, so we only report averages over all 300 items.
 
 % =====================================================================
 \section{Preliminary Results}
@@ -239,111 +157,68 @@ judge and the script. For this reason we only use averages over 300 items.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/overview.pdf}
-\caption{Results for every judge (bars show 95\% confidence intervals). (a) Score of the same correct answer compared
-with Urdu script. Roman Urdu and code-mixed answers get lower scores and English answers get higher scores.
-(b) How often each version is preferred over the Urdu-script version in pairwise comparison (50\% is fair).
-(c) Comprehension accuracy. Most judges are about 15 points less accurate in Roman Urdu than in Urdu script.
-$^\dagger$Failed screening. $^\ddagger$Pairwise result from the re-run.}
+\caption{Results for every judge, with 95\% confidence intervals. (a) Score of the same correct answer compared with
+Urdu script. (b) How often each version is preferred over the Urdu-script version (50\% is fair). (c) Comprehension
+accuracy. $^\dagger$Failed screening. $^\ddagger$Pairwise result from the re-run.}
 \label{fig:overview}
 \end{figure*}
 
-\textbf{RQ1: Roman Urdu gets lower scores.} Table~\ref{tab:main} and Fig.~\ref{fig:overview}a show that every judge
-that passed screening gave the same correct answer a lower score in Roman Urdu ($-0.55$ to $-1.26$) and in code-mixed
-text ($-0.59$ to $-1.30$) than in Urdu script. All of these confidence intervals exclude zero. English answers got
-higher scores, by up to $+1.38$. The order English $>$ Urdu script $>$ Roman Urdu $\approx$ code-mixed is the same for
-all three companies and all sizes.
+\subsection{Score gap (RQ1)}
+Table~\ref{tab:main} and Fig.~\ref{fig:overview}a give the main result. Every judge that passed screening gave the same
+correct answer a lower score in Roman Urdu ($-0.55$ to $-1.26$) and in code-mixed text ($-0.59$ to $-1.30$) than in Urdu
+script, and all of these intervals exclude zero. English answers scored higher, by up to $+1.38$. The panel average
+shows the same gap in all four rounds ($-0.51$ to $-0.92$), and Round~2 repeated the Round~1 pattern with slightly larger
+gaps.
 
-In pairwise comparison (Fig.~\ref{fig:overview}b), most judges preferred the Urdu-script version. The Qwen judges chose
-Roman Urdu in only 8--25\% of comparisons and Llama~3.3~70B in 17\%. Gemini~2.5~Flash and Llama~4 Maverick (re-run)
-were closest to fair. Both answered TIE in 95\% of the Roman Urdu comparisons, with win rates of 48\% and 49\%.
-However, when they did choose one answer, they still mostly chose Urdu script. Gemini preferred Urdu script 54 times
-against 1 (71 against 0 for code-mixed), and Maverick 43 times against 18 (71 against 22). Both win rates are therefore
-still significantly below 50\%. The panel average also shows the penalty in every round ($-0.51$, $-0.75$, $-0.76$ and
-$-0.92$, all significant), because all judges lean in the same direction.
+In pairwise comparison (Fig.~\ref{fig:overview}b) most judges preferred the Urdu-script answer. The Qwen models picked
+Roman Urdu in only 8--25\% of cases and Llama~3.3~70B in 17\%. Gemini~2.5~Flash and the re-run Maverick said TIE about
+95\% of the time (win rates of 48\% and 49\%). When they did pick one, though, it was mostly the Urdu-script answer:
+54 times out of 55 for Gemini and 43 out of 61 for Maverick.
 
-\textbf{Wrong answers pass more often.} For every judge that passed screening, wrong answers were accepted (scored 7 or
-more) more often in Roman Urdu than in Urdu script. For example, the rate was 57\% against 34\% for Llama~3.3~70B and
-40\% against 25\% for Llama~4 Maverick. For both of these judges the AUC dropped from 0.81 to 0.66. So Roman Urdu
-answers are scored lower when they are correct and are checked less carefully when they are wrong.
+Wrong answers also got through more often in Roman Urdu. For Llama~3.3~70B, 57\% of wrong Roman Urdu answers scored 7 or
+more, against 34\% in Urdu script, and its AUC fell from 0.81 to 0.66.
 
-\textbf{Replication.} Round~2 repeated Round~1 with new calls and gave the same pattern, with slightly larger gaps
-(Qwen~3.5~9B from $-0.81$ to $-1.13$, Gemma~3~12B from $-0.59$ to $-0.82$). Comprehension and AUC were almost the same.
-
-\textbf{RQ2: not only a comprehension problem.} The judges do understand Roman Urdu less well
-(Fig.~\ref{fig:overview}c). For example, Qwen3-235B is 90\% accurate in Urdu script and 76\% in Roman Urdu. However,
-when we keep only the items that the judge answered correctly in both scripts, the penalty remains. It ranges from
-$-0.57$ (Gemini~2.5~Flash, $n=252$) to $-1.35$ (Qwen3-235B, $n=220$), and every interval excludes zero. This means the
-judges gave lower scores even to answers they had clearly understood.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/scale.pdf}
-\caption{Effect of model size. From small (S) to large (L) judges, the AUC in Urdu script increases for every family.
-The comprehension gap becomes clearly smaller only for Google. The Roman Urdu score penalty does not become smaller,
-and the panel penalty increases.}
-\label{fig:scale}
-\end{figure}
-
-\textbf{RQ3a: model size.} Fig.~\ref{fig:scale} compares the size groups. Larger judges separate correct and wrong
-answers better (AUC in Urdu script rises from 0.57--0.74 to 0.81--0.87) and are more consistent (up to 96--98\%
-identical repeated scores for Gemini~2.5~Flash). However, the Roman Urdu penalty does not become smaller. The largest
-gap in the study comes from the largest judge (Qwen3-235B, $-1.26$), and the panel penalty is highest in the large
-round ($-0.92$).
+\subsection{Comprehension (RQ2)}
+Most judges are about 15 points less accurate when they answer the question in Roman Urdu (Fig.~\ref{fig:overview}c).
+To see if this explains the score gap, we kept only the items a judge answered correctly in both scripts. The gap
+stayed, from $-0.57$ (Gemini~2.5~Flash) to $-1.35$ (Qwen3-235B), with every interval excluding zero.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/mitigation.pdf}
-\caption{Mitigations for the judges that passed screening. Left: Roman Urdu score gap. Right: share of wrong Roman Urdu
-answers accepted. Transliteration reduces the gap the most and also reduces wrong acceptances. The rubric line reduces
-the gap mainly by accepting more wrong answers.}
+\caption{Mitigations for the judges that passed screening. Left: Roman Urdu score gap. Right: share of wrong Roman
+Urdu answers that were accepted.}
 \label{fig:mitig}
 \end{figure}
 
-\textbf{RQ3b: mitigations.} Converting Roman Urdu and code-mixed text to Urdu script before judging
-(Fig.~\ref{fig:mitig}) was the most effective fix. In Rounds~1 and~3, four of the five passing small and medium judges
-had no significant gap after this step (for example, Qwen3-32B went from $-0.82$ to $-0.02$), while Llama~3.3~70B kept
-a gap of $-0.32$. It also reduced wrong acceptances (Llama~3.3~70B from 57\% to 37\%). However, a significant gap
-remained for Gemma~3~12B in the replication round ($-0.47$) and for all three large judges ($-0.43$ to $-0.58$). The
-rubric line reduced the gap only partly, and the gap stayed significant for every medium and large judge. It also
-increased wrong acceptances for every passing judge (for example, Qwen~3.5~9B from 41\% to 59\%). In other words, the
-rubric made the judges more lenient but not fairer.
-
-\textbf{Tokenization does not explain it.} In comprehension calls, the Llama and Qwen3 tokenizers use more tokens for
-Urdu-script prompts (about 480--500) than for Roman Urdu (about 350), while Gemma's tokenizer uses fewer for Urdu script
-(271 against 312). Since all three families still penalise Roman Urdu, token length alone does not explain the result.
+\subsection{Model size and mitigations (RQ3)}
+Larger judges were better at telling correct from wrong answers (AUC in Urdu script of 0.57--0.74 for small models and
+0.81--0.87 for large ones), but their Roman Urdu gap was not smaller. The biggest gap in the study came from the biggest
+model, Qwen3-235B. Of the fixes (Fig.~\ref{fig:mitig}), converting to Urdu script first worked best. In Rounds~1 and~3 it
+removed the significant gap for four of the five passing small and medium judges and lowered wrong acceptances, but the
+large judges kept a gap of $-0.43$ to $-0.58$. The rubric line mostly made judges more lenient. Their gap shrank a little,
+yet every passing judge accepted more wrong answers (Qwen~3.5~9B went from 41\% to 59\%).
 
 % =====================================================================
 \section{Remaining Work}
 \label{sec:remaining}
+For the final paper we plan to:
 \begin{enumerate}
-\item \textbf{Human validation.} Bilingual raters will check a random sample of 100 generated Roman Urdu and
-code-mixed options. They will also rate a set of answers in each script, so that judge scores can be compared with
-human scores \cite{hada2024large}.
-\item \textbf{Reasoning as a mitigation.} The re-run of Maverick, in which it reasons before answering, is one of the
-two judges closest to fair in pairwise comparison. We will test whether asking every judge to reason first, or to first
-say whether the two answers mean the same thing, reduces the scoring penalty. We will also repeat Maverick's pairwise
-test with a strict answer-only format to see whether the effect comes from the reasoning or from the model.
-\item \textbf{Spelling variation.} Our transliterations use one consistent spelling, but real Roman Urdu spelling varies
-a lot \cite{khan2022clustering}. We will score several realistic spellings of each answer to test whether non-standard
-spelling increases the penalty.
-\item \textbf{Familiarity.} Our platform can already compute the perplexity of each answer under an open model. We will
-check whether answers with higher perplexity get larger penalties \cite{wataoka2024self}.
-\item \textbf{Passage wording.} The Roman Urdu and code-mixed prompts currently use Belebele's Roman Urdu passages,
-which are partly reworded. We will add a version with fully transliterated passages.
-\item \textbf{Open-ended answers.} We will move from multiple-choice options to free-text student answers, which is
-closer to the grading setting that motivated this project.
-\item \textbf{Statistics and release.} We will fit mixed-effects models with item effects, correct for multiple
-comparisons, and release the data, code and practical guidelines.
+\item have bilingual raters check 100 generated options and score a set of answers, so that judge scores can be
+compared with human scores \cite{hada2024large};
+\item test whether asking judges to reason before answering reduces the gap, since the re-run Maverick, which reasons,
+gave TIE most often;
+\item score several real-world spellings of each Roman Urdu answer \cite{khan2022clustering};
+\item check whether answers with higher perplexity get bigger gaps \cite{wataoka2024self};
+\item use fully transliterated passages and add free-text student answers.
 \end{enumerate}
 
 % =====================================================================
 \section{Conclusion}
-Across nine judges, three companies, three model sizes and a replication round, LLM judges gave lower scores to the
-same correct answer when it was written in Roman Urdu. They also accepted more wrong answers in Roman Urdu. The penalty
-remained when the judge had understood the text, and it did not become smaller with larger models. Converting Roman Urdu
-to Urdu script before judging was the most effective fix we tested, while asking the judge to ignore spelling mainly
-made it more lenient. Anyone who uses LLM judges for Urdu or other South Asian languages should report results for each
-script separately and keep human review for Roman Urdu content.
+In all four rounds, LLM judges gave correct answers lower scores when they were written in Roman Urdu or code-mixed text
+instead of Urdu script, and they let more wrong Roman Urdu answers through. This held for every company and model size
+we tested. For now, anyone using an LLM judge for Urdu should report results separately for each script, and should
+convert Roman Urdu to Urdu script or have a person check the scores.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
