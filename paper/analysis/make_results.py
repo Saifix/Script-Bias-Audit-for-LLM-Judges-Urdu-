@@ -193,11 +193,11 @@ def pct(x):
 
 def main_table(res: dict) -> str:
     L = [r"\begin{table*}[t]", r"\centering",
-         r"\caption{Main results. Score gap = mean score of the \emph{same correct answer} minus its Urdu-script score "
-         r"(1--10 scale; \textbf{bold}: paired-bootstrap 95\% CI excludes 0). Win = Roman-Urdu version preferred over the "
-         r"Urdu-script version head-to-head (ties count half; fair $=50\%$; \textbf{bold}: CI excludes 50\%). "
-         r"Acc.\ = comprehension accuracy; AUC = correct-vs-wrong separation; Acc.\,wrong = wrong answers scored $\geq 7$. "
-         r"$^\dagger$Failed the screening gate (AUC $\leq 0.7$). $^\ddagger$Pairwise re-run with a 1{,}024-token reply limit (Sec.~\ref{sec:challenges}).}",
+         r"\caption{Main results. Score gap: score of the same correct answer minus its score in Urdu script (1--10 scale). "
+         r"Win: how often the Roman Urdu version is preferred over the Urdu-script version (ties count as half, 50\% is fair). "
+         r"Acc.: comprehension accuracy. AUC: separation of correct and wrong answers. Acc.\,wrong: wrong answers scored 7 or more. "
+         r"Bold: the 95\% confidence interval excludes 0 (or 50\% for Win). "
+         r"$^\dagger$Failed screening (AUC $\leq 0.7$). $^\ddagger$Pairwise re-run with a 1{,}024-token reply limit (Sec.~\ref{sec:challenges}).}",
          r"\label{tab:main}", r"\small", r"\setlength{\tabcolsep}{4pt}",
          r"\begin{tabular}{@{}ll rrr r rrr rr rr@{}}", r"\toprule",
          r" & & \multicolumn{3}{c}{Score gap vs.\ Urdu script} & Win & \multicolumn{3}{c}{Acc.\ (\%)} & \multicolumn{2}{c}{AUC} & \multicolumn{2}{c}{Acc.\,wrong (\%)} \\",
@@ -303,7 +303,7 @@ def fig_overview(res: dict):
         ax.errorbar(x, y + off, xerr=[x - lo, hi - x], fmt="o", ms=3.2, color=COL[c], ecolor=COL[c], elinewidth=0.9, capsize=0, label=LAB[c])
     ax.axvline(0, color="#333", lw=0.7)
     ax.set_xlabel("Score gap vs. Urdu script (points, 1–10 scale)")
-    ax.set_title("(a) Same correct answer, different score", loc="left")
+    ax.set_title("(a) Score of the same correct answer", loc="left")
     ax.set_yticks(y); ax.set_yticklabels([f"{b}" for _, b in labels])
     ax.grid(axis="y", visible=False)
     ax = axes[1]
@@ -328,7 +328,7 @@ def fig_overview(res: dict):
             ax.plot(100 * d["comprehension"][c], y[i], "o", ms=3.4, color=COL[c], zorder=2,
                     mfc=COL[c] if c != "code_mixed" else "white", mec=COL[c], mew=0.9)
     ax.set_xlim(25, 100); ax.set_xlabel("Comprehension accuracy (%)")
-    ax.set_title("(c) Does the judge understand it?", loc="left"); ax.grid(axis="y", visible=False)
+    ax.set_title("(c) Comprehension accuracy", loc="left"); ax.grid(axis="y", visible=False)
     handles = [plt.Line2D([], [], marker="o", ls="", color=COL[c], mfc=COL[c] if c != "code_mixed" else "white", ms=4, label=LAB[c])
                for c in ("urdu_script", "roman_translit", "code_mixed", "english")]
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, bbox_to_anchor=(0.5, 1.045), handletextpad=0.2, columnspacing=1.6)
