@@ -1,11 +1,12 @@
-"""Recompute every number, table and figure in the short paper from the experiment database.
+"""Recompute every number, table and figure of a paper from the experiment database.
 
 Uses the backend's own metric code (Backend/app/metrics.py), so numbers match the web platform exactly.
 
     pip install numpy matplotlib scipy arabic-reshaper python-bidi
-    python paper/analysis/make_figures.py --db Backend/data/audit.db
+    python paper/analysis/make_figures.py --paper short_paper --db Backend/data/audit.db
 
-Writes paper/analysis/results.json, paper/tables/*.tex and paper/figures/*.pdf (+ .png copies for the Word version).
+Writes paper/analysis/results.json (all numbers) and, for the chosen paper, only the figures and tables it uses into
+paper/<paper>/figures/ (.pdf for LaTeX, .png for Word) and paper/<paper>/tables/. Add a paper to PAPERS to reuse this.
 """
 from __future__ import annotations
 
@@ -23,8 +24,13 @@ sys.path.insert(0, str(ROOT / "Backend"))
 from app.metrics import auc, bootstrap_ci, paired_gap, summarize  # noqa: E402
 
 PAPER = ROOT / "paper"
-TAB, FIG = PAPER / "tables", PAPER / "figures"
 RESULTS = PAPER / "analysis" / "results.json"
+TAB = FIG = None  # set in main() to paper/<paper>/tables and paper/<paper>/figures
+
+# What each paper uses. Figures: results_overview, mitigations, model_size, urdu_example. Tables: main_results, mitigations.
+PAPERS = {
+    "short_paper": {"figures": ["results_overview", "mitigations", "urdu_example"], "tables": ["main_results"]},
+}
 SEED, B, THRESH = 13, 1000, 7
 
 # Runs per round (IDs in audit.db). Keys: screening, comprehension, pointwise, pairwise, repeats, rubric, translit, panel.
@@ -431,19 +437,26 @@ def fig_example(conn):
 
 
 def main() -> int:
+    global TAB, FIG
     ap = argparse.ArgumentParser()
-    work = ROOT / "Backend" / "data" / "audit.db"  # working copy incl. later runs; falls back to the backup
-    ap.add_argument("--db", default=str(work if work.exists() else ROOT / "data-backup" / "audit.db"))
+    ap.add_argument("--paper", default="short_paper", choices=sorted(PAPERS))
+    ap.add_argument("--db", default=str(ROOT / "Backend" / "data" / "audit.db"))
     a = ap.parse_args()
+    use = PAPERS[a.paper]
+    TAB, FIG = PAPER / a.paper / "tables", PAPER / a.paper / "figures"
     TAB.mkdir(parents=True, exist_ok=True); FIG.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(a.db)
     res = analyse(conn)
     RESULTS.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
-    (TAB / "main_results.tex").write_text(main_table(res), encoding="utf-8")
-    (TAB / "mitigations.tex").write_text(mitigation_table(res), encoding="utf-8")
+    tables = {"main_results": main_table, "mitigations": mitigation_table}
+    for name in use["tables"]:
+        (TAB / f"{name}.tex").write_text(tables[name](res), encoding="utf-8")
     style()
-    fig_overview(res); fig_scale(res); fig_mitigation(res); fig_example(conn)
-    print("ok:", TAB, FIG)
+    figures = {"results_overview": lambda: fig_overview(res), "mitigations": lambda: fig_mitigation(res),
+               "model_size": lambda: fig_scale(res), "urdu_example": lambda: fig_example(conn)}
+    for name in use["figures"]:
+        figures[name]()
+    print(f"ok: {a.paper}: {len(use['figures'])} figures in {FIG}, {len(use['tables'])} tables in {TAB}")
     return 0
 
 

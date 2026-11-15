@@ -205,8 +205,9 @@ every script.
 
 ## Paper
 
-The short paper (progress report) is in [`paper/`](paper/): [PDF](paper/short_paper.pdf), [Word](paper/short_paper.docx)
-and LaTeX source. Every number and figure in it is rebuilt from the experiment database by `paper/analysis/make_figures.py`.
+The short paper (progress report) is in [`paper/short_paper/`](paper/short_paper/): [PDF](paper/short_paper/short_paper.pdf),
+[Word](paper/short_paper/short_paper.docx) and LaTeX source. Every number and figure in it is rebuilt from the experiment
+database by `paper/analysis/make_figures.py`.
 
 ## Repository layout
 
@@ -215,7 +216,7 @@ and LaTeX source. Every number and figure in it is rebuilt from the experiment d
 | `Backend/` | Python API: experiment runner, judge calls, metrics, prompts, generated Roman Urdu data, tests |
 | `Frontend/` | Next.js website (Findings, Results, Trends, Test yourself) |
 | `experiments/` | Scripts that ran the four experiment rounds through the platform |
-| `paper/` | Short paper (PDF, Word, LaTeX), figures, tables and the scripts that build them |
+| `paper/` | One folder per paper (`short_paper/`: PDF, Word, LaTeX, figures, tables) and the shared build scripts |
 | `deploy/` | Settings template (`env.example`), setup script and HTTPS proxy config |
 | `docs/` | Setup, security and deployment notes |
 
