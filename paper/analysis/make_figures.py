@@ -3,9 +3,9 @@
 Uses the backend's own metric code (Backend/app/metrics.py), so numbers match the web platform exactly.
 
     pip install numpy matplotlib scipy arabic-reshaper python-bidi
-    python paper/analysis/make_results.py --db data-backup/audit.db
+    python paper/analysis/make_figures.py --db Backend/data/audit.db
 
-Writes paper/generated/numbers.json, paper/generated/*.tex (tables) and paper/figures/*.pdf.
+Writes paper/analysis/results.json, paper/tables/*.tex and paper/figures/*.pdf (+ .png copies for the Word version).
 """
 from __future__ import annotations
 
@@ -23,7 +23,8 @@ sys.path.insert(0, str(ROOT / "Backend"))
 from app.metrics import auc, bootstrap_ci, paired_gap, summarize  # noqa: E402
 
 PAPER = ROOT / "paper"
-GEN, FIG = PAPER / "generated", PAPER / "figures"
+TAB, FIG = PAPER / "tables", PAPER / "figures"
+RESULTS = PAPER / "analysis" / "results.json"
 SEED, B, THRESH = 13, 1000, 7
 
 # Runs per round (IDs in audit.db). Keys: screening, comprehension, pointwise, pairwise, repeats, rubric, translit, panel.
@@ -193,11 +194,11 @@ def pct(x):
 
 def main_table(res: dict) -> str:
     L = [r"\begin{table*}[t]", r"\centering",
-         r"\caption{Main results. Score gap: score of the same correct answer minus its score in Urdu script (1--10 scale). "
-         r"Win: how often the Roman Urdu version is preferred over the Urdu-script version (ties count as half, 50\% is fair). "
-         r"Acc.: comprehension accuracy. AUC: separation of correct and wrong answers. Acc.\,wrong: wrong answers scored 7 or more. "
+         r"\caption{Main results. Score gap: mark of the same correct answer minus its mark in Urdu script (1--10 scale). "
+         r"Win: how often the Roman Urdu version is chosen over the Urdu-script version (a tie counts as half, 50\% is fair). "
+         r"Acc.: reading accuracy. AUC: how well the judge separates correct and wrong answers. Acc.\,wrong: wrong answers given 7 or more. "
          r"Bold: the 95\% confidence interval excludes 0 (or 50\% for Win). "
-         r"$^\dagger$Failed screening (AUC $\leq 0.7$). $^\ddagger$Pairwise re-run with a 1{,}024-token reply limit (Sec.~\ref{sec:challenges}).}",
+         r"$^\dagger$Failed the screening check (AUC $\leq 0.7$). $^\ddagger$Comparison from the extra run with a 1{,}024-token reply limit (Sec.~\ref{sec:challenges}).}",
          r"\label{tab:main}", r"\small", r"\setlength{\tabcolsep}{4pt}",
          r"\begin{tabular}{@{}ll rrr r rrr rr rr@{}}", r"\toprule",
          r" & & \multicolumn{3}{c}{Score gap vs.\ Urdu script} & Win & \multicolumn{3}{c}{Acc.\ (\%)} & \multicolumn{2}{c}{AUC} & \multicolumn{2}{c}{Acc.\,wrong (\%)} \\",
@@ -264,6 +265,14 @@ def mitigation_table(res: dict) -> str:
 COL = {"roman_translit": "#D55E00", "code_mixed": "#CC79A7", "english": "#0072B2", "urdu_script": "#009E73"}
 LAB = {"roman_translit": "Roman Urdu", "code_mixed": "Code-mixed", "english": "English", "urdu_script": "Urdu script"}
 FAM_COL = {"Qwen": "#E69F00", "Google": "#0072B2", "Llama": "#7F3C8D"}
+
+
+def save(fig, name: str) -> None:
+    """Vector PDF for LaTeX and a 300-dpi PNG for the Word version."""
+    import matplotlib.pyplot as plt
+    fig.savefig(FIG / f"{name}.pdf")
+    fig.savefig(FIG / f"{name}.png", dpi=300)
+    plt.close(fig)
 
 
 def style():
@@ -342,7 +351,7 @@ def fig_overview(res: dict):
         for a in axes:
             a.axhspan(min(ys) - 0.45, max(ys) + 0.45, color="#F5F5F5" if list(seen).index(rname) % 2 else "white", zorder=0, lw=0)
     fig.tight_layout(w_pad=0.6)
-    fig.savefig(FIG / "overview.pdf"); plt.close(fig)
+    save(fig, "results_overview")
 
 
 def fig_scale(res: dict):
@@ -372,7 +381,7 @@ def fig_scale(res: dict):
     axes[1].set_xlabel("Judge size tier")
     fig.legend(*axes[2].get_legend_handles_labels(), loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.5, -0.1))
     fig.tight_layout(w_pad=0.4)
-    fig.savefig(FIG / "scale.pdf"); plt.close(fig)
+    save(fig, "model_size")
 
 
 def fig_mitigation(res: dict):
@@ -384,7 +393,7 @@ def fig_mitigation(res: dict):
             if d["screening"]["pass"]:
                 js.append((d["name"], d))
     y = np.arange(len(js))[::-1]
-    fig, axes = plt.subplots(1, 2, figsize=(3.5, 2.25), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(3.5, 1.95), sharey=True)
     styles = {"None": ("#D55E00", "o"), "Rubric": ("#999999", "^"), "Transliterate": ("#009E73", "D")}
     c = "roman_translit"
     for ax, getter, xl in (
@@ -401,7 +410,7 @@ def fig_mitigation(res: dict):
     axes[0].set_yticks(y); axes[0].set_yticklabels([n for n, _ in js])
     fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.55, -0.06))
     fig.tight_layout(w_pad=0.5)
-    fig.savefig(FIG / "mitigation.pdf"); plt.close(fig)
+    save(fig, "mitigations")
 
 
 def fig_example(conn):
@@ -426,15 +435,15 @@ def main() -> int:
     work = ROOT / "Backend" / "data" / "audit.db"  # working copy incl. later runs; falls back to the backup
     ap.add_argument("--db", default=str(work if work.exists() else ROOT / "data-backup" / "audit.db"))
     a = ap.parse_args()
-    GEN.mkdir(parents=True, exist_ok=True); FIG.mkdir(parents=True, exist_ok=True)
+    TAB.mkdir(parents=True, exist_ok=True); FIG.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(a.db)
     res = analyse(conn)
-    (GEN / "numbers.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
-    (GEN / "table_main.tex").write_text(main_table(res), encoding="utf-8")
-    (GEN / "table_mitigation.tex").write_text(mitigation_table(res), encoding="utf-8")
+    RESULTS.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
+    (TAB / "main_results.tex").write_text(main_table(res), encoding="utf-8")
+    (TAB / "mitigations.tex").write_text(mitigation_table(res), encoding="utf-8")
     style()
     fig_overview(res); fig_scale(res); fig_mitigation(res); fig_example(conn)
-    print("ok:", GEN, FIG)
+    print("ok:", TAB, FIG)
     return 0
 
 

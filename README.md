@@ -203,17 +203,42 @@ The project runs as a private web platform. Its **Findings** page summarises the
 type a question, record a voice note, or pick a dataset question, and see how each judge scores the same answer in
 every script.
 
+## Paper
+
+The short paper (progress report) is in [`paper/`](paper/): [PDF](paper/short_paper.pdf), [Word](paper/short_paper.docx)
+and LaTeX source. Every number and figure in it is rebuilt from the experiment database by `paper/analysis/make_figures.py`.
+
+## Repository layout
+
+| Folder | What it holds |
+|---|---|
+| `Backend/` | Python API: experiment runner, judge calls, metrics, prompts, generated Roman Urdu data, tests |
+| `Frontend/` | Next.js website (Findings, Results, Trends, Test yourself) |
+| `experiments/` | Scripts that ran the four experiment rounds through the platform |
+| `paper/` | Short paper (PDF, Word, LaTeX), figures, tables and the scripts that build them |
+| `deploy/` | Settings template (`env.example`), setup script and HTTPS proxy config |
+| `docs/` | Setup, security and deployment notes |
+
 ## Team
 
-Syed Sheraz Anjum (25240017) · Saif ur Rehman (24280071) · Hussnain Ali Murtaza (25280069) · Junaid Tariq (25280044) · Mukhammad Khasnen (25280090)
+Saif ur Rehman (24280071) · Hussnain Ali Murtaza (25280069) · Syed Sheraz Anjum (25240017) · Junaid Tariq (25280044) · Mukhammad Khasnen (25280090)
 
 2601 SSE Responsible AI Engineering, LUMS
+
+## Use of AI tools
+
+Claude Opus 5.5 (Anthropic) wrote the Roman Urdu and code-mixed answer options. Claude, through the Claude Code tool,
+wrote most of the code in this repository under the team's direction, ran the experiments, made the figures and helped
+draft and edit the paper. The research question, literature review and study plan are the team's own, and the team
+checked the results.
 
 ## References
 
 - Bandarkar et al. *The Belebele Benchmark: a Parallel Reading Comprehension Dataset in 122 Language Variants.* ACL 2024.
-- Mohamed et al. *Lost in the Mix* (Urdu–English code-mixing). ACL 2026.
+- Mohamed et al. *Lost in the Mix: Evaluating LLM Understanding of Code-Switched Text.* arXiv:2506.14012, 2025.
 - Zheng et al. *Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.* NeurIPS 2023.
+
+The full reference list is in the paper.
 
 ---
 

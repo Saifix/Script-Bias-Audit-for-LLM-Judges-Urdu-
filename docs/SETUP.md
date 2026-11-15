@@ -12,7 +12,7 @@ docker-compose.yml   builds and runs both with one command
 ## Setup
 
 ```bash
-sh scripts/init-env.sh            # creates .env with random secrets + an admin login (prints the password)
+sh deploy/init-env.sh             # creates .env with random secrets + an admin login (prints the password)
 # edit .env: paste OPENROUTER_API_KEY
 docker compose up --build -d      # builds Backend + Frontend, starts both with healthchecks
 ```

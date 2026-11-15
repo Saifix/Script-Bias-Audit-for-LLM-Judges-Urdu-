@@ -11,7 +11,7 @@ They read the login and experiment password from the server's `.env`; no secrets
 
 Run on the server so it keeps going when your laptop is off:
 
-    scp -i LLM-Testing.pem ops/run_rounds.py ec2-user@3.0.35.127:app/
+    scp -i LLM-Testing.pem experiments/run_rounds.py ec2-user@3.0.35.127:app/
     ssh -i LLM-Testing.pem ec2-user@3.0.35.127 \
       'cd ~/app && nohup python3 -u run_rounds.py https://3-0-35-127.sslip.io /home/ec2-user/app/.env >> rounds.log 2>&1 &'
 
