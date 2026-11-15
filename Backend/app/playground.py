@@ -91,7 +91,7 @@ async def run_playground(req: dict) -> dict:
     client = LLMClient(s["concurrency"], max_retries=2)
 
     async def one(stub: dict, judge: str, prompt: str, task: str) -> dict:
-        opts = judge_options(app_cfg, judge)
+        opts = judge_options(app_cfg, judge, task)  # same per-task reply limit as experiment runs
         try:
             call = await client.complete(judge, prompt, max_tokens=opts["max_tokens"], task=task, extra=opts["extra"])
         except Exception as e:  # report per call, keep the rest

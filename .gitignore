@@ -14,3 +14,7 @@ Frontend/next-env.d.ts
 /Saif.png
 /Syed Sheraz Anjum.png
 /Hussnain Ali Murtaza.png
+
+# local hand-over material and data backup (contain server details / 300 MB DB)
+HANDOFF.md
+data-backup/

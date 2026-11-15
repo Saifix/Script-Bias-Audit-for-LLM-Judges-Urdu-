@@ -150,7 +150,7 @@ def _cache_repeat(task: Task, cfg: dict) -> int:
 def _call_params(task: Task, app_cfg: dict) -> dict:
     if task.kind == "generate":
         return {"max_tokens": int(app_cfg["generator"].get("max_tokens", 600)), "extra": {}}
-    return judge_options(app_cfg, task.judge)
+    return judge_options(app_cfg, task.judge, task.kind)
 
 
 # ---------------------------------------------------------------- estimate

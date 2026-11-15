@@ -50,7 +50,7 @@ const GUIDELINES = [
   ["Do not assume a bigger model or a panel fixes it", "Bigger models were better judges overall but just as biased in scoring; a panel averages the same bias."],
   ["Report results per script", "Always show how a system does on Roman Urdu and code-mixed text separately, not only on Urdu script or English."],
   ["Keep a human in the loop for Roman Urdu", "Spot-check automated scores for Roman Urdu content, especially when decisions affect people (grading, moderation, hiring)."],
-  ["Choose judges by measured fairness", "Fairness differed by model family: Gemini 2.5 Flash and Llama 4 Maverick were fair in head-to-head comparisons; the Qwen models were not."],
+  ["Choose judges by measured fairness", "Fairness differed by model family: Gemini 2.5 Flash and Llama 4 Maverick came closest to fair in head-to-head comparisons (they mostly said it was a tie, with a small lean to Urdu script when they did choose); the Qwen models were not."],
 ];
 
 export default function FindingsPage() {
@@ -62,7 +62,7 @@ export default function FindingsPage() {
       <div className="tile crux">
         <p className="eyebrow" style={{ marginBottom: 6 }}>The short answer</p>
         <p className="crux-text">AI judges are <b>not</b> fair to Roman Urdu. They give the same correct answer lower marks when it is written in Latin letters, they let more mistakes through, and bigger, smarter models do not fix this. Converting the text to Urdu script first is the best fix we found.</p>
-        <p className="faint" style={{ margin: 0 }}>Based on 300 reading-comprehension questions, 9 AI judges from 3 companies at 3 sizes, about 120,000 judgements, repeated twice for the small models.</p>
+        <p className="faint" style={{ margin: 0 }}>Based on 300 reading-comprehension questions, 9 AI judges from 3 companies at 3 sizes, about 130,000 judgements, repeated twice for the small models.</p>
       </div>
 
       <h2 className="section">Key findings</h2>

@@ -80,7 +80,7 @@ Ties and unparseable outputs are reported separately, never silently counted as 
 ## Results
 
 **Four rounds, run 13 Nov 2026:** 300 questions × 4 versions per judge, 9 judges from 3 companies at 3 sizes, about
-120,000 judge calls in total for **$7.59**. Round 2 repeats round 1 with fresh calls to check the results replicate.
+130,000 judge calls in total for **$9.49** (including a corrective re-run, see below). Round 2 repeats round 1 with fresh calls to check the results replicate.
 Numbers are differences vs. Urdu script; **bold** = the 95% bootstrap confidence interval excludes "no difference".
 
 | Round | Judge | Score gap: Roman / code-mixed / English | Picks Roman head-to-head (fair = 50%) | Understands: Urdu / Roman / English | Catches wrong answers (AUC): Urdu / Roman |
@@ -95,11 +95,17 @@ Numbers are differences vs. Urdu script; **bold** = the 95% bootstrap confidence
 | 3 medium | Gemma 3 27B | **−0.92** / **−0.99** / +0.08 | **37%** | 86 / 71 / 93% | 0.74 / 0.67 |
 | 3 medium | Llama 3.3 70B | **−0.55** / **−0.59** / **+0.43** | **17%** | 88 / 73 / 94% | 0.81 / 0.66 |
 | 4 large | Qwen3 235B | **−1.26** / **−1.30** / **+1.29** | **24%** | 90 / 76 / 95% | 0.81 / 0.68 |
-| 4 large | Gemini 2.5 Flash | **−0.78** / **−0.96** / **+0.48** | 48% | 91 / 86 / 96% | 0.87 / 0.81 |
-| 4 large | Llama 4 Maverick | **−0.71** / **−0.85** / **+0.87** | 54% | 85 / 66 / 93% | 0.81 / 0.66 |
+| 4 large | Gemini 2.5 Flash | **−0.78** / **−0.96** / **+0.48** | **48%** | 91 / 86 / 96% | 0.87 / 0.81 |
+| 4 large | Llama 4 Maverick | **−0.71** / **−0.85** / **+0.87** | **49%** ‡ | 85 / 66 / 93% | 0.81 / 0.66 |
 
 ⚑ Llama 3.1 8B failed the screening gate (it barely tells right from wrong answers even in Urdu script), so its numbers
 are flagged.
+
+‡ Re-run (run #42). In its first pairwise run, Llama 4 Maverick started 86% of its replies with step-by-step reasoning and
+was cut off by the 8-token reply limit, so that result (shown earlier as 54%) was not usable. The re-run gives Maverick up
+to 1,024 tokens for pairwise only, and the parser reads the final verdict of a reasoned reply ("The final answer is: TIE",
+"Therefore, it's a tie."); only 0.4% of replies stayed unreadable. Re-reading all earlier pairwise runs with this parser
+changed none of their results.
 
 **Panel of each round's judges (average score), Roman Urdu gap:** −0.51 (small) · −0.75 (replication) · −0.76 (medium) ·
 **−0.92 (large)**. All are real differences.
@@ -112,8 +118,10 @@ are flagged.
 2. **Bigger models are better judges, but not fairer scorers.** From small to large, accuracy, error detection (AUC in
    Urdu script 0.57–0.74 → 0.81–0.87) and consistency (identical score on repeat up to 96–98% for Gemini) all improve,
    yet the Roman Urdu score penalty does **not** shrink — the large-round panel penalty (−0.92) is the largest.
-3. **Head-to-head preference does improve with size for some families.** Gemini 2.5 Flash (48%) and Llama 4 Maverick
-   (54%) pick the Roman and Urdu-script versions about equally; the Qwen family stays strongly biased (8–25%).
+3. **Head-to-head preference comes close to fair for two large judges, but not quite.** Gemini 2.5 Flash (48%) and
+   Llama 4 Maverick (49%, re-run, reasoning before its verdict) answer TIE in about 95% of comparisons. When they do pick a
+   side, they still pick the Urdu-script version: Gemini 54 times to 1 against Roman Urdu, Maverick 43 to 18. The Qwen
+   family stays strongly biased (8–25%).
 4. **Judges understand Roman Urdu less well** (about 15 points lower than Urdu script for most judges). Gemini 2.5 Flash
    closes most of this gap (86% vs 91%), Llama 4 Maverick does not (66% vs 85%).
 5. **Mistakes slip through more in Roman Urdu**: wrong answers are scored ≥ 7 more often in Roman Urdu than in Urdu
@@ -186,8 +194,8 @@ proven cause-and-effect):
    scoring; a panel averages the same bias.
 5. **Report results per script**, including Roman Urdu and code-mixed text.
 6. **Keep a human in the loop for Roman Urdu**, especially when decisions affect people.
-7. **Choose judges by measured fairness, not size** — Gemini 2.5 Flash and Llama 4 Maverick were fair head-to-head;
-   the Qwen models were not.
+7. **Choose judges by measured fairness, not size** — Gemini 2.5 Flash and Llama 4 Maverick came closest to fair
+   head-to-head (mostly answering TIE, with a small lean to Urdu script when they decide); the Qwen models were not.
 
 ## Try it
 

@@ -51,8 +51,43 @@ def parse_score(text: str | None) -> float | None:
     return v if 1 <= v <= 10 else None
 
 
+_VERDICT = re.compile(
+    r"boxed\{\s*(?:\\text\{)?\s*(A|B|TIE)\b"                                  # $\boxed{TIE}$
+    r"|final\s+(?:answer|verdict)\s*(?:is)?\s*:?\s*\**\s*(A|B|TIE)\b"           # The final answer is: B
+    r"|(?:answer|response|verdict|choice)\s+(?:is|should\s+be)\s*:?\s*\**\s*(A|B|TIE)\**\s*[.!]?\s*$"
+    r"|\*\*\s*(A|B|TIE)\s*\*\*",                                                # **TIE**
+    re.I | re.M)
+LONG_REPLY_WORDS = 12  # replies longer than this are reasoned out; read only their final verdict
+_TIE_PHRASE = re.compile(r"\btied?\b|\b(?:are|is) (?:considered )?equal\b"
+                         r"|\bequally (?:good|correct|valid|accurate)\b|\bneither (?:answer |one )?is better\b"
+                         r"|\b(?:are|is) equivalent\b|\bno (?:clear )?(?:difference|preference|basis to prefer)\b", re.I)
+_WIN_PHRASE = re.compile(r"\b(?i:answer\s+)?(A|B)\s+is\s+(?:the\s+)?(?i:better|superior|preferred|more accurate)\b"
+                         r"|(?i:better\s+(?:answer|one|response)\s+is)\s*(?i:answer\s+)?\**(A|B)\b"
+                         r"|(?i:prefer(?:red)?)\s+(?i:answer\s+)?(A|B)\b")
+
+
+def _last_sentence(text: str) -> str:
+    parts = [p for p in re.split(r"(?<=[.!?])\s+|\n+", text.strip()) if re.search(r"[A-Za-z]", p)]
+    return parts[-1] if parts else ""
+
+
 def parse_pairwise(text: str | None) -> str | None:
-    """Parse "A", "B" or "TIE" from replies like "A", "**B**", "Answer A", "Tie." None if unparseable."""
+    """Parse "A", "B" or "TIE" from replies like "A", "**B**", "Answer A", "Tie." None if unparseable.
+    A long, reasoned reply is read from its LAST explicit verdict ("The final answer is: $\\boxed{TIE}$", "**B**");
+    failing that, from a verdict phrase in its last sentence ("Therefore, it's a tie.", "Answer B is better.").
+    Anything else, or a last sentence that names both a tie and a winner, is unparseable, never guessed."""
+    if len((text or "").split()) > LONG_REPLY_WORDS:
+        found = [next(g for g in m.groups() if g) for m in _VERDICT.finditer(text)]
+        if found:
+            return found[-1].upper()
+        last = _last_sentence(text)
+        tie = bool(_TIE_PHRASE.search(last))
+        wins = {g for m in _WIN_PHRASE.finditer(last) for g in m.groups() if g}
+        if tie and not wins:
+            return "TIE"
+        if len(wins) == 1 and not tie:
+            return wins.pop()
+        return None
     t = re.sub(r"[^A-Z ]", " ", (text or "").upper()).split()
     if not t:
         return None

@@ -91,6 +91,9 @@ name = "Llama 4 Maverick"
 family = "Llama (Meta)"
 tier = 3
 reasoning_off = true
+# Maverick reasons step by step before its pairwise verdict, so 8 tokens cut off 86% of replies (run #37).
+# Pairwise only: give it room to finish; the parser reads the final verdict. Other tasks stay at 8 tokens.
+pairwise_max_tokens = 1024
 
 [[judges]]
 id = "google/gemini-2.5-flash"   # Gemini 3.x Flash/Pro force "thinking" on OpenRouter; 2.5 Flash can answer directly

@@ -58,13 +58,17 @@ def run_password() -> str:
     return os.environ.get("RUN_PASSWORD", "").strip()
 
 
-def judge_options(cfg: dict, model: str) -> dict:
-    """Request options for a judge model: max_tokens and extra body fields (e.g. reasoning off)."""
+def judge_options(cfg: dict, model: str, kind: str | None = None) -> dict:
+    """Request options for a judge model: max_tokens and extra body fields (e.g. reasoning off).
+    A judge may set `<kind>_max_tokens` (e.g. pairwise_max_tokens) to override the reply limit for one task kind only."""
     j = next((j for j in cfg["judges"] if j["id"] == model), {})
     extra = {"reasoning": {"enabled": False}} if j.get("reasoning_off") else {}
     if j.get("provider"):  # OpenRouter provider routing, e.g. {ignore = ["DeepInfra"]}
         extra["provider"] = dict(j["provider"])
-    return {"max_tokens": int(j.get("max_tokens", cfg["settings"]["judge_max_tokens"])), "extra": extra}
+    max_tokens = j.get(f"{kind}_max_tokens") if kind else None
+    if max_tokens is None:
+        max_tokens = j.get("max_tokens", cfg["settings"]["judge_max_tokens"])
+    return {"max_tokens": int(max_tokens), "extra": extra}
 
 
 def backend_token() -> str:
