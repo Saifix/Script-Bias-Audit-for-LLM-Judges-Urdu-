@@ -209,6 +209,9 @@ The short paper (progress report) is in [`paper/short_paper/`](paper/short_paper
 [Word](paper/short_paper/short_paper.docx) and LaTeX source. Every number and figure in it is rebuilt from the experiment
 database by `paper/analysis/make_figures.py`.
 
+The full results report — process, every metric for all four rounds, observations, reasons, impact and guidelines — is
+[docs/REPORT.md](docs/REPORT.md). It is generated from `paper/analysis/results.json` by `paper/analysis/make_report.py`.
+
 ## Repository layout
 
 | Folder | What it holds |
@@ -218,7 +221,7 @@ database by `paper/analysis/make_figures.py`.
 | `experiments/` | Scripts that ran the four experiment rounds through the platform |
 | `paper/` | One folder per paper (`short_paper/`: PDF, Word, LaTeX, figures, tables) and the shared build scripts |
 | `deploy/` | Settings template (`env.example`), setup script and HTTPS proxy config |
-| `docs/` | Setup, security and deployment notes |
+| `docs/` | Full results report (`REPORT.md`) and setup, security and deployment notes |
 
 ## Team
 
